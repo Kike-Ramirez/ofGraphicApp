@@ -2,7 +2,8 @@
 GraphicApp OF Version
 
 Example result image:
-![]({{site.baseurl}}/https://github.com/Kike-Ramirez/ofGraphicApp/blob/master/bin/output2.jpeg)
+![]({{site.baseurl}}//output2.tiff)
+
 
 ### Libraries
 1. ofxDatGUI: [https://github.com/braitsch/ofxDatGui](https://github.com/braitsch/ofxDatGui)

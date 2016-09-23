@@ -2,7 +2,7 @@
 GraphicApp OF Version
 
 Example result image:
-![]({{site.baseurl}}//output2.tiff)
+![](bin/output2.tiff)
 
 
 ### Libraries

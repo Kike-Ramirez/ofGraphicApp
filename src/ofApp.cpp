@@ -11,6 +11,7 @@ void ofApp::setup()
     ofSetWindowPosition(100, 100);
     ofSetWindowShape(1024, 768);
     ofSetWindowTitle("ofGraphicApp v0.1");
+    ofSetFrameRate(60);
 
     dWidth = int(ofGetWidth() / 100.0);
     dHeight = int(ofGetHeight() / 100.0);
@@ -355,7 +356,7 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
           myengine.canvas.readToPixels(pixels);
           ofImage output;
           output.setFromPixels(pixels);
-          output.saveImage(path, OF_IMAGE_QUALITY_BEST);
+          output.save(path, OF_IMAGE_QUALITY_BEST);
           cout << "Saved in: " << path << endl;
 
         }

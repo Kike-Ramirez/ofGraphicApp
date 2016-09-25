@@ -27,6 +27,7 @@ void engine::setup()
     showInput = true;
     showBackground = false;
     showBackgroundFile = false;
+    shapeDrawing = 1;
     updateBackground();
 
 }
@@ -58,16 +59,7 @@ void engine::update()
     if ((showInput) && (input.isAllocated())) {
 
         input.draw(0,0);
-//        if (ratioInput > ratioCanvas) {
 
-//            input.draw(0,0,canvas.getHeight() * ratioInput, canvas.getHeight());
-//        }
-
-//        else {
-
-//            input.draw(0,0,canvas.getWidth(), canvas.getWidth() / ratioInput);
-
-//        }
     }
 
     grid.draw(0,0);
@@ -192,14 +184,49 @@ void engine::updateGrid()
 
     triangulation.draw();
 
-    ofFill();
-    for (int i = 0; i < triangles.size(); i++ ) {
-        ofPoint punto = ofPoint(triangles[i].x, triangles[i].y);
-        ofSetColor(input.getColor(punto.x, punto.y));
-        float radio = ofMap(input.getColor(punto.x, punto.y).getLightness(), 0, 255, 0, pointSize);
-        ofDrawEllipse(triangles[i].x, triangles[i].y, radio, radio);
+    // Dibujamos puntos
+
+    if (shapeDrawing == 1) {
+        ofFill();
+        for (int i = 0; i < triangles.size(); i++ ) {
+            ofPoint punto = ofPoint(triangles[i].x, triangles[i].y);
+            ofSetColor(input.getColor(punto.x, punto.y));
+            float radio = ofMap(input.getColor(punto.x, punto.y).getLightness(), 0, 255, 0, pointSize);
+            ofDrawEllipse(triangles[i].x, triangles[i].y, radio, radio);
+        }
+        ofNoFill();
     }
-    ofNoFill();
+
+    // Dibujamos cuadrados
+
+    else if (shapeDrawing == 2) {
+        ofFill();
+        for (int i = 0; i < triangles.size(); i++ ) {
+            ofPoint centro = ofPoint(triangles[i].x, triangles[i].y);
+            ofSetColor(input.getColor(centro.x, centro.y));
+            float lado = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, 0, pointSize);
+            float angle = ofRandom(0, PI);
+            ofDrawRectangle(centro.x - lado/2, centro.y - lado/2, lado, lado);
+        }
+        ofNoFill();
+    }
+
+    // Dibujamos triangulos
+
+    else if (shapeDrawing == 3) {
+        ofFill();
+        for (int i = 0; i < triangles.size(); i++ ) {
+            ofPoint centro = ofPoint(triangles[i].x, triangles[i].y);
+            ofSetColor(input.getColor(centro.x, centro.y));
+            float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, 0, pointSize);
+            float angle = ofRandom(0, PI);
+            ofPoint punto1(centro.x + radio * cos(angle), centro.y + radio * sin(angle));
+            ofPoint punto2(centro.x + radio * cos(angle + 2*PI/3), centro.y + radio * sin(angle + 2*PI/3));
+            ofPoint punto3(centro.x + radio * cos(angle + 4*PI/3), centro.y + radio * sin(angle + 4*PI/3));
+            ofDrawTriangle(punto1, punto2, punto3);
+        }
+        ofNoFill();
+    }
 
     grid.end();
     needsUpdate = false;

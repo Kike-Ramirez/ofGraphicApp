@@ -33,6 +33,10 @@ public:
     ofxDatGuiTextInput* alto;
     ofxDatGuiToggle* uploadBackground;
     ofxDatGuiToggle* defineBackground;
+    ofxDatGuiToggle* shapeCircle;
+    ofxDatGuiToggle* shapeSquare;
+    ofxDatGuiToggle* shapeTriangle;
+    ofxDatGuiToggle* shapeFile;
 
     int dWidth, dHeight;
 

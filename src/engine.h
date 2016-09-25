@@ -26,6 +26,7 @@ public:
     bool showInput;
     bool showBackgroundFile;
     bool showBackground;
+    int shapeDrawing;
     ofxDelaunay triangulation;
 
     void setResolution(int width_, int height_);

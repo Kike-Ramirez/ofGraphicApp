@@ -127,35 +127,35 @@ void ofApp::loadGui() {
     components.push_back(component);
 
     y += component->getHeight() + p + dHeight;
-    component = new ofxDatGuiToggle("punto", false);
-    component->setPosition(x, y);
-    component->setWidth(x11/4, 0.3);
-    component->setLabel("Punto");
-    component->onToggleEvent(this, &ofApp::onToggleEvent);
-    components.push_back(component);
+    shapeCircle = new ofxDatGuiToggle("punto", true);
+    shapeCircle->setPosition(x, y);
+    shapeCircle->setWidth(x11/4, 0.3);
+    shapeCircle->setLabel("Circulo");
+    shapeCircle->onToggleEvent(this, &ofApp::onToggleEvent);
+    components.push_back(shapeCircle);
 
-    component = new ofxDatGuiToggle("cuadrado", false);
-    component->setPosition(x + x11/4, y);
-    component->setWidth(x11/4, 0.3);
-    component->setLabel("Cuadrado");
-    component->onToggleEvent(this, &ofApp::onToggleEvent);
-    components.push_back(component);
+    shapeSquare = new ofxDatGuiToggle("cuadrado", false);
+    shapeSquare->setPosition(x + x11/4, y);
+    shapeSquare->setWidth(x11/4, 0.3);
+    shapeSquare->setLabel("Cuadrado");
+    shapeSquare->onToggleEvent(this, &ofApp::onToggleEvent);
+    components.push_back(shapeSquare);
 
-    component = new ofxDatGuiToggle("triangulo", false);
-    component->setPosition(x + 2 * x11/4, y);
-    component->setWidth(x11/4, 0.3);
-    component->setLabel("Triangulo");
-    component->onToggleEvent(this, &ofApp::onToggleEvent);
-    components.push_back(component);
+    shapeTriangle = new ofxDatGuiToggle("triangulo", false);
+    shapeTriangle->setPosition(x + 2 * x11/4, y);
+    shapeTriangle->setWidth(x11/4, 0.3);
+    shapeTriangle->setLabel("Triangulo");
+    shapeTriangle->onToggleEvent(this, &ofApp::onToggleEvent);
+    components.push_back(shapeTriangle);
 
-    component = new ofxDatGuiToggle("archivo", false);
-    component->setPosition(x + 3 * x11/4, y);
-    component->setWidth(x11/4, 0.3);
-    component->setLabel("Archivo");
-    component->onToggleEvent(this, &ofApp::onToggleEvent);
-    components.push_back(component);
+    shapeFile = new ofxDatGuiToggle("archivo", false);
+    shapeFile->setPosition(x + 3 * x11/4, y);
+    shapeFile->setWidth(x11/4, 0.3);
+    shapeFile->setLabel("Archivo");
+    shapeFile->onToggleEvent(this, &ofApp::onToggleEvent);
+    components.push_back(shapeFile);
 
-    y += component->getHeight() + p;
+    y += shapeFile->getHeight() + p;
     component = new ofxDatGuiSlider("size", 0, 50, 5);
     component->setPosition(x, y);
     component->setWidth(x11, 0.3);
@@ -374,6 +374,7 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
 {
     cout << "onToggleEvent: " << e.target->getLabel() << "::" <<  e.target->getChecked() << endl;
+
     if (e.target->is("showInput")) {
 
         myengine.showInput = e.target->getChecked();
@@ -418,6 +419,46 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
 
         myengine.updateBackground();
 
+
+    }
+
+    else if (e.target->is("punto")) {
+
+        myengine.shapeDrawing = 1;
+        if (shapeSquare->getChecked()) shapeSquare->toggle();
+        if (shapeTriangle->getChecked()) shapeTriangle->toggle();
+        if (shapeFile->getChecked()) shapeFile->toggle();
+        myengine.needsUpdate = true;
+
+    }
+
+    else if (e.target->is("cuadrado")) {
+
+        myengine.shapeDrawing = 2;
+        if (shapeCircle->getChecked()) shapeCircle->toggle();
+        if (shapeTriangle->getChecked()) shapeTriangle->toggle();
+        if (shapeFile->getChecked()) shapeFile->toggle();
+        myengine.needsUpdate = true;
+
+    }
+
+    else if (e.target->is("triangulo")) {
+
+        myengine.shapeDrawing = 3;
+        if (shapeCircle->getChecked()) shapeCircle->toggle();
+        if (shapeSquare->getChecked()) shapeSquare->toggle();
+        if (shapeFile->getChecked()) shapeFile->toggle();
+        myengine.needsUpdate = true;
+
+    }
+
+    else if (e.target->is("archivo")) {
+
+        myengine.shapeDrawing = 4;
+        if (shapeCircle->getChecked()) shapeCircle->toggle();
+        if (shapeSquare->getChecked()) shapeSquare->toggle();
+        if (shapeTriangle->getChecked()) shapeTriangle->toggle();
+        myengine.needsUpdate = true;
 
     }
 }

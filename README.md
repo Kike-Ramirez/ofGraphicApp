@@ -2,5 +2,5 @@
 GraphicApp OF Version
 
 ### Libraries
-1. ofxDatGUI: [https://github.com/braitsch/ofxDatGui](https://github.com/braitsch/ofxDatGui)
-2. ofxDelaunay: [https://github.com/obviousjim/ofxDelaunay](https://github.com/obviousjim/ofxDelaunay)
+1. ofxDatGUI: [https://github.com/Kike-Ramirez/ofxDatGui](https://github.com/Kike-Ramirez/ofxDatGui)
+2. ofxDelaunay: [https://github.com/Kike-Ramirez/ofxDatGui](https://github.com/Kike-Ramirez/ofxDelaunay)

@@ -76,7 +76,7 @@ void ofApp::loadGui() {
     component = new ofxDatGuiButton("defineMsk");
     component->setPosition(x + x11 / 3, y);
     component->setWidth(x11 / 3, 0.7);
-    component->setLabel("Definir");
+    component->setLabel("Mascara");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
 
@@ -342,7 +342,18 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
           alto->setText(std::to_string(myengine.input.getHeight()));
           myengine.updateBackground();
 
-          // load your file at `path`
+        }
+    }
+
+    if (e.target->is("DefineMsk")) {
+
+        ofFileDialogResult result = ofSystemLoadDialog("Load file");
+
+        if(result.bSuccess) {
+          string path = result.getPath();
+          myengine.setMask(path);
+          myengine.needsUpdate = true;
+
         }
     }
 

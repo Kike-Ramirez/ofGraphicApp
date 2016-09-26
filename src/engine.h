@@ -13,7 +13,7 @@ public:
     void draw(int x, int y, int w, int h);
 
     ofImage input, origInput;
-    ofImage maskInput;
+    ofImage maskInput, origMaskInput;
     ofImage backgroundInput, origBackgroundInput;
     ofFbo canvas;
     ofFbo grid;
@@ -31,6 +31,7 @@ public:
 
     void setResolution(int width_, int height_);
     void setInput(string file);
+    void setMask(string file);
     void setBackground(string file);
     void updateGrid();
     void updateBackground();

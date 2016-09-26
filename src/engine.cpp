@@ -58,8 +58,19 @@ void engine::update()
 
     if ((showInput) && (input.isAllocated())) {
 
+        ofEnableBlendMode(OF_BLENDMODE_ALPHA);
+
         input.draw(0,0);
 
+    }
+
+    if ((showInput) && (maskInput.isAllocated())) {
+
+        ofEnableBlendMode(OF_BLENDMODE_MULTIPLY);
+
+        maskInput.draw(0, 0);
+
+        ofDisableBlendMode();
     }
 
     grid.draw(0,0);
@@ -124,7 +135,26 @@ void engine::setResolution(int width_, int height_)
 
     }
 
+    if (maskInput.isAllocated()) {
 
+        maskInput.clone(origMaskInput);
+
+        float ratioMask = float(maskInput.getWidth())/maskInput.getHeight();
+        float ratioCanvas = float(width)/height;
+
+        if (ratioCanvas >= ratioMask) {
+
+            maskInput.resize(width, width / ratioMask);
+        }
+
+        else {
+
+            maskInput.resize(height * ratioMask, height);
+
+
+        }
+
+    }
 
 }
 
@@ -134,6 +164,13 @@ void engine::setInput(string file_)
     input.clone(origInput);
     setResolution(input.getWidth(), input.getHeight());
 
+}
+
+void engine::setMask(string file_)
+{
+    origMaskInput.load(file_);
+    maskInput.clone(origMaskInput);
+    setResolution(width, height);
 }
 
 void engine::setBackground(string file)
@@ -164,16 +201,17 @@ void engine::updateGrid()
             if ((punto.y < 0) || (punto.y > input.getHeight())) punto.y = j;
 
             float lightnessPoint = input.getColor(punto.x, punto.y).getLightness();
+            float maskPoint = maskInput.getColor(punto.x, punto.y).getLightness();
 
             if ((lightnessPoint > low.getLightness()) && (lightnessPoint < high.getLightness()))
-                {
+            {
                     // cout << "Low Lightness: " << low.getLightness() << endl;
-                    if (ofRandom(255) < lightnessPoint )
+                    if ((ofRandom(255) < lightnessPoint) && ( maskPoint > 100))
                     {
                         triangles.push_back(punto);
                         triangulation.addPoint(punto);
                     }
-                }
+            }
         }
     }
 

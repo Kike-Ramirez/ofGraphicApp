@@ -19,7 +19,7 @@ void ofApp::setup()
     loadGui();
 
     myengine.setup();
-    ofEnableSmoothing();
+    ofEnableSmoothing();    
 
 }
 
@@ -51,7 +51,7 @@ void ofApp::loadGui() {
     component->setWidth(x11, 0.7);
     components.push_back(component);
 
-    y += component->getHeight() + p + dHeight;
+    y += component->getHeight() + p + 3 * dHeight;
     ancho = new ofxDatGuiTextInput("Ancho", "1024");
     ancho->setPosition(x, y);
     ancho->setWidth(x11, 0.7);
@@ -65,7 +65,7 @@ void ofApp::loadGui() {
     alto->onTextInputEvent(this, &ofApp::onTextInputEvent);
     components.push_back(alto);
 
-    y += alto->getHeight() + p + dHeight;
+    y += alto->getHeight() + p + 3 * dHeight;
     component = new ofxDatGuiButton("uploadImg");
     component->setPosition(x, y);
     component->setWidth(x11 / 3, 0.7);
@@ -102,7 +102,7 @@ void ofApp::loadGui() {
     component->onColorPickerEvent(this, &ofApp::onColorPickerEvent);
     components.push_back(component);
 
-    y += component->getHeight() + p + dHeight;
+    y += component->getHeight() + p + dHeight + 8*dHeight;
     component = new ofxDatGuiSlider("density", 4, 40, 10);
     component->setPosition(x, y);
     component->setWidth(x11, 0.3);
@@ -126,7 +126,7 @@ void ofApp::loadGui() {
     component->onToggleEvent(this, &ofApp::onToggleEvent);
     components.push_back(component);
 
-    y += component->getHeight() + p + dHeight;
+    y += component->getHeight() + p + dHeight + 3* dHeight;
     shapeCircle = new ofxDatGuiToggle("punto", true);
     shapeCircle->setPosition(x, y);
     shapeCircle->setWidth(x11/4, 0.3);
@@ -179,7 +179,7 @@ void ofApp::loadGui() {
     component->onColorPickerEvent(this, &ofApp::onColorPickerEvent);
     components.push_back(component);
 
-    y += component->getHeight() + p + dHeight;
+    y += component->getHeight() + p + dHeight + 8*dHeight;
     uploadBackground = new ofxDatGuiToggle("loadBackground", false);
     uploadBackground->setPosition(x, y);
     uploadBackground->setWidth(x11, 0.3);
@@ -210,44 +210,44 @@ void ofApp::loadGui() {
     component->onColorPickerEvent(this, &ofApp::onColorPickerEvent);
     components.push_back(component);
 
-    y += component->getHeight() + p;
-    component = new ofxDatGuiSlider("angle", 0, 360, 0);
-    component->setPosition(x, y);
-    component->setWidth(x11, 0.3);
-    component->setLabel("Angulo");
-    component->onSliderEvent(this, &ofApp::onSliderEvent);
-    components.push_back(component);
+//    y += component->getHeight() + p;
+//    component = new ofxDatGuiSlider("angle", 0, 360, 0);
+//    component->setPosition(x, y);
+//    component->setWidth(x11, 0.3);
+//    component->setLabel("Angulo");
+//    component->onSliderEvent(this, &ofApp::onSliderEvent);
+//    components.push_back(component);
 
-    y += component->getHeight() + p + dHeight;
-    component = new ofxDatGuiToggle("jpg", true);
-    component->setPosition(x, y);
-    component->setWidth(x11/4, 0.3);
-    component->setLabel("jpg");
-    component->onToggleEvent(this, &ofApp::onToggleEvent);
-    components.push_back(component);
+//    y += component->getHeight() + p + dHeight  + 8*dHeight;
+//    component = new ofxDatGuiToggle("jpg", true);
+//    component->setPosition(x, y);
+//    component->setWidth(x11/4, 0.3);
+//    component->setLabel("jpg");
+//    component->onToggleEvent(this, &ofApp::onToggleEvent);
+//    components.push_back(component);
 
-    component = new ofxDatGuiToggle("png", false);
-    component->setPosition(x + x11/4, y);
-    component->setWidth(x11/4, 0.3);
-    component->setLabel("png");
-    component->onToggleEvent(this, &ofApp::onToggleEvent);
-    components.push_back(component);
+//    component = new ofxDatGuiToggle("png", false);
+//    component->setPosition(x + x11/4, y);
+//    component->setWidth(x11/4, 0.3);
+//    component->setLabel("png");
+//    component->onToggleEvent(this, &ofApp::onToggleEvent);
+//    components.push_back(component);
 
-    component = new ofxDatGuiToggle("pdf", false);
-    component->setPosition(x + 2 * x11/4, y);
-    component->setWidth(x11/4, 0.3);
-    component->setLabel("pdf");
-    component->onToggleEvent(this, &ofApp::onToggleEvent);
-    components.push_back(component);
+//    component = new ofxDatGuiToggle("pdf", false);
+//    component->setPosition(x + 2 * x11/4, y);
+//    component->setWidth(x11/4, 0.3);
+//    component->setLabel("pdf");
+//    component->onToggleEvent(this, &ofApp::onToggleEvent);
+//    components.push_back(component);
 
-    component = new ofxDatGuiToggle("tiff", false);
-    component->setPosition(x + 3 * x11/4, y);
-    component->setWidth(x11/4, 0.3);
-    component->setLabel("tiff");
-    component->onToggleEvent(this, &ofApp::onToggleEvent);
-    components.push_back(component);
+//    component = new ofxDatGuiToggle("tiff", false);
+//    component->setPosition(x + 3 * x11/4, y);
+//    component->setWidth(x11/4, 0.3);
+//    component->setLabel("tiff");
+//    component->onToggleEvent(this, &ofApp::onToggleEvent);
+//    components.push_back(component);
 
-    y += component->getHeight() + p;
+    y += component->getHeight() + p + dHeight + 8*dHeight;
     component = new ofxDatGuiButton("saveImg");
     component->setPosition(x, y);
     component->setWidth(x11, 1);
@@ -345,7 +345,7 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         }
     }
 
-    if (e.target->is("DefineMsk")) {
+    else if (e.target->is("DefineMsk")) {
 
         ofFileDialogResult result = ofSystemLoadDialog("Load file");
 
@@ -355,6 +355,13 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
           myengine.needsUpdate = true;
 
         }
+    }
+
+    else if (e.target->is("DeleteMsk")) {
+
+        myengine.deleteMask();
+        myengine.needsUpdate = true;
+
     }
 
     else if (e.target->is("saveImg")) {

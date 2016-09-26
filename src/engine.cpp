@@ -21,12 +21,14 @@ void engine::setup()
     high = ofColor(255);
     colorOne = ofColor(0);
     colorTwo = ofColor(255);
+    colorTriangle = ofColor(255);
 
     setResolution(width, height);
     needsUpdate = true;
     showInput = true;
     showBackground = false;
     showBackgroundFile = false;
+    showMasking = false;
     shapeDrawing = 1;
     updateBackground();
 
@@ -68,10 +70,12 @@ void engine::update()
 
         ofEnableBlendMode(OF_BLENDMODE_MULTIPLY);
 
-        maskInput.draw(0, 0);
+        if (showMasking) maskInput.draw(0, 0);
 
-        ofDisableBlendMode();
+
     }
+
+    ofDisableBlendMode();
 
     grid.draw(0,0);
 
@@ -168,7 +172,16 @@ void engine::setInput(string file_)
 
 void engine::setMask(string file_)
 {
+    showMasking = true;
     origMaskInput.load(file_);
+    maskInput.clone(origMaskInput);
+    setResolution(width, height);
+}
+
+void engine::deleteMask()
+{
+    showMasking = false;
+    origMaskInput.clear();
     maskInput.clone(origMaskInput);
     setResolution(width, height);
 }
@@ -187,10 +200,8 @@ void engine::updateGrid()
     grid.begin();
     ofClear(ofColor(0, 0));
 
-    ofSetColor(255);
-
     triangles.clear();
-    triangulation.reset(input);
+    triangulation.reset(input, colorTriangle);
 
     for (int i = 0; i < input.getWidth(); i+=density) {
 
@@ -201,7 +212,14 @@ void engine::updateGrid()
             if ((punto.y < 0) || (punto.y > input.getHeight())) punto.y = j;
 
             float lightnessPoint = input.getColor(punto.x, punto.y).getLightness();
-            float maskPoint = maskInput.getColor(punto.x, punto.y).getLightness();
+
+            float maskPoint;
+
+            if (maskInput.isAllocated()) maskPoint = maskInput.getColor(punto.x, punto.y).getLightness();
+            else maskPoint = 255;
+
+            if (!showMasking) maskPoint = 255;
+
 
             if ((lightnessPoint > low.getLightness()) && (lightnessPoint < high.getLightness()))
             {
@@ -223,48 +241,49 @@ void engine::updateGrid()
     triangulation.draw();
 
     // Dibujamos puntos
+    ofFill();
 
-    if (shapeDrawing == 1) {
-        ofFill();
-        for (int i = 0; i < triangles.size(); i++ ) {
-            ofPoint punto = ofPoint(triangles[i].x, triangles[i].y);
-            ofSetColor(input.getColor(punto.x, punto.y));
-            float radio = ofMap(input.getColor(punto.x, punto.y).getLightness(), 0, 255, 0, pointSize);
-            ofDrawEllipse(triangles[i].x, triangles[i].y, radio, radio);
+    for (int i = 0; i < triangles.size(); i++ ) {
+
+        ofPoint centro = ofPoint(triangles[i].x, triangles[i].y);
+        ofColor colorCentro = input.getColor(centro.x, centro.y);
+
+        float centroBrightness = input.getColor(centro.x, centro.y).getBrightness();
+
+        colorCentro.set(colorTriangle);
+        colorCentro.setBrightness(centroBrightness);
+        ofSetColor(colorCentro);
+
+
+        if (shapeDrawing == 1) {
+
+            float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, 0, pointSize);
+            ofDrawEllipse(centro, radio, radio);
+
         }
-        ofNoFill();
-    }
 
-    // Dibujamos cuadrados
+        else if (shapeDrawing == 2) {
 
-    else if (shapeDrawing == 2) {
-        ofFill();
-        for (int i = 0; i < triangles.size(); i++ ) {
-            ofPoint centro = ofPoint(triangles[i].x, triangles[i].y);
-            ofSetColor(input.getColor(centro.x, centro.y));
             float lado = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, 0, pointSize);
             float angle = ofRandom(0, PI);
             ofDrawRectangle(centro.x - lado/2, centro.y - lado/2, lado, lado);
         }
-        ofNoFill();
-    }
 
-    // Dibujamos triangulos
+        else if (shapeDrawing == 3) {
 
-    else if (shapeDrawing == 3) {
-        ofFill();
-        for (int i = 0; i < triangles.size(); i++ ) {
-            ofPoint centro = ofPoint(triangles[i].x, triangles[i].y);
-            ofSetColor(input.getColor(centro.x, centro.y));
             float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, 0, pointSize);
             float angle = ofRandom(0, PI);
             ofPoint punto1(centro.x + radio * cos(angle), centro.y + radio * sin(angle));
             ofPoint punto2(centro.x + radio * cos(angle + 2*PI/3), centro.y + radio * sin(angle + 2*PI/3));
             ofPoint punto3(centro.x + radio * cos(angle + 4*PI/3), centro.y + radio * sin(angle + 4*PI/3));
             ofDrawTriangle(punto1, punto2, punto3);
+
         }
-        ofNoFill();
+
     }
+
+
+    ofNoFill();
 
     grid.end();
     needsUpdate = false;

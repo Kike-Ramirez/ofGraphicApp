@@ -26,12 +26,14 @@ public:
     bool showInput;
     bool showBackgroundFile;
     bool showBackground;
+    bool showMasking;
     int shapeDrawing;
     ofxDelaunay triangulation;
 
     void setResolution(int width_, int height_);
     void setInput(string file);
     void setMask(string file);
+    void deleteMask();
     void setBackground(string file);
     void updateGrid();
     void updateBackground();

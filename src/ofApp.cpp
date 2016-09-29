@@ -88,21 +88,22 @@ void ofApp::loadGui() {
     components.push_back(component);
 
     y += component->getHeight() + p;
-    component = new ofxDatGuiColorPicker("Low", ofColor::fromHex(0x000000));
+    component = new ofxDatGuiSlider("min", 0, 255, 0);
     component->setPosition(x, y);
-    component->setWidth(x11/2, 0.3);
-    component->setLabel("Low");
-    component->onColorPickerEvent(this, &ofApp::onColorPickerEvent);
+    component->setWidth(x11, 0.3);
+    component->setLabel("Minimo");
+    component->onSliderEvent(this, &ofApp::onSliderEvent);
     components.push_back(component);
 
-    component = new ofxDatGuiColorPicker("High", ofColor::fromHex(0xFFFFFF));
-    component->setPosition(x + x11/2, y);
-    component->setWidth(x11/2, 0.3);
-    component->setLabel("High");
-    component->onColorPickerEvent(this, &ofApp::onColorPickerEvent);
+    y += component->getHeight() + p;
+    component = new ofxDatGuiSlider("max", 0, 255, 255);
+    component->setPosition(x, y);
+    component->setWidth(x11, 0.3);
+    component->setLabel("Maximo");
+    component->onSliderEvent(this, &ofApp::onSliderEvent);
     components.push_back(component);
 
-    y += component->getHeight() + p + dHeight + 8*dHeight;
+    y += component->getHeight() + p + dHeight + 3*dHeight;
     component = new ofxDatGuiSlider("density", 4, 40, 10);
     component->setPosition(x, y);
     component->setWidth(x11, 0.3);
@@ -506,6 +507,22 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
 
     }
 
+    else if (e.target->is("min")) {
+
+        myengine.min = e.value;
+        myengine.needsUpdateGrid = true;
+        myengine.needsUpdatePoints = true;
+
+    }
+
+    else if (e.target->is("max")) {
+
+        myengine.max = e.value;
+        myengine.needsUpdateGrid = true;
+        myengine.needsUpdatePoints = true;
+
+    }
+
     else if (e.target->is("prob")) {
 
         myengine.prob = e.value;
@@ -545,15 +562,8 @@ void ofApp::onDropdownEvent(ofxDatGuiDropdownEvent e)
 void ofApp::onColorPickerEvent(ofxDatGuiColorPickerEvent e)
 {
     cout << "onColorPickerEvent: " << e.color << endl;
-    if (e.target->is("Low")) {
-        myengine.low = e.color;
-        myengine.needsUpdateGrid = true;
-    }
-    else if (e.target->is("High")) {
-        myengine.high = e.color;
-        myengine.needsUpdateGrid = true;
-    }
-    else if (e.target->is("color")) {
+
+    if (e.target->is("color")) {
         myengine.colorTriangle = e.color;
         myengine.needsUpdatePoints = true;
 

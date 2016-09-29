@@ -20,8 +20,8 @@ public:
     ofFbo background;
     vector<ofPoint> triangles;
     int width, height;
-    ofColor low, high, colorTriangle, colorOne, colorTwo;
-    float density, noise, prob, lineWidth, rotation, pointSize;
+    ofColor colorTriangle, colorOne, colorTwo;
+    float min, max, density, noise, prob, lineWidth, rotation, pointSize;
     bool needsUpdateGrid;
     bool needsUpdatePoints;
     bool showInput;

@@ -10,6 +10,8 @@ engine::engine()
     prob = 0.5;
     lineWidth = 1;
     pointSize = 3;
+    min = 0;
+    max = 255;
 
 
 }
@@ -17,8 +19,6 @@ engine::engine()
 void engine::setup()
 {
 
-    low = ofColor(0);
-    high = ofColor(255);
     colorOne = ofColor(0);
     colorTwo = ofColor(255);
     colorTriangle = ofColor(255);
@@ -220,8 +220,9 @@ void engine::updateGrid()
 
             if (!showMasking) maskPoint = 255;
 
+            cout << "min: " << min << " max: " << max << " value: " << lightnessPoint << endl;
 
-            if ((lightnessPoint > low.getLightness()) && (lightnessPoint < high.getLightness()))
+            if ((lightnessPoint > min) && (lightnessPoint < max))
             {
                     // cout << "Low Lightness: " << low.getLightness() << endl;
                     if ((ofRandom(255) < lightnessPoint) && ( maskPoint > 100))
@@ -260,12 +261,11 @@ void engine::drawPoints() {
     for (int i = 0; i < triangles.size(); i++ ) {
 
         ofPoint centro = ofPoint(triangles[i].x, triangles[i].y);
-        ofColor colorCentro = input.getColor(centro.x, centro.y);
-
-        float centroBrightness = input.getColor(centro.x, centro.y).getBrightness();
-
+        ofColor colorCentro;
         colorCentro.set(colorTriangle);
-        colorCentro.setBrightness(centroBrightness);
+
+        colorCentro.a = input.getColor(centro.x, centro.y).getLightness();
+
         ofSetColor(colorCentro);
 
 

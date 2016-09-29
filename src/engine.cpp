@@ -24,7 +24,8 @@ void engine::setup()
     colorTriangle = ofColor(255);
 
     setResolution(width, height);
-    needsUpdate = true;
+    needsUpdateGrid = true;
+    needsUpdatePoints = true;
     showInput = true;
     showBackground = false;
     showBackgroundFile = false;
@@ -48,7 +49,8 @@ void engine::updateBackground()
 void engine::update()
 {
 
-    if (needsUpdate) updateGrid();
+    if (needsUpdateGrid) updateGrid();
+    if (needsUpdatePoints) drawPoints();
 
     canvas.begin();
     ofClear(ofFloatColor(0));
@@ -197,9 +199,6 @@ void engine::setBackground(string file)
 void engine::updateGrid()
 {
 
-    grid.begin();
-    ofClear(ofColor(0, 0));
-
     triangles.clear();
     triangulation.reset(input, colorTriangle);
 
@@ -211,7 +210,8 @@ void engine::updateGrid()
             if ((punto.x < 0) || (punto.x > input.getWidth())) punto.x = i;
             if ((punto.y < 0) || (punto.y > input.getHeight())) punto.y = j;
 
-            float lightnessPoint = input.getColor(punto.x, punto.y).getLightness();
+            ofColor colorPoint = input.getColor(punto.x, punto.y);
+            float lightnessPoint = input.getColor(punto.x, punto.y).getBrightness();
 
             float maskPoint;
 
@@ -234,11 +234,25 @@ void engine::updateGrid()
     }
 
     triangulation.triangulate();
+
+    needsUpdateGrid = false;
+
+}
+
+
+void engine::drawPoints() {
+
+    grid.begin();
+    ofClear(ofColor(0, 0));
+
+    triangulation.setHue(colorTriangle);
+
+    // Dibujamos los triángulos
+
     ofNoFill();
-    ofSetColor(colorTriangle);
     ofSetLineWidth(lineWidth);
 
-    triangulation.draw();
+    if (lineWidth > 0) triangulation.draw();
 
     // Dibujamos puntos
     ofFill();
@@ -272,7 +286,7 @@ void engine::updateGrid()
         else if (shapeDrawing == 3) {
 
             float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, 0, pointSize);
-            float angle = ofRandom(0, PI);
+            float angle = 0; //ofRandom(0, PI);
             ofPoint punto1(centro.x + radio * cos(angle), centro.y + radio * sin(angle));
             ofPoint punto2(centro.x + radio * cos(angle + 2*PI/3), centro.y + radio * sin(angle + 2*PI/3));
             ofPoint punto3(centro.x + radio * cos(angle + 4*PI/3), centro.y + radio * sin(angle + 4*PI/3));
@@ -286,8 +300,11 @@ void engine::updateGrid()
     ofNoFill();
 
     grid.end();
-    needsUpdate = false;
+
+    needsUpdatePoints = false;
+
 }
+
 
 void engine::backgroundGradient(const ofColor& start, const ofColor& end) {
     float w = background.getWidth(), h = background.getHeight();

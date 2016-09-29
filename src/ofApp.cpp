@@ -43,7 +43,7 @@ void ofApp::loadGui() {
     int x = dWidth;
     int y = dHeight;
     int p = 0;
-    int x11 = 30 * dWidth;
+    int x11 = 38 * dWidth;
 
 
     component = new ofxDatGuiFRM();
@@ -106,7 +106,7 @@ void ofApp::loadGui() {
     component = new ofxDatGuiSlider("density", 4, 40, 10);
     component->setPosition(x, y);
     component->setWidth(x11, 0.3);
-    component->setLabel("Densidad");
+    component->setLabel("Espaciado");
     component->onSliderEvent(this, &ofApp::onSliderEvent);
     components.push_back(component);
 
@@ -114,7 +114,7 @@ void ofApp::loadGui() {
     component = new ofxDatGuiSlider("noise", 0, 100, 0);
     component->setPosition(x, y);
     component->setWidth(x11, 0.3);
-    component->setLabel("Ruido");
+    component->setLabel("Desplazamiento");
     component->onSliderEvent(this, &ofApp::onSliderEvent);
     components.push_back(component);
 
@@ -269,15 +269,17 @@ void ofApp::loadGui() {
 void ofApp::fitCanvas()
 {
 
+    float x11 = 40 * dWidth;
+
     float ratioCanvas = myengine.canvas.getWidth() / myengine.canvas.getHeight();
-    float ratioDisplay = (ofGetWidth() - 35 * dWidth) / (ofGetHeight() - 2 * dHeight);
+    float ratioDisplay = (ofGetWidth() - x11) / (ofGetHeight() - 2 * dHeight);
 
     if (ratioCanvas > ratioDisplay)
     {
 
-        if (myengine.canvas.getWidth() < ofGetWidth() - 35 * dWidth)
+        if (myengine.canvas.getWidth() < ofGetWidth() - x11)
         {
-            int xCanvas = 33 * dWidth + (ofGetWidth() - 35 * dWidth - myengine.canvas.getWidth())/2;
+            int xCanvas = x11 + (ofGetWidth() - x11 - 2 * dWidth - myengine.canvas.getWidth())/2;
             int yCanvas = dHeight + (ofGetHeight() - 2 * dHeight - myengine.canvas.getHeight())/2;
 
             myengine.draw(xCanvas, yCanvas, myengine.canvas.getWidth(), myengine.canvas.getHeight());
@@ -287,10 +289,10 @@ void ofApp::fitCanvas()
 
         else
         {
-            int xCanvas = 33 * dWidth;
-            int yCanvas = dHeight + (ofGetHeight() - 2 * dHeight - float(ofGetWidth() - 35 * dWidth) / float(ratioCanvas)) / 2;
+            int xCanvas = x11;
+            int yCanvas = dHeight + (ofGetHeight() - 2 * dHeight - float(ofGetWidth() - x11) / float(ratioCanvas)) / 2;
 
-            myengine.draw(xCanvas, yCanvas, ofGetWidth() - 35 * dWidth, float(ofGetWidth() - 35 * dWidth) / float(ratioCanvas));
+            myengine.draw(xCanvas, yCanvas, ofGetWidth() - x11 - 2 * dWidth, float(ofGetWidth() - x11) / float(ratioCanvas));
 
         }
 
@@ -301,7 +303,7 @@ void ofApp::fitCanvas()
 
         if (myengine.canvas.getHeight() < ofGetHeight() - 2 * dHeight)
         {
-            int xCanvas = 32 * dWidth + (ofGetWidth() - 32 * dWidth - myengine.canvas.getWidth())/2;
+            int xCanvas = x11 - 2 * dWidth + (ofGetWidth() - x11 - myengine.canvas.getWidth())/2;
             int yCanvas = dHeight + (ofGetHeight() - 2 * dHeight - myengine.canvas.getHeight())/2;
 
             myengine.draw(xCanvas, yCanvas, myengine.canvas.getWidth(), myengine.canvas.getHeight());
@@ -310,7 +312,7 @@ void ofApp::fitCanvas()
 
         else
         {
-            int xCanvas = 32 * dWidth + (ofGetWidth() - 32 * dWidth - (ofGetHeight() - 2 * dHeight) * ratioCanvas)/2;
+            int xCanvas = x11 - 2 * dWidth + (ofGetWidth() - x11 - (ofGetHeight() - 2 * dHeight) * ratioCanvas)/2;
             int yCanvas = dHeight;
 
             myengine.draw(xCanvas, yCanvas, (ofGetHeight() - 2 * dHeight) * ratioCanvas, ofGetHeight() - 2 * dHeight);
@@ -337,7 +339,8 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         if(result.bSuccess) {
           string path = result.getPath();
           myengine.setInput(path);
-          myengine.needsUpdate = true;
+          myengine.needsUpdateGrid = true;
+          myengine.needsUpdatePoints = true;
           ancho->setText(std::to_string(myengine.input.getWidth()));
           alto->setText(std::to_string(myengine.input.getHeight()));
           myengine.updateBackground();
@@ -352,7 +355,8 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         if(result.bSuccess) {
           string path = result.getPath();
           myengine.setMask(path);
-          myengine.needsUpdate = true;
+          myengine.needsUpdateGrid = true;
+          myengine.needsUpdatePoints = true;
 
         }
     }
@@ -360,7 +364,8 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
     else if (e.target->is("DeleteMsk")) {
 
         myengine.deleteMask();
-        myengine.needsUpdate = true;
+        myengine.needsUpdateGrid = true;
+        myengine.needsUpdatePoints = true;
 
     }
 
@@ -446,7 +451,8 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
         if (shapeSquare->getChecked()) shapeSquare->toggle();
         if (shapeTriangle->getChecked()) shapeTriangle->toggle();
         if (shapeFile->getChecked()) shapeFile->toggle();
-        myengine.needsUpdate = true;
+        myengine.needsUpdatePoints = true;
+
 
     }
 
@@ -456,7 +462,7 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
         if (shapeCircle->getChecked()) shapeCircle->toggle();
         if (shapeTriangle->getChecked()) shapeTriangle->toggle();
         if (shapeFile->getChecked()) shapeFile->toggle();
-        myengine.needsUpdate = true;
+        myengine.needsUpdatePoints = true;
 
     }
 
@@ -466,7 +472,7 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
         if (shapeCircle->getChecked()) shapeCircle->toggle();
         if (shapeSquare->getChecked()) shapeSquare->toggle();
         if (shapeFile->getChecked()) shapeFile->toggle();
-        myengine.needsUpdate = true;
+        myengine.needsUpdatePoints = true;
 
     }
 
@@ -476,7 +482,7 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
         if (shapeCircle->getChecked()) shapeCircle->toggle();
         if (shapeSquare->getChecked()) shapeSquare->toggle();
         if (shapeTriangle->getChecked()) shapeTriangle->toggle();
-        myengine.needsUpdate = true;
+        myengine.needsUpdatePoints = true;
 
     }
 }
@@ -487,35 +493,38 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
     if (e.target->is("Density")) {
 
         myengine.density = e.value;
-        myengine.needsUpdate = true;
+        myengine.needsUpdateGrid = true;
+        myengine.needsUpdatePoints = true;
 
     }
 
     else if (e.target->is("Noise")) {
 
         myengine.noise = e.value;
-        myengine.needsUpdate = true;
+        myengine.needsUpdateGrid = true;
+        myengine.needsUpdatePoints = true;
 
     }
 
     else if (e.target->is("prob")) {
 
         myengine.prob = e.value;
-        myengine.needsUpdate = true;
+        myengine.needsUpdateGrid = true;
+        myengine.needsUpdatePoints = true;
 
     }
 
     else if (e.target->is("size")) {
 
         myengine.pointSize = e.value;
-        myengine.needsUpdate = true;
+        myengine.needsUpdatePoints = true;
 
     }
 
     else if (e.target->is("stroke")) {
 
         myengine.lineWidth = e.value;
-        myengine.needsUpdate = true;
+        myengine.needsUpdatePoints = true;
 
     }
 
@@ -538,15 +547,16 @@ void ofApp::onColorPickerEvent(ofxDatGuiColorPickerEvent e)
     cout << "onColorPickerEvent: " << e.color << endl;
     if (e.target->is("Low")) {
         myengine.low = e.color;
-        myengine.needsUpdate = true;
+        myengine.needsUpdateGrid = true;
     }
     else if (e.target->is("High")) {
         myengine.high = e.color;
-        myengine.needsUpdate = true;
+        myengine.needsUpdateGrid = true;
     }
     else if (e.target->is("color")) {
         myengine.colorTriangle = e.color;
-        myengine.needsUpdate = true;
+        myengine.needsUpdatePoints = true;
+
     }
     else if (e.target->is("colorOne")) {
         myengine.colorOne = ofColor(e.color);
@@ -566,7 +576,9 @@ void ofApp::onTextInputEvent(ofxDatGuiTextInputEvent e)
 
         myengine.setResolution(std::stoi(e.text), myengine.height);
         myengine.updateBackground();
-        myengine.needsUpdate = true;
+        myengine.needsUpdateGrid = true;
+        myengine.needsUpdatePoints = true;
+
 
 
     }
@@ -575,7 +587,9 @@ void ofApp::onTextInputEvent(ofxDatGuiTextInputEvent e)
 
         myengine.setResolution(myengine.width, std::stoi(e.text));
         myengine.updateBackground();
-        myengine.needsUpdate = true;
+        myengine.needsUpdateGrid = true;
+        myengine.needsUpdatePoints = true;
+
 
     }
 

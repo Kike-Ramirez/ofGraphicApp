@@ -22,7 +22,8 @@ public:
     int width, height;
     ofColor low, high, colorTriangle, colorOne, colorTwo;
     float density, noise, prob, lineWidth, rotation, pointSize;
-    bool needsUpdate;
+    bool needsUpdateGrid;
+    bool needsUpdatePoints;
     bool showInput;
     bool showBackgroundFile;
     bool showBackground;
@@ -36,6 +37,7 @@ public:
     void deleteMask();
     void setBackground(string file);
     void updateGrid();
+    void drawPoints();
     void updateBackground();
     void backgroundGradient(const ofColor& start, const ofColor& end);
 

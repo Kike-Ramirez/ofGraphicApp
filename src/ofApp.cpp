@@ -10,7 +10,7 @@ void ofApp::setup()
     //ofSetFullscreen(true);
     ofSetWindowPosition(100, 100);
     ofSetWindowShape(1024, 768);
-    ofSetWindowTitle("ofGraphicApp v0.1");
+    ofSetWindowTitle("ofGraphicApp v0.3");
     ofSetFrameRate(60);
 
     dWidth = int(ofGetWidth() / 100.0);

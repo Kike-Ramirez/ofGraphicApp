@@ -220,8 +220,6 @@ void engine::updateGrid()
 
             if (!showMasking) maskPoint = 255;
 
-            cout << "min: " << min << " max: " << max << " value: " << lightnessPoint << endl;
-
             if ((lightnessPoint > min) && (lightnessPoint < max))
             {
                     // cout << "Low Lightness: " << low.getLightness() << endl;

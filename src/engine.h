@@ -36,6 +36,8 @@ public:
     void setResolution(int width_, int height_);
     void setInput(string file);
     void setMask(string file);
+    void setMaskGrid(string file);
+    void setMaskPoints(string file);
     void deleteMask();
     void setBackground(string file);
     void updateGrid();

@@ -62,8 +62,6 @@ void engine::update()
 
     if ((showInput) && (input.isAllocated())) {
 
-        ofEnableBlendMode(OF_BLENDMODE_ALPHA);
-
         input.draw(0,0);
 
     }
@@ -74,6 +72,7 @@ void engine::update()
 
         if (showMasking) maskInput.draw(0, 0);
 
+        ofDisableBlendMode();
 
     }
 
@@ -162,6 +161,48 @@ void engine::setResolution(int width_, int height_)
 
     }
 
+    if (maskGrid.isAllocated()) {
+
+        maskGrid.clone(origMaskGrid);
+
+        float ratioMask = float(maskGrid.getWidth())/maskGrid.getHeight();
+        float ratioCanvas = float(width)/height;
+
+        if (ratioCanvas >= ratioMask) {
+
+            maskGrid.resize(width, width / ratioMask);
+        }
+
+        else {
+
+            maskGrid.resize(height * ratioMask, height);
+
+
+        }
+
+    }
+
+    if (maskPoints.isAllocated()) {
+
+        maskPoints.clone(origMaskPoints);
+
+        float ratioMask = float(maskPoints.getWidth())/maskPoints.getHeight();
+        float ratioCanvas = float(width)/height;
+
+        if (ratioCanvas >= ratioMask) {
+
+            maskPoints.resize(width, width / ratioMask);
+        }
+
+        else {
+
+            maskPoints.resize(height * ratioMask, height);
+
+
+        }
+
+    }
+
 }
 
 void engine::setInput(string file_)
@@ -177,6 +218,22 @@ void engine::setMask(string file_)
     showMasking = true;
     origMaskInput.load(file_);
     maskInput.clone(origMaskInput);
+    setResolution(width, height);
+}
+
+void engine::setMaskGrid(string file_)
+{
+    showMasking = true;
+    origMaskGrid.load(file_);
+    maskGrid.clone(origMaskGrid);
+    setResolution(width, height);
+}
+
+void engine::setMaskPoints(string file_)
+{
+    showMasking = true;
+    origMaskPoints.load(file_);
+    maskPoints.clone(origMaskPoints);
     setResolution(width, height);
 }
 
@@ -213,20 +270,26 @@ void engine::updateGrid()
             ofColor colorPoint = input.getColor(punto.x, punto.y);
             float lightnessPoint = input.getColor(punto.x, punto.y).getBrightness();
 
-            float maskPoint;
+            float pointMask, gridMask;
 
-            if (maskInput.isAllocated()) maskPoint = maskInput.getColor(punto.x, punto.y).getLightness();
-            else maskPoint = 255;
+            if (maskGrid.isAllocated()) gridMask = maskGrid.getColor(punto.x, punto.y).getLightness();
+            else gridMask = 255;
 
-            if (!showMasking) maskPoint = 255;
+            if (maskPoints.isAllocated()) pointMask = maskPoints.getColor(punto.x, punto.y).getLightness();
+            else pointMask = 255;
+
+            if (!showMasking) {
+                pointMask = 255;
+                gridMask = 255;
+            }
 
             if ((lightnessPoint > min) && (lightnessPoint < max))
             {
                     // cout << "Low Lightness: " << low.getLightness() << endl;
-                    if ((ofRandom(255) < lightnessPoint) && ( maskPoint > 100))
+                    if (ofRandom(255) < lightnessPoint)
                     {
-                        triangles.push_back(punto);
-                        triangulation.addPoint(punto);
+                        if  ( pointMask > 100) triangles.push_back(punto);
+                        if  ( gridMask > 100) triangulation.addPoint(punto);
                     }
             }
         }

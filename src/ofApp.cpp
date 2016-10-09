@@ -12,6 +12,7 @@ void ofApp::setup()
     ofSetWindowShape(1024, 768);
     ofSetWindowTitle("ofGraphicApp v0.3");
     ofSetFrameRate(60);
+    ofSetEscapeQuitsApp(false);
 
     dWidth = int(ofGetWidth() / 100.0);
     dHeight = int(ofGetHeight() / 100.0);
@@ -371,6 +372,32 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         if(result.bSuccess) {
           string path = result.getPath();
           myengine.setMask(path);
+          myengine.needsUpdateGrid = true;
+          myengine.needsUpdatePoints = true;
+
+        }
+    }
+
+    else if (e.target->is("MskGrid")) {
+
+        ofFileDialogResult result = ofSystemLoadDialog("Load file");
+
+        if(result.bSuccess) {
+          string path = result.getPath();
+          myengine.setMaskGrid(path);
+          myengine.needsUpdateGrid = true;
+          myengine.needsUpdatePoints = true;
+
+        }
+    }
+
+    else if (e.target->is("MskPoints")) {
+
+        ofFileDialogResult result = ofSystemLoadDialog("Load file");
+
+        if(result.bSuccess) {
+          string path = result.getPath();
+          myengine.setMaskPoints(path);
           myengine.needsUpdateGrid = true;
           myengine.needsUpdatePoints = true;
 

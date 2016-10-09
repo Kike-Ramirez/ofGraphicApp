@@ -68,22 +68,37 @@ void ofApp::loadGui() {
     y += alto->getHeight() + p + 3 * dHeight;
     component = new ofxDatGuiButton("uploadImg");
     component->setPosition(x, y);
-    component->setWidth(x11 / 3, 0.7);
+    component->setWidth(x11 / 2, 0.7);
     component->setLabel("Archivo");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
 
-    component = new ofxDatGuiButton("defineMsk");
-    component->setPosition(x + x11 / 3, y);
-    component->setWidth(x11 / 3, 0.7);
-    component->setLabel("Mascara");
+    component = new ofxDatGuiButton("deleteMsk");
+    component->setPosition(x + x11 / 2, y);
+    component->setWidth(x11 / 2, 0.7);
+    component->setLabel("Borrar");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
 
-    component = new ofxDatGuiButton("deleteMsk");
-    component->setPosition(x + x11 / 3 * 2, y);
+    y += component->getHeight() + p;
+    component = new ofxDatGuiButton("defineMsk");
+    component->setPosition(x, y);
     component->setWidth(x11 / 3, 0.7);
-    component->setLabel("Borrar");
+    component->setLabel("Mascara Imagen");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+
+    component = new ofxDatGuiButton("MskGrid");
+    component->setPosition(x + x11 / 3, y);
+    component->setWidth(x11 / 3, 0.7);
+    component->setLabel("Mascara Rejilla");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+
+    component = new ofxDatGuiButton("MskPoints");
+    component->setPosition(x + x11 * 2 / 3, y);
+    component->setWidth(x11 / 3, 0.7);
+    component->setLabel("Mascara Puntos");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
 

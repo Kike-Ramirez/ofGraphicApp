@@ -14,6 +14,8 @@ public:
 
     ofImage input, origInput;
     ofImage maskInput, origMaskInput;
+    ofImage maskGrid, origMaskGrid;
+    ofImage maskPoints, origMaskPoints;
     ofImage backgroundInput, origBackgroundInput;
     ofFbo canvas;
     ofFbo grid;

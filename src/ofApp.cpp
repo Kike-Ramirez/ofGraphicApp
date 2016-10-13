@@ -10,7 +10,7 @@ void ofApp::setup()
     //ofSetFullscreen(true);
     ofSetWindowPosition(100, 100);
     ofSetWindowShape(1024, 768);
-    ofSetWindowTitle("ofGraphicApp v0.3");
+    ofSetWindowTitle("ofGraphicApp v0.5");
     ofSetFrameRate(60);
     ofSetEscapeQuitsApp(false);
 
@@ -37,6 +37,18 @@ void ofApp::draw()
     ofBackgroundGradient(ofColor(0), ofColor(255), OF_GRADIENT_LINEAR);
     fitCanvas();
     for(int i=components.size()-1; i>=0; i--) components[i]->draw();
+
+    if ((myengine.definingMaskImg) || (myengine.definingMaskGrid) || (myengine.definingMaskPoints)) {
+
+        ofSetColor(255,0,0);
+        ofLine(mouseX - 5, mouseY, mouseX + 5, mouseY);
+        ofLine(mouseX, mouseY - 5, mouseX, mouseY + 5);
+
+        ofDrawBitmapString("Definiendo Máscara", xCanvas + 10, yCanvas + 20);
+        ofDrawBitmapString("Cierra haciendo click en el primer punto para aplicar máscara", xCanvas + 10, yCanvas + 40);
+        ofDrawBitmapString("Pulsa <Q> para salir sin aplicar", xCanvas + 10, yCanvas + 60);
+        ofSetColor(255);
+    }
 }
 
 void ofApp::loadGui() {
@@ -74,7 +86,7 @@ void ofApp::loadGui() {
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
 
-    component = new ofxDatGuiButton("deleteMsk");
+    component = new ofxDatGuiButton("deleteImg");
     component->setPosition(x + x11 / 2, y);
     component->setWidth(x11 / 2, 0.7);
     component->setLabel("Borrar");
@@ -82,24 +94,89 @@ void ofApp::loadGui() {
     components.push_back(component);
 
     y += component->getHeight() + p;
-    component = new ofxDatGuiButton("defineMsk");
+    component = new ofxDatGuiButton("uploadMskImg");
     component->setPosition(x, y);
-    component->setWidth(x11 / 3, 0.7);
+    component->setWidth(x11 * 0.4, 0.7);
     component->setLabel("Mascara Imagen");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
 
-    component = new ofxDatGuiButton("MskGrid");
-    component->setPosition(x + x11 / 3, y);
-    component->setWidth(x11 / 3, 0.7);
+    component = new ofxDatGuiButton("defineMskImg");
+    component->setPosition(x + x11 * 0.4, y);
+    component->setWidth(x11 * 0.2, 0.7);
+    component->setLabel("Definir");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+
+    component = new ofxDatGuiButton("colorMskImg");
+    component->setPosition(x + x11 * 0.6, y);
+    component->setWidth(x11 * 0.2, 0.7);
+    component->setLabel("Color");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+
+    component = new ofxDatGuiButton("deleteMskImg");
+    component->setPosition(x + x11 * 0.8, y);
+    component->setWidth(x11 * 0.2, 0.7);
+    component->setLabel("Borrar");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+
+    y += component->getHeight() + p;
+    component = new ofxDatGuiButton("uploadMskGrid");
+    component->setPosition(x, y);
+    component->setWidth(x11 * 0.4, 0.7);
     component->setLabel("Mascara Rejilla");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
 
-    component = new ofxDatGuiButton("MskPoints");
-    component->setPosition(x + x11 * 2 / 3, y);
-    component->setWidth(x11 / 3, 0.7);
+    component = new ofxDatGuiButton("defineMskGrid");
+    component->setPosition(x + x11 * 0.4, y);
+    component->setWidth(x11 * 0.2, 0.7);
+    component->setLabel("Definir");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+
+    component = new ofxDatGuiButton("colorMskGrid");
+    component->setPosition(x + x11 * 0.6, y);
+    component->setWidth(x11 * 0.2, 0.7);
+    component->setLabel("Color");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+
+    component = new ofxDatGuiButton("deleteMskGrid");
+    component->setPosition(x + x11 * 0.8, y);
+    component->setWidth(x11 * 0.2, 0.7);
+    component->setLabel("Borrar");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+
+    y += component->getHeight() + p;
+    component = new ofxDatGuiButton("uploadMskPoints");
+    component->setPosition(x, y);
+    component->setWidth(x11 * 0.4, 0.7);
     component->setLabel("Mascara Puntos");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+
+    component = new ofxDatGuiButton("defineMskPoints");
+    component->setPosition(x + x11 * 0.4, y);
+    component->setWidth(x11 * 0.2, 0.7);
+    component->setLabel("Definir");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+
+    component = new ofxDatGuiButton("colorMskPoints");
+    component->setPosition(x + x11 * 0.6, y);
+    component->setWidth(x11 * 0.2, 0.7);
+    component->setLabel("Color");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+
+    component = new ofxDatGuiButton("deleteMskPoints");
+    component->setPosition(x + x11 * 0.8, y);
+    component->setWidth(x11 * 0.2, 0.7);
+    component->setLabel("Borrar");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
 
@@ -296,20 +373,23 @@ void ofApp::fitCanvas()
 
         if (myengine.canvas.getWidth() < ofGetWidth() - x11)
         {
-            int xCanvas = x11 + (ofGetWidth() - x11 - 2 * dWidth - myengine.canvas.getWidth())/2;
-            int yCanvas = dHeight + (ofGetHeight() - 2 * dHeight - myengine.canvas.getHeight())/2;
-
-            myengine.draw(xCanvas, yCanvas, myengine.canvas.getWidth(), myengine.canvas.getHeight());
+            xCanvas = x11 + (ofGetWidth() - x11 - 2 * dWidth - myengine.canvas.getWidth())/2;
+            yCanvas = dHeight + (ofGetHeight() - 2 * dHeight - myengine.canvas.getHeight())/2;
+            widthCanvas = myengine.canvas.getWidth();
+            heightCanvas = myengine.canvas.getHeight();
+            myengine.draw(xCanvas, yCanvas, widthCanvas, heightCanvas);
 
 
         }
 
         else
         {
-            int xCanvas = x11;
-            int yCanvas = dHeight + (ofGetHeight() - 2 * dHeight - float(ofGetWidth() - x11) / float(ratioCanvas)) / 2;
+            xCanvas = x11;
+            yCanvas = dHeight + (ofGetHeight() - 2 * dHeight - float(ofGetWidth() - x11) / float(ratioCanvas)) / 2;
+            widthCanvas = ofGetWidth() - x11 - 2 * dWidth;
+            heightCanvas = float(ofGetWidth() - x11) / float(ratioCanvas);
 
-            myengine.draw(xCanvas, yCanvas, ofGetWidth() - x11 - 2 * dWidth, float(ofGetWidth() - x11) / float(ratioCanvas));
+            myengine.draw(xCanvas, yCanvas, widthCanvas, heightCanvas);
 
         }
 
@@ -320,19 +400,23 @@ void ofApp::fitCanvas()
 
         if (myengine.canvas.getHeight() < ofGetHeight() - 2 * dHeight)
         {
-            int xCanvas = x11 - 2 * dWidth + (ofGetWidth() - x11 - myengine.canvas.getWidth())/2;
-            int yCanvas = dHeight + (ofGetHeight() - 2 * dHeight - myengine.canvas.getHeight())/2;
+            xCanvas = x11 - 2 * dWidth + (ofGetWidth() - x11 - myengine.canvas.getWidth())/2;
+            yCanvas = dHeight + (ofGetHeight() - 2 * dHeight - myengine.canvas.getHeight())/2;
+            widthCanvas = myengine.canvas.getWidth();
+            heightCanvas = myengine.canvas.getHeight();
 
-            myengine.draw(xCanvas, yCanvas, myengine.canvas.getWidth(), myengine.canvas.getHeight());
+            myengine.draw(xCanvas, yCanvas, widthCanvas, heightCanvas);
 
         }
 
         else
         {
-            int xCanvas = x11 - 2 * dWidth + (ofGetWidth() - x11 - (ofGetHeight() - 2 * dHeight) * ratioCanvas)/2;
-            int yCanvas = dHeight;
+            xCanvas = x11 - 2 * dWidth + (ofGetWidth() - x11 - (ofGetHeight() - 2 * dHeight) * ratioCanvas)/2;
+            yCanvas = dHeight;
+            widthCanvas = (ofGetHeight() - 2 * dHeight) * ratioCanvas;
+            heightCanvas = ofGetHeight() - 2 * dHeight;
 
-            myengine.draw(xCanvas, yCanvas, (ofGetHeight() - 2 * dHeight) * ratioCanvas, ofGetHeight() - 2 * dHeight);
+            myengine.draw(xCanvas, yCanvas, widthCanvas, heightCanvas);
 
         }
     }
@@ -365,7 +449,14 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         }
     }
 
-    else if (e.target->is("DefineMsk")) {
+    if (e.target->is("deleteImg")) {
+
+        myengine.deleteImg();
+        myengine.needsUpdateGrid = true;
+        myengine.needsUpdatePoints = true;
+    }
+
+    else if (e.target->is("uploadMskImg")) {
 
         ofFileDialogResult result = ofSystemLoadDialog("Load file");
 
@@ -378,7 +469,33 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         }
     }
 
-    else if (e.target->is("MskGrid")) {
+    else if (e.target->is("defineMskImg")) {
+
+        myengine.definingMaskImg = true;
+
+    }
+
+    else if (e.target->is("colorMskImg")) {
+
+
+    }
+
+    else if (e.target->is("deleteMskImg")) {
+
+        myengine.deleteMask();
+        myengine.input.getTexture().disableAlphaMask();
+        myengine.needsUpdateGrid = true;
+        myengine.needsUpdatePoints = true;
+
+        while (myengine.pathInput.getNumVertices() > 0) {
+
+            myengine.pathInput.removeVertex(0);
+
+        }
+
+    }
+
+    else if (e.target->is("uploadMskGrid")) {
 
         ofFileDialogResult result = ofSystemLoadDialog("Load file");
 
@@ -391,7 +508,32 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         }
     }
 
-    else if (e.target->is("MskPoints")) {
+    else if (e.target->is("defineMskGrid")) {
+
+        myengine.definingMaskGrid = true;
+
+    }
+
+    else if (e.target->is("colorMskGrid")) {
+
+
+    }
+
+    else if (e.target->is("deleteMskGrid")) {
+
+        myengine.deleteMaskGrid();
+        myengine.needsUpdateGrid = true;
+        myengine.needsUpdatePoints = true;
+
+        while (myengine.pathGrid.getNumVertices() > 0) {
+
+            myengine.pathGrid.removeVertex(0);
+
+        }
+
+    }
+
+    else if (e.target->is("uploadMskPoints")) {
 
         ofFileDialogResult result = ofSystemLoadDialog("Load file");
 
@@ -404,11 +546,28 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         }
     }
 
-    else if (e.target->is("DeleteMsk")) {
+    else if (e.target->is("defineMskPoints")) {
 
-        myengine.deleteMask();
+        myengine.definingMaskPoints = true;
+
+    }
+
+    else if (e.target->is("colorMskPoints")) {
+
+
+    }
+
+    else if (e.target->is("deleteMskPoints")) {
+
+        myengine.deleteMaskPoints();
         myengine.needsUpdateGrid = true;
         myengine.needsUpdatePoints = true;
+
+        while (myengine.pathPoints.getNumVertices() > 0) {
+
+            myengine.pathPoints.removeVertex(0);
+
+        }
 
     }
 
@@ -651,6 +810,12 @@ void ofApp::onTextInputEvent(ofxDatGuiTextInputEvent e)
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
 
+    if ((key == 'q') || (key == 'Q')) {
+
+        if (myengine.definingMaskImg) myengine.definingMaskImg = false;
+        if (myengine.definingMaskGrid) myengine.definingMaskGrid = false;
+        if (myengine.definingMaskPoints) myengine.definingMaskPoints = false;
+    }
 }
 
 //--------------------------------------------------------------
@@ -670,6 +835,91 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
+
+    if ((myengine.definingMaskImg) && (mouseX > xCanvas) && (mouseX < xCanvas + widthCanvas) && (mouseY > yCanvas) && (mouseY< yCanvas + heightCanvas)) {
+
+        myengine.pathInput.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
+        float xPoint = ofMap(mouseX - xCanvas, 0, widthCanvas, 0, myengine.canvas.getWidth());
+        float yPoint = ofMap(mouseY - yCanvas, 0, heightCanvas, 0, myengine.canvas.getHeight());
+        myengine.pathInput.addVertex(ofVec2f(xPoint, yPoint));
+
+        ofPoint origin = myengine.pathInput.getVertex(0);
+        ofPoint last = myengine.pathInput.getVertex(myengine.pathInput.getNumVertices() - 1);
+
+        float dist = pow(origin.x - last.x, 2) + pow(origin.y - last.y, 2);
+
+        if ((dist < 100) && (myengine.pathInput.getNumVertices() > 2)) {
+
+            myengine.definingMaskImg = false;
+            myengine.fboInput.begin();
+            ofBackground(0);
+            myengine.pathInput.draw();
+            myengine.fboInput.end();
+
+            myengine.input.getTexture().setAlphaMask(myengine.fboInput.getTexture());
+
+        }
+
+    }
+
+    if ((myengine.definingMaskGrid) && (mouseX > xCanvas) && (mouseX < xCanvas + widthCanvas) && (mouseY > yCanvas) && (mouseY< yCanvas + heightCanvas)) {
+
+        myengine.pathGrid.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
+        float xPoint = ofMap(mouseX - xCanvas, 0, widthCanvas, 0, myengine.canvas.getWidth());
+        float yPoint = ofMap(mouseY - yCanvas, 0, heightCanvas, 0, myengine.canvas.getHeight());
+        myengine.pathGrid.addVertex(ofVec2f(xPoint, yPoint));
+
+        ofPoint origin = myengine.pathGrid.getVertex(0);
+        ofPoint last = myengine.pathGrid.getVertex(myengine.pathGrid.getNumVertices() - 1);
+
+        float dist = pow(origin.x - last.x, 2) + pow(origin.y - last.y, 2);
+
+        if ((dist < 100) && (myengine.pathGrid.getNumVertices() > 2)) {
+
+            myengine.definingMaskGrid = false;
+            myengine.fboGrid.begin();
+            ofBackground(0);
+            myengine.pathGrid.draw();
+            myengine.fboGrid.end();
+
+            ofPixels pixels;
+            myengine.fboGrid.readToPixels(pixels);
+            myengine.maskGrid.setFromPixels(pixels);
+            myengine.needsUpdateGrid = true;
+            myengine.needsUpdatePoints = true;
+
+        }
+
+    }
+
+    if ((myengine.definingMaskPoints) && (mouseX > xCanvas) && (mouseX < xCanvas + widthCanvas) && (mouseY > yCanvas) && (mouseY< yCanvas + heightCanvas)) {
+
+        myengine.pathPoints.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
+        float xPoint = ofMap(mouseX - xCanvas, 0, widthCanvas, 0, myengine.canvas.getWidth());
+        float yPoint = ofMap(mouseY - yCanvas, 0, heightCanvas, 0, myengine.canvas.getHeight());
+        myengine.pathPoints.addVertex(ofVec2f(xPoint, yPoint));
+
+        ofPoint origin = myengine.pathPoints.getVertex(0);
+        ofPoint last = myengine.pathPoints.getVertex(myengine.pathPoints.getNumVertices() - 1);
+
+        float dist = pow(origin.x - last.x, 2) + pow(origin.y - last.y, 2);
+
+        if ((dist < 100) && (myengine.pathPoints.getNumVertices() > 2)) {
+
+            myengine.definingMaskPoints = false;
+            myengine.fboPoints.begin();
+            ofBackground(0);
+            myengine.pathPoints.draw();
+            myengine.fboPoints.end();
+
+            ofPixels pixels;
+            myengine.fboPoints.readToPixels(pixels);
+            myengine.maskPoints.setFromPixels(pixels);
+            myengine.needsUpdateGrid = true;
+            myengine.needsUpdatePoints = true;
+        }
+
+    }
 
 }
 

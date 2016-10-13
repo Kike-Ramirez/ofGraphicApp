@@ -29,7 +29,6 @@ void engine::setup()
     showInput = true;
     showBackground = false;
     showBackgroundFile = false;
-    showMasking = false;
     shapeDrawing = 1;
     updateBackground();
 
@@ -66,19 +65,40 @@ void engine::update()
 
     }
 
-    if ((showInput) && (maskInput.isAllocated())) {
+    grid.draw(0,0);
 
-        ofEnableBlendMode(OF_BLENDMODE_MULTIPLY);
+    if (definingMaskImg) {
 
-        if (showMasking) maskInput.draw(0, 0);
+        ofSetColor(255,0,0);
 
-        ofDisableBlendMode();
+
+        if (pathInput.getNumVertices() > 0) {
+
+            ofEllipse(pathInput.getVertex(0), 10, 10);
+
+            for (int i = 1; i < pathInput.getNumVertices(); i++) {
+
+                ofEllipse(pathInput.getVertex(i), 2, 2);
+                ofLine(pathInput.getVertex(i-1), pathInput.getVertex(i));
+
+            }
+        }
+
+
+        ofSetColor(255);
+        pathInput.draw();
 
     }
 
-    ofDisableBlendMode();
+    if (definingMaskGrid) {
 
-    grid.draw(0,0);
+        pathGrid.draw();
+    }
+
+    if (definingMaskPoints) {
+
+        pathPoints.draw();
+    }
 
     canvas.end();
 
@@ -99,6 +119,10 @@ void engine::setResolution(int width_, int height_)
     canvas.allocate(width, height);
     grid.allocate(width, height);
     background.allocate(width, height);
+
+    fboInput.allocate(width,height,GL_LUMINANCE);
+    fboGrid.allocate(width,height,GL_LUMINANCE);
+    fboPoints.allocate(width,height,GL_LUMINANCE);
 
     if (input.isAllocated()) {
 
@@ -215,15 +239,14 @@ void engine::setInput(string file_)
 
 void engine::setMask(string file_)
 {
-    showMasking = true;
     origMaskInput.load(file_);
     maskInput.clone(origMaskInput);
     setResolution(width, height);
+    input.getTexture().setAlphaMask(maskInput.getTexture());
 }
 
 void engine::setMaskGrid(string file_)
 {
-    showMasking = true;
     origMaskGrid.load(file_);
     maskGrid.clone(origMaskGrid);
     setResolution(width, height);
@@ -231,18 +254,36 @@ void engine::setMaskGrid(string file_)
 
 void engine::setMaskPoints(string file_)
 {
-    showMasking = true;
     origMaskPoints.load(file_);
     maskPoints.clone(origMaskPoints);
     setResolution(width, height);
 }
 
+void engine::deleteImg()
+{
+
+    origInput.clear();
+    input.clear();
+
+}
+
 void engine::deleteMask()
 {
-    showMasking = false;
     origMaskInput.clear();
-    maskInput.clone(origMaskInput);
-    setResolution(width, height);
+    maskInput.clear();
+    pathInput.clear();
+}
+
+void engine::deleteMaskGrid()
+{
+    origMaskGrid.clear();
+    maskGrid.clear();
+}
+
+void engine::deleteMaskPoints()
+{
+    origMaskPoints.clear();
+    maskPoints.clear();
 }
 
 void engine::setBackground(string file)
@@ -277,11 +318,6 @@ void engine::updateGrid()
 
             if (maskPoints.isAllocated()) pointMask = maskPoints.getColor(punto.x, punto.y).getLightness();
             else pointMask = 255;
-
-            if (!showMasking) {
-                pointMask = 255;
-                gridMask = 255;
-            }
 
             if ((lightnessPoint > min) && (lightnessPoint < max))
             {

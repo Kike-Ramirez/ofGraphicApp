@@ -17,6 +17,8 @@ public:
     ofImage maskGrid, origMaskGrid;
     ofImage maskPoints, origMaskPoints;
     ofImage backgroundInput, origBackgroundInput;
+    ofMesh pathInput, pathGrid, pathPoints;
+    ofFbo fboInput, fboGrid, fboPoints;
     ofFbo canvas;
     ofFbo grid;
     ofFbo background;
@@ -29,7 +31,8 @@ public:
     bool showInput;
     bool showBackgroundFile;
     bool showBackground;
-    bool showMasking;
+    bool definingMaskImg, definingMaskGrid, definingMaskPoints;
+    bool coloringMaskImg, coloringMaskGrid, coloringMaskPoints;
     int shapeDrawing;
     ofxDelaunay triangulation;
 
@@ -38,7 +41,10 @@ public:
     void setMask(string file);
     void setMaskGrid(string file);
     void setMaskPoints(string file);
+    void deleteImg();
     void deleteMask();
+    void deleteMaskGrid();
+    void deleteMaskPoints();
     void setBackground(string file);
     void updateGrid();
     void drawPoints();

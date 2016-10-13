@@ -39,6 +39,7 @@ public:
     ofxDatGuiToggle* shapeFile;
 
     int dWidth, dHeight;
+    float xCanvas, yCanvas, widthCanvas, heightCanvas;
 
     void onButtonEvent(ofxDatGuiButtonEvent e);
     void onToggleEvent(ofxDatGuiToggleEvent e);

@@ -92,12 +92,49 @@ void engine::update()
 
     if (definingMaskGrid) {
 
+        ofSetColor(0, 255, 0);
+
+
+        if (pathGrid.getNumVertices() > 0) {
+
+            ofEllipse(pathGrid.getVertex(0), 10, 10);
+
+            for (int i = 1; i < pathGrid.getNumVertices(); i++) {
+
+                ofEllipse(pathGrid.getVertex(i), 2, 2);
+                ofLine(pathGrid.getVertex(i-1), pathGrid.getVertex(i));
+
+            }
+        }
+
+
+        ofSetColor(255);
+
         pathGrid.draw();
+
     }
 
     if (definingMaskPoints) {
 
+        ofSetColor(0,0,255);
+
+
+        if (pathPoints.getNumVertices() > 0) {
+
+            ofEllipse(pathPoints.getVertex(0), 10, 10);
+
+            for (int i = 1; i < pathPoints.getNumVertices(); i++) {
+
+                ofEllipse(pathPoints.getVertex(i), 2, 2);
+                ofLine(pathPoints.getVertex(i-1), pathPoints.getVertex(i));
+
+            }
+        }
+
+
+        ofSetColor(255);
         pathPoints.draw();
+
     }
 
     canvas.end();
@@ -120,9 +157,9 @@ void engine::setResolution(int width_, int height_)
     grid.allocate(width, height);
     background.allocate(width, height);
 
-    fboInput.allocate(width,height,GL_LUMINANCE);
-    fboGrid.allocate(width,height,GL_LUMINANCE);
-    fboPoints.allocate(width,height,GL_LUMINANCE);
+    fboInput.allocate(width,height,GL_RGB);
+    fboGrid.allocate(width,height,GL_RGB);
+    fboPoints.allocate(width,height,GL_RGB);
 
     if (input.isAllocated()) {
 

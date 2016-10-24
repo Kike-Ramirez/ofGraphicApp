@@ -37,6 +37,8 @@ public:
     ofxDatGuiToggle* shapeSquare;
     ofxDatGuiToggle* shapeTriangle;
     ofxDatGuiToggle* shapeFile;
+    ofShader shaderBlurX, shaderBlurY;
+    ofFbo fboBlurOnePass, fboBlurTwoPass;
 
     int dWidth, dHeight;
     float xCanvas, yCanvas, widthCanvas, heightCanvas;
@@ -47,4 +49,6 @@ public:
     void onDropdownEvent(ofxDatGuiDropdownEvent e);
     void onColorPickerEvent(ofxDatGuiColorPickerEvent e);
     void onTextInputEvent(ofxDatGuiTextInputEvent e);
+    ofImage blur(ofImage img);
+
 };

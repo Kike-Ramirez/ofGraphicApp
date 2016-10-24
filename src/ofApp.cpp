@@ -10,7 +10,7 @@ void ofApp::setup()
     //ofSetFullscreen(true);
     ofSetWindowPosition(100, 100);
     ofSetWindowShape(1024, 768);
-    ofSetWindowTitle("ofGraphicApp v0.5");
+    ofSetWindowTitle("ofGraphicApp v0.6");
     ofSetFrameRate(60);
     ofSetEscapeQuitsApp(false);
 
@@ -20,7 +20,10 @@ void ofApp::setup()
     loadGui();
 
     myengine.setup();
-    ofEnableSmoothing();    
+    ofEnableSmoothing();
+
+    shaderBlurX.load("shadersGL2/shaderBlurX");
+    shaderBlurY.load("shadersGL2/shaderBlurY");
 
 }
 
@@ -44,11 +47,23 @@ void ofApp::draw()
         ofLine(mouseX - 5, mouseY, mouseX + 5, mouseY);
         ofLine(mouseX, mouseY - 5, mouseX, mouseY + 5);
 
-        ofDrawBitmapString("Definiendo Máscara", xCanvas + 10, yCanvas + 20);
-        ofDrawBitmapString("Cierra haciendo click en el primer punto para aplicar máscara", xCanvas + 10, yCanvas + 40);
+        ofDrawBitmapString("Definiendo Mascara", xCanvas + 10, yCanvas + 20);
+        ofDrawBitmapString("Cierra haciendo click en el primer punto para aplicar mascara", xCanvas + 10, yCanvas + 40);
         ofDrawBitmapString("Pulsa <Q> para salir sin aplicar", xCanvas + 10, yCanvas + 60);
         ofSetColor(255);
     }
+
+    if (myengine.coloringMaskImg) {
+
+        ofSetColor(255,0,0);
+        ofLine(mouseX - 5, mouseY, mouseX + 5, mouseY);
+        ofLine(mouseX, mouseY - 5, mouseX, mouseY + 5);
+
+        ofDrawBitmapString("Seleccion de Color", xCanvas + 10, yCanvas + 20);
+        ofDrawBitmapString("Pulsa <Q> para salir sin seleccionar", xCanvas + 10, yCanvas + 40);
+        ofSetColor(255);
+    }
+
 }
 
 void ofApp::loadGui() {
@@ -59,26 +74,40 @@ void ofApp::loadGui() {
     int x11 = 38 * dWidth;
 
 
-    component = new ofxDatGuiFRM();
+//    component = new ofxDatGuiFRM();
+//    component->setPosition(x, y);
+//    component->setWidth(x11, 0.7);
+//    components.push_back(component);
+
+//    y += component->getHeight() + p + 3 * dHeight;
+    component = new ofxDatGuiLabel("Area de Trabajo");
     component->setPosition(x, y);
     component->setWidth(x11, 0.7);
     components.push_back(component);
 
-    y += component->getHeight() + p + 3 * dHeight;
-    ancho = new ofxDatGuiTextInput("Ancho", "1024");
+    y += component->getHeight() + p;
+    ancho = new ofxDatGuiTextInput("Definir Ancho", "1024");
     ancho->setPosition(x, y);
     ancho->setWidth(x11, 0.7);
     ancho->onTextInputEvent(this, &ofApp::onTextInputEvent);
     components.push_back(ancho);
 
     y += ancho->getHeight() + p;
-    alto = new ofxDatGuiTextInput("Alto", "768");
+    alto = new ofxDatGuiTextInput("Definir Alto", "768");
     alto->setPosition(x, y);
     alto->setWidth(x11, 0.7);
     alto->onTextInputEvent(this, &ofApp::onTextInputEvent);
     components.push_back(alto);
 
-    y += alto->getHeight() + p + 3 * dHeight;
+    y += alto->getHeight() + p + 2 * dHeight;
+    component = new ofxDatGuiToggle("showInput", true);
+    component->setPosition(x, y);
+    component->setWidth(x11, 0.3);
+    component->setLabel("Mostrar Imagen");
+    component->onToggleEvent(this, &ofApp::onToggleEvent);
+    components.push_back(component);
+
+    y += component->getHeight() + p;
     component = new ofxDatGuiButton("uploadImg");
     component->setPosition(x, y);
     component->setWidth(x11 / 2, 0.7);
@@ -96,88 +125,36 @@ void ofApp::loadGui() {
     y += component->getHeight() + p;
     component = new ofxDatGuiButton("uploadMskImg");
     component->setPosition(x, y);
-    component->setWidth(x11 * 0.4, 0.7);
+    component->setWidth(x11 * 0.25, 0.7);
     component->setLabel("Mascara Imagen");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
 
     component = new ofxDatGuiButton("defineMskImg");
-    component->setPosition(x + x11 * 0.4, y);
-    component->setWidth(x11 * 0.2, 0.7);
-    component->setLabel("Definir");
+    component->setPosition(x + x11 * 0.25, y);
+    component->setWidth(x11 * 0.25, 0.7);
+    component->setLabel("Def. Forma");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
 
     component = new ofxDatGuiButton("colorMskImg");
-    component->setPosition(x + x11 * 0.6, y);
-    component->setWidth(x11 * 0.2, 0.7);
-    component->setLabel("Color");
+    component->setPosition(x + x11 * 0.5, y);
+    component->setWidth(x11 * 0.25, 0.7);
+    component->setLabel("Def. Color");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
 
     component = new ofxDatGuiButton("deleteMskImg");
-    component->setPosition(x + x11 * 0.8, y);
-    component->setWidth(x11 * 0.2, 0.7);
-    component->setLabel("Borrar");
+    component->setPosition(x + x11 * 0.75, y);
+    component->setWidth(x11 * 0.25, 0.7);
+    component->setLabel("Borrar Masc.");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
 
-    y += component->getHeight() + p;
-    component = new ofxDatGuiButton("uploadMskGrid");
+    y += component->getHeight() + p + 2 * dHeight;
+    component = new ofxDatGuiLabel("Malla");
     component->setPosition(x, y);
-    component->setWidth(x11 * 0.4, 0.7);
-    component->setLabel("Mascara Rejilla");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
-
-    component = new ofxDatGuiButton("defineMskGrid");
-    component->setPosition(x + x11 * 0.4, y);
-    component->setWidth(x11 * 0.2, 0.7);
-    component->setLabel("Definir");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
-
-    component = new ofxDatGuiButton("colorMskGrid");
-    component->setPosition(x + x11 * 0.6, y);
-    component->setWidth(x11 * 0.2, 0.7);
-    component->setLabel("Color");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
-
-    component = new ofxDatGuiButton("deleteMskGrid");
-    component->setPosition(x + x11 * 0.8, y);
-    component->setWidth(x11 * 0.2, 0.7);
-    component->setLabel("Borrar");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
-
-    y += component->getHeight() + p;
-    component = new ofxDatGuiButton("uploadMskPoints");
-    component->setPosition(x, y);
-    component->setWidth(x11 * 0.4, 0.7);
-    component->setLabel("Mascara Puntos");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
-
-    component = new ofxDatGuiButton("defineMskPoints");
-    component->setPosition(x + x11 * 0.4, y);
-    component->setWidth(x11 * 0.2, 0.7);
-    component->setLabel("Definir");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
-
-    component = new ofxDatGuiButton("colorMskPoints");
-    component->setPosition(x + x11 * 0.6, y);
-    component->setWidth(x11 * 0.2, 0.7);
-    component->setLabel("Color");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
-
-    component = new ofxDatGuiButton("deleteMskPoints");
-    component->setPosition(x + x11 * 0.8, y);
-    component->setWidth(x11 * 0.2, 0.7);
-    component->setLabel("Borrar");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    component->setWidth(x11, 0.7);
     components.push_back(component);
 
     y += component->getHeight() + p;
@@ -196,7 +173,7 @@ void ofApp::loadGui() {
     component->onSliderEvent(this, &ofApp::onSliderEvent);
     components.push_back(component);
 
-    y += component->getHeight() + p + dHeight + 3*dHeight;
+    y += component->getHeight() + p;
     component = new ofxDatGuiSlider("density", 4, 40, 10);
     component->setPosition(x, y);
     component->setWidth(x11, 0.3);
@@ -213,14 +190,43 @@ void ofApp::loadGui() {
     components.push_back(component);
 
     y += component->getHeight() + p;
-    component = new ofxDatGuiToggle("showInput", true);
+    component = new ofxDatGuiSlider("stroke", 0, 10, 1);
     component->setPosition(x, y);
     component->setWidth(x11, 0.3);
-    component->setLabel("Mostrar Imagen");
-    component->onToggleEvent(this, &ofApp::onToggleEvent);
+    component->setLabel("Grosor Linea");
+    component->onSliderEvent(this, &ofApp::onSliderEvent);
     components.push_back(component);
 
-    y += component->getHeight() + p + dHeight + 3* dHeight;
+    y += component->getHeight() + p;
+    component = new ofxDatGuiButton("uploadMskGrid");
+    component->setPosition(x, y);
+    component->setWidth(x11 * 0.4, 0.7);
+    component->setLabel("Mascara Rejilla");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+
+    component = new ofxDatGuiButton("defineMskGrid");
+    component->setPosition(x + x11 * 0.4, y);
+    component->setWidth(x11 * 0.3, 0.7);
+    component->setLabel("Definir Forma");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+
+    component = new ofxDatGuiButton("deleteMskGrid");
+    component->setPosition(x + x11 * 0.7, y);
+    component->setWidth(x11 * 0.3, 0.7);
+    component->setLabel("Borrar Masc.");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+
+
+    y += component->getHeight() + p + 2 * dHeight;
+    component = new ofxDatGuiLabel("Puntos de Malla");
+    component->setPosition(x, y);
+    component->setWidth(x11, 0.7);
+    components.push_back(component);
+
+    y += component->getHeight() + p;
     shapeCircle = new ofxDatGuiToggle("punto", true);
     shapeCircle->setPosition(x, y);
     shapeCircle->setWidth(x11/4, 0.3);
@@ -249,19 +255,33 @@ void ofApp::loadGui() {
     shapeFile->onToggleEvent(this, &ofApp::onToggleEvent);
     components.push_back(shapeFile);
 
+    y += component->getHeight() + p;
+    component = new ofxDatGuiButton("uploadMskPoints");
+    component->setPosition(x, y);
+    component->setWidth(x11 * 0.4, 0.7);
+    component->setLabel("Mascara Puntos");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+
+    component = new ofxDatGuiButton("defineMskPoints");
+    component->setPosition(x + x11 * 0.4, y);
+    component->setWidth(x11 * 0.3, 0.7);
+    component->setLabel("Definir Color");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+
+    component = new ofxDatGuiButton("deleteMskPoints");
+    component->setPosition(x + x11 * 0.7, y);
+    component->setWidth(x11 * 0.3, 0.7);
+    component->setLabel("Borrar Masc.");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+
     y += shapeFile->getHeight() + p;
     component = new ofxDatGuiSlider("size", 0, 50, 5);
     component->setPosition(x, y);
     component->setWidth(x11, 0.3);
     component->setLabel("Tamaño");
-    component->onSliderEvent(this, &ofApp::onSliderEvent);
-    components.push_back(component);
-
-    y += component->getHeight() + p;
-    component = new ofxDatGuiSlider("stroke", 0, 10, 1);
-    component->setPosition(x, y);
-    component->setWidth(x11, 0.3);
-    component->setLabel("Linea");
     component->onSliderEvent(this, &ofApp::onSliderEvent);
     components.push_back(component);
 
@@ -274,17 +294,24 @@ void ofApp::loadGui() {
     components.push_back(component);
 
     y += component->getHeight() + p + dHeight + 8*dHeight;
-    uploadBackground = new ofxDatGuiToggle("loadBackground", false);
+    uploadBackground = new ofxDatGuiToggle("graphicElements", false);
     uploadBackground->setPosition(x, y);
     uploadBackground->setWidth(x11, 0.3);
+    uploadBackground->setLabel("Mostrar Elementos gráficos");
+    uploadBackground->onToggleEvent(this, &ofApp::onToggleEvent);
+    components.push_back(uploadBackground);
+
+    y += component->getHeight() + p + 2 * dHeight;
+    uploadBackground = new ofxDatGuiToggle("loadBackground", false);
+    uploadBackground->setPosition(x, y);
+    uploadBackground->setWidth(x11 * 0.5, 0.3);
     uploadBackground->setLabel("Archivo Fondo");
     uploadBackground->onToggleEvent(this, &ofApp::onToggleEvent);
     components.push_back(uploadBackground);
 
-    y += uploadBackground->getHeight() + p;
     defineBackground = new ofxDatGuiToggle("defineBackground", false);
-    defineBackground->setPosition(x, y);
-    defineBackground->setWidth(x11, 0.3);
+    defineBackground->setPosition(x + 0.5 * x11, y);
+    defineBackground->setWidth(0.5 * x11, 0.3);
     defineBackground->setLabel("Degradado");
     defineBackground->onToggleEvent(this, &ofApp::onToggleEvent);
     components.push_back(defineBackground);
@@ -304,52 +331,22 @@ void ofApp::loadGui() {
     component->onColorPickerEvent(this, &ofApp::onColorPickerEvent);
     components.push_back(component);
 
-//    y += component->getHeight() + p;
-//    component = new ofxDatGuiSlider("angle", 0, 360, 0);
-//    component->setPosition(x, y);
-//    component->setWidth(x11, 0.3);
-//    component->setLabel("Angulo");
-//    component->onSliderEvent(this, &ofApp::onSliderEvent);
-//    components.push_back(component);
-
-//    y += component->getHeight() + p + dHeight  + 8*dHeight;
-//    component = new ofxDatGuiToggle("jpg", true);
-//    component->setPosition(x, y);
-//    component->setWidth(x11/4, 0.3);
-//    component->setLabel("jpg");
-//    component->onToggleEvent(this, &ofApp::onToggleEvent);
-//    components.push_back(component);
-
-//    component = new ofxDatGuiToggle("png", false);
-//    component->setPosition(x + x11/4, y);
-//    component->setWidth(x11/4, 0.3);
-//    component->setLabel("png");
-//    component->onToggleEvent(this, &ofApp::onToggleEvent);
-//    components.push_back(component);
-
-//    component = new ofxDatGuiToggle("pdf", false);
-//    component->setPosition(x + 2 * x11/4, y);
-//    component->setWidth(x11/4, 0.3);
-//    component->setLabel("pdf");
-//    component->onToggleEvent(this, &ofApp::onToggleEvent);
-//    components.push_back(component);
-
-//    component = new ofxDatGuiToggle("tiff", false);
-//    component->setPosition(x + 3 * x11/4, y);
-//    component->setWidth(x11/4, 0.3);
-//    component->setLabel("tiff");
-//    component->onToggleEvent(this, &ofApp::onToggleEvent);
-//    components.push_back(component);
-
     y += component->getHeight() + p + dHeight + 8*dHeight;
     component = new ofxDatGuiButton("saveImg");
     component->setPosition(x, y);
-    component->setWidth(x11, 1);
-    component->setLabel("Guardar Archivo");
+    component->setWidth(x11 * 0.5, 1);
+    component->setLabel("Guardar Archivo Bitmap");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
 
-    y += component->getHeight() + p + dHeight * 3;
+    component = new ofxDatGuiButton("saveVector");
+    component->setPosition(x + 0.5 * x11, y);
+    component->setWidth(x11 * 0.5, 1);
+    component->setLabel("Guardar Archivo Vector");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+
+    y += component->getHeight() + p + 2 * dHeight;
     component = new ofxDatGuiButton("exit");
     component->setPosition(x, y);
     component->setWidth(x11, 1);
@@ -477,6 +474,7 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 
     else if (e.target->is("colorMskImg")) {
 
+        myengine.coloringMaskImg = true;
 
     }
 
@@ -514,11 +512,6 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 
     }
 
-    else if (e.target->is("colorMskGrid")) {
-
-
-    }
-
     else if (e.target->is("deleteMskGrid")) {
 
         myengine.deleteMaskGrid();
@@ -549,11 +542,6 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
     else if (e.target->is("defineMskPoints")) {
 
         myengine.definingMaskPoints = true;
-
-    }
-
-    else if (e.target->is("colorMskPoints")) {
-
 
     }
 
@@ -815,6 +803,8 @@ void ofApp::keyPressed(int key){
         if (myengine.definingMaskImg) myengine.definingMaskImg = false;
         if (myengine.definingMaskGrid) myengine.definingMaskGrid = false;
         if (myengine.definingMaskPoints) myengine.definingMaskPoints = false;
+        if (myengine.coloringMaskImg) myengine.coloringMaskImg = false;
+
     }
 }
 
@@ -852,11 +842,16 @@ void ofApp::mousePressed(int x, int y, int button){
 
             myengine.definingMaskImg = false;
             myengine.fboInput.begin();
-            ofBackground(0);
+            ofBackground(0, 0, 0, 0);
             myengine.pathInput.draw();
             myengine.fboInput.end();
 
-            myengine.input.getTexture().setAlphaMask(myengine.fboInput.getTexture());
+            ofPixels pixels;
+            myengine.fboInput.readToPixels(pixels);
+            myengine.maskInput.setFromPixels(pixels);
+            myengine.maskInput = blur(myengine.maskInput);
+
+            myengine.input.getTexture().setAlphaMask(myengine.maskInput.getTexture());
 
         }
 
@@ -878,13 +873,15 @@ void ofApp::mousePressed(int x, int y, int button){
 
             myengine.definingMaskGrid = false;
             myengine.fboGrid.begin();
-            ofBackground(0);
+            ofBackground(0, 0, 0, 0);
             myengine.pathGrid.draw();
             myengine.fboGrid.end();
 
             ofPixels pixels;
             myengine.fboGrid.readToPixels(pixels);
             myengine.maskGrid.setFromPixels(pixels);
+            myengine.maskGrid = blur(myengine.maskGrid);
+
             myengine.needsUpdateGrid = true;
             myengine.needsUpdatePoints = true;
 
@@ -908,16 +905,64 @@ void ofApp::mousePressed(int x, int y, int button){
 
             myengine.definingMaskPoints = false;
             myengine.fboPoints.begin();
-            ofBackground(0);
+            ofBackground(0, 0, 0, 0);
             myengine.pathPoints.draw();
             myengine.fboPoints.end();
 
             ofPixels pixels;
             myengine.fboPoints.readToPixels(pixels);
             myengine.maskPoints.setFromPixels(pixels);
+            myengine.maskPoints = blur(myengine.maskPoints);
+
             myengine.needsUpdateGrid = true;
             myengine.needsUpdatePoints = true;
         }
+
+    }
+
+    if ((myengine.coloringMaskImg) && (mouseX > xCanvas) && (mouseX < xCanvas + widthCanvas) && (mouseY > yCanvas) && (mouseY< yCanvas + heightCanvas)) {
+
+        if (myengine.input.isAllocated()) {
+
+            float xPoint = ofMap(mouseX - xCanvas, 0, widthCanvas, 0, myengine.canvas.getWidth());
+            float yPoint = ofMap(mouseY - yCanvas, 0, heightCanvas, 0, myengine.canvas.getHeight());
+            ofColor colorSelected = myengine.input.getColor(xPoint, yPoint);
+
+            myengine.fboInput.begin();
+
+            // Cleaning everthing with alpha mask on 0 in order to make it transparent by default
+            ofClear(0, 0, 0, 0);
+
+            ofMesh points;
+            points.setMode(OF_PRIMITIVE_POINTS);
+
+            for (int i = 0; i < myengine.input.getWidth(); i++) {
+
+                for (int j = 0; j < myengine.input.getHeight(); j++) {
+
+                    if (abs(myengine.input.getColor(i,j).getHueAngle() - colorSelected.getHueAngle()) > 5) points.addVertex(ofPoint(i,j,0));
+
+                }
+
+            }
+
+            ofSetColor(255);
+            points.draw();
+
+            myengine.fboInput.end();
+
+            ofPixels pixels;
+            myengine.fboInput.readToPixels(pixels);
+            myengine.maskInput.setFromPixels(pixels);
+            myengine.maskInput = blur(myengine.maskInput);
+
+            myengine.input.getTexture().setAlphaMask(myengine.maskInput.getTexture());
+
+
+
+        }
+
+        myengine.coloringMaskImg = false;
 
     }
 
@@ -950,5 +995,43 @@ void ofApp::gotMessage(ofMessage msg){
 
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo){
+
+}
+
+
+ofImage ofApp::blur(ofImage img) {
+
+    ofImage imgReturn;
+
+    fboBlurOnePass.allocate(myengine.canvas.getWidth(), myengine.canvas.getHeight());
+    fboBlurTwoPass.allocate(myengine.canvas.getWidth(), myengine.canvas.getHeight());
+
+    fboBlurOnePass.begin();
+
+    shaderBlurX.begin();
+    shaderBlurX.setUniform1f("blurAmnt", 2);
+
+    img.draw(0, 0);
+
+    shaderBlurX.end();
+
+    fboBlurOnePass.end();
+
+    //----------------------------------------------------------
+    fboBlurTwoPass.begin();
+
+    shaderBlurY.begin();
+    shaderBlurY.setUniform1f("blurAmnt", 2);
+
+    fboBlurOnePass.draw(0, 0);
+
+    shaderBlurY.end();
+
+    fboBlurTwoPass.end();
+
+    ofPixels pixels;
+    fboBlurTwoPass.readToPixels(pixels);
+    imgReturn.setFromPixels(pixels);
+    return imgReturn;
 
 }

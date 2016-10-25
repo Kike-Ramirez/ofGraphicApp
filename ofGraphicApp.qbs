@@ -22,6 +22,7 @@ Project{
         of.addons: [
             'ofxDatGui',
             'ofxDelaunay',
+            'ofxSvg'
         ]
 
         // additional flags for the project. the of module sets some

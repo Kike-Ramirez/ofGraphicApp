@@ -29,8 +29,29 @@ void engine::setup()
     showInput = true;
     showBackground = false;
     showBackgroundFile = false;
+    showTextures = false;
     shapeDrawing = 1;
     updateBackground();
+    shaderAlpha.load("shadersGL2/shaderAlpha");
+
+    svgTextures.clear();
+
+    //some path, may be absolute or relative to bin/data
+    string path = "Textures/";
+    ofDirectory dir(path);
+    //only show png files
+    dir.allowExt("svg");
+    //populate the directory object
+    dir.listDir();
+
+    //go through and print out all the paths
+    for(int i = 0; i < dir.size(); i++){
+        ofxSVG file;
+        file.load(dir.getPath(i));
+        svgTextures.push_back(file);
+    }
+
+
 
 }
 
@@ -61,7 +82,16 @@ void engine::update()
 
     if ((showInput) && (input.isAllocated())) {
 
-        input.draw(0,0);
+        if (maskInput.isAllocated()) {
+
+            shaderAlpha.begin();
+            shaderAlpha.setUniformTexture("imageMask", maskInput.getTextureReference(), 1);
+            input.draw(0,0);
+            shaderAlpha.end();
+
+        }
+
+        else input.draw(0,0);
 
     }
 
@@ -135,6 +165,15 @@ void engine::update()
         ofSetColor(255);
         pathPoints.draw();
 
+    }
+
+    if (showTextures) {
+
+        for (int i = 0; i < 1; i++) {
+
+            svgTextures[0].draw();
+
+        }
     }
 
     canvas.end();

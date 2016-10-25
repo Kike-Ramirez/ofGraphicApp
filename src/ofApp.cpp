@@ -675,6 +675,12 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
         myengine.needsUpdatePoints = true;
 
     }
+
+    else if (e.target->is("graphicElements")) {
+
+        myengine.showTextures = e.target->getChecked();
+
+    }
 }
 
 void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
@@ -842,7 +848,7 @@ void ofApp::mousePressed(int x, int y, int button){
 
             myengine.definingMaskImg = false;
             myengine.fboInput.begin();
-            ofBackground(0, 0, 0, 0);
+            ofBackground(0);
             myengine.pathInput.draw();
             myengine.fboInput.end();
 
@@ -851,7 +857,7 @@ void ofApp::mousePressed(int x, int y, int button){
             myengine.maskInput.setFromPixels(pixels);
             myengine.maskInput = blur(myengine.maskInput);
 
-            myengine.input.getTexture().setAlphaMask(myengine.maskInput.getTexture());
+            //myengine.input.getTexture().setAlphaMask(myengine.maskInput.getTexture());
 
         }
 

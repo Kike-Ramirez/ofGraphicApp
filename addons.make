@@ -1,2 +1,3 @@
 ofxDatGui
 ofxDelaunay
+ofxSvg

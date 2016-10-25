@@ -3,6 +3,7 @@
 
 #include "ofMain.h"
 #include "ofxDelaunay.h"
+#include "ofxSvg.h"
 
 class engine
 {
@@ -31,10 +32,14 @@ public:
     bool showInput;
     bool showBackgroundFile;
     bool showBackground;
+    bool showTextures;
     bool definingMaskImg, definingMaskGrid, definingMaskPoints;
     bool coloringMaskImg, coloringMaskGrid, coloringMaskPoints;
     int shapeDrawing;
     ofxDelaunay triangulation;
+    ofShader shaderAlpha;
+    vector<ofxSVG> svgTextures;
+
 
     void setResolution(int width_, int height_);
     void setInput(string file);

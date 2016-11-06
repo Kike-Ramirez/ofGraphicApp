@@ -777,7 +777,7 @@ void ofApp::onColorPickerEvent(ofxDatGuiColorPickerEvent e)
 void ofApp::onTextInputEvent(ofxDatGuiTextInputEvent e)
 {
     cout << "onButtonEvent: " << e.text << endl;
-    if (e.target->is("Ancho")) {
+    if (e.target->is("Definir Ancho")) {
 
         myengine.setResolution(std::stoi(e.text), myengine.height);
         myengine.updateBackground();
@@ -788,7 +788,7 @@ void ofApp::onTextInputEvent(ofxDatGuiTextInputEvent e)
 
     }
 
-    else if (e.target->is("Alto")) {
+    else if (e.target->is("Definir Alto")) {
 
         myengine.setResolution(myengine.width, std::stoi(e.text));
         myengine.updateBackground();

@@ -9,6 +9,249 @@
 		<string>46</string>
 		<key>objects</key>
 		<dict>
+			<key>C0009EA464196AFFBD821E7A</key>
+			<dict>
+				<key>fileRef</key>
+				<string>98E3F46AC9881EA2646047BF</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>98E3F46AC9881EA2646047BF</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>30</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>svgtiny_list.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxEditableSVG/libs/svgTiny/src/svgtiny_list.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>2FE6A89A3E3E64DFF1D53D47</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>30</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>svgtiny_internal.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxEditableSVG/libs/svgTiny/src/svgtiny_internal.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>B8D5D2EBC3D8350E7B7FD27B</key>
+			<dict>
+				<key>fileRef</key>
+				<string>35738A8B56072A269E1710B0</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>35738A8B56072A269E1710B0</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>30</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>svgtiny_gradient.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxEditableSVG/libs/svgTiny/src/svgtiny_gradient.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>7859201F4174FE30AA674C2E</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>30</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>svgtiny.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxEditableSVG/libs/svgTiny/src/svgtiny.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>C3A3E5D505EAC0FBD9F5EAB8</key>
+			<dict>
+				<key>fileRef</key>
+				<string>F9C86C78F600260E3E3A75C5</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>F9C86C78F600260E3E3A75C5</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>30</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>svgtiny.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxEditableSVG/libs/svgTiny/src/svgtiny.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>76464CB2654189431D209F4B</key>
+			<dict>
+				<key>children</key>
+				<array>
+					<string>5CB7FB2B34BD3B65DE26371B</string>
+					<string>F9C86C78F600260E3E3A75C5</string>
+					<string>7859201F4174FE30AA674C2E</string>
+					<string>35738A8B56072A269E1710B0</string>
+					<string>2FE6A89A3E3E64DFF1D53D47</string>
+					<string>98E3F46AC9881EA2646047BF</string>
+				</array>
+				<key>isa</key>
+				<string>PBXGroup</string>
+				<key>name</key>
+				<string>src</string>
+				<key>sourceTree</key>
+				<string>&lt;group&gt;</string>
+			</dict>
+			<key>4E3403E3B8C3F6B63D3C77F0</key>
+			<dict>
+				<key>children</key>
+				<array>
+					<string>76464CB2654189431D209F4B</string>
+				</array>
+				<key>isa</key>
+				<string>PBXGroup</string>
+				<key>name</key>
+				<string>svgTiny</string>
+				<key>sourceTree</key>
+				<string>&lt;group&gt;</string>
+			</dict>
+			<key>C3E892FC3F6D2BF72F29E71C</key>
+			<dict>
+				<key>children</key>
+				<array>
+					<string>4E3403E3B8C3F6B63D3C77F0</string>
+				</array>
+				<key>isa</key>
+				<string>PBXGroup</string>
+				<key>name</key>
+				<string>libs</string>
+				<key>sourceTree</key>
+				<string>&lt;group&gt;</string>
+			</dict>
+			<key>F2BA0C118F9890993E2E5F99</key>
+			<dict>
+				<key>fileRef</key>
+				<string>5CB7FB2B34BD3B65DE26371B</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>5CB7FB2B34BD3B65DE26371B</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>30</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>src_colors.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxEditableSVG/libs/svgTiny/src/src_colors.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>08731DFC0684D651874EC1FF</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>30</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxSVGTypes.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxEditableSVG/src/ofxSVGTypes.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>39503E55701A0D1779F95217</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>30</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxEditableSVG.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxEditableSVG/src/ofxEditableSVG.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>9ECC16933257C54B8C238A43</key>
+			<dict>
+				<key>children</key>
+				<array>
+					<string>024066587190FA8A5A298EF6</string>
+					<string>39503E55701A0D1779F95217</string>
+					<string>08731DFC0684D651874EC1FF</string>
+				</array>
+				<key>isa</key>
+				<string>PBXGroup</string>
+				<key>name</key>
+				<string>src</string>
+				<key>sourceTree</key>
+				<string>&lt;group&gt;</string>
+			</dict>
+			<key>9C0C7F6110A28D2380730033</key>
+			<dict>
+				<key>children</key>
+				<array>
+					<string>9ECC16933257C54B8C238A43</string>
+					<string>C3E892FC3F6D2BF72F29E71C</string>
+				</array>
+				<key>isa</key>
+				<string>PBXGroup</string>
+				<key>name</key>
+				<string>ofxEditableSVG</string>
+				<key>sourceTree</key>
+				<string>&lt;group&gt;</string>
+			</dict>
+			<key>FCD936905DFC293868C8BFA4</key>
+			<dict>
+				<key>fileRef</key>
+				<string>024066587190FA8A5A298EF6</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>024066587190FA8A5A298EF6</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>30</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxEditableSVG.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxEditableSVG/src/ofxEditableSVG.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
 			<key>28CD9659C1D4E430F1B9C2E4</key>
 			<dict>
 				<key>explicitFileType</key>
@@ -700,6 +943,7 @@
 				<array>
 					<string>D8DD1043C333F6F63C8685E6</string>
 					<string>5A296432AD6765AD9158F813</string>
+					<string>9C0C7F6110A28D2380730033</string>
 				</array>
 				<key>isa</key>
 				<string>PBXGroup</string>
@@ -864,6 +1108,10 @@
 						<string>../../../addons/ofxDelaunay/libs/Delaunay</string>
 						<string>../../../addons/ofxDelaunay/libs/Delaunay/src</string>
 						<string>../../../addons/ofxDelaunay/src</string>
+						<string>../../../addons/ofxEditableSVG/libs</string>
+						<string>../../../addons/ofxEditableSVG/libs/svgTiny</string>
+						<string>../../../addons/ofxEditableSVG/libs/svgTiny/src</string>
+						<string>../../../addons/ofxEditableSVG/src</string>
 					</array>
 					<key>CONFIGURATION_BUILD_DIR</key>
 					<string>$(SRCROOT)/bin/</string>
@@ -932,6 +1180,10 @@
 						<string>../../../addons/ofxDelaunay/libs/Delaunay</string>
 						<string>../../../addons/ofxDelaunay/libs/Delaunay/src</string>
 						<string>../../../addons/ofxDelaunay/src</string>
+						<string>../../../addons/ofxEditableSVG/libs</string>
+						<string>../../../addons/ofxEditableSVG/libs/svgTiny</string>
+						<string>../../../addons/ofxEditableSVG/libs/svgTiny/src</string>
+						<string>../../../addons/ofxEditableSVG/src</string>
 					</array>
 					<key>CONFIGURATION_BUILD_DIR</key>
 					<string>$(SRCROOT)/bin/</string>
@@ -994,6 +1246,11 @@
 					<string>C9466C434D1CF8AB968D298D</string>
 					<string>9102D0609CDD0B902F138C68</string>
 					<string>87A34EBC0F47C29339CF1D28</string>
+					<string>FCD936905DFC293868C8BFA4</string>
+					<string>F2BA0C118F9890993E2E5F99</string>
+					<string>C3A3E5D505EAC0FBD9F5EAB8</string>
+					<string>B8D5D2EBC3D8350E7B7FD27B</string>
+					<string>C0009EA464196AFFBD821E7A</string>
 				</array>
 				<key>isa</key>
 				<string>PBXSourcesBuildPhase</string>
@@ -1088,6 +1345,10 @@
 						<string>../../../addons/ofxDelaunay/libs/Delaunay</string>
 						<string>../../../addons/ofxDelaunay/libs/Delaunay/src</string>
 						<string>../../../addons/ofxDelaunay/src</string>
+						<string>../../../addons/ofxEditableSVG/libs</string>
+						<string>../../../addons/ofxEditableSVG/libs/svgTiny</string>
+						<string>../../../addons/ofxEditableSVG/libs/svgTiny/src</string>
+						<string>../../../addons/ofxEditableSVG/src</string>
 					</array>
 					<key>COMBINE_HIDPI_IMAGES</key>
 					<string>YES</string>
@@ -1146,6 +1407,10 @@
 						<string>../../../addons/ofxDelaunay/libs/Delaunay</string>
 						<string>../../../addons/ofxDelaunay/libs/Delaunay/src</string>
 						<string>../../../addons/ofxDelaunay/src</string>
+						<string>../../../addons/ofxEditableSVG/libs</string>
+						<string>../../../addons/ofxEditableSVG/libs/svgTiny</string>
+						<string>../../../addons/ofxEditableSVG/libs/svgTiny/src</string>
+						<string>../../../addons/ofxEditableSVG/src</string>
 					</array>
 					<key>COMBINE_HIDPI_IMAGES</key>
 					<string>YES</string>

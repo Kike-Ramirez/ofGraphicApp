@@ -10,7 +10,7 @@ void ofApp::setup()
     //ofSetFullscreen(true);
     ofSetWindowPosition(100, 100);
     ofSetWindowShape(1024, 768);
-    ofSetWindowTitle("ofGraphicApp v0.6");
+    ofSetWindowTitle("ofGraphicApp v0.75");
     ofSetFrameRate(60);
     ofSetEscapeQuitsApp(false);
 
@@ -679,6 +679,7 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
     else if (e.target->is("graphicElements")) {
 
         myengine.showTextures = e.target->getChecked();
+        myengine.numSVG = abs(ofRandom(myengine.svgTextures.size()));
 
     }
 }

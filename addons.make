@@ -1,3 +1,3 @@
 ofxDatGui
 ofxDelaunay
-ofxSvg
+ofxEditableSVG

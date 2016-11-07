@@ -3,7 +3,7 @@
 
 #include "ofMain.h"
 #include "ofxDelaunay.h"
-#include "ofxSvg.h"
+#include "ofxEditableSVG.h"
 
 class engine
 {
@@ -38,7 +38,8 @@ public:
     int shapeDrawing;
     ofxDelaunay triangulation;
     ofShader shaderAlpha;
-    vector<ofxSVG> svgTextures;
+    vector<ofxEditableSVG> svgTextures;
+    int numSVG;
 
 
     void setResolution(int width_, int height_);

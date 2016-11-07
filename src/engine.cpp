@@ -12,6 +12,7 @@ engine::engine()
     pointSize = 3;
     min = 0;
     max = 255;
+    numSVG = 0;
 
 
 }
@@ -35,7 +36,7 @@ void engine::setup()
     shaderAlpha.load("shadersGL2/shaderAlpha");
 
     svgTextures.clear();
-
+    
     //some path, may be absolute or relative to bin/data
     string path = "Textures/";
     ofDirectory dir(path);
@@ -43,10 +44,10 @@ void engine::setup()
     dir.allowExt("svg");
     //populate the directory object
     dir.listDir();
-
+    
     //go through and print out all the paths
     for(int i = 0; i < dir.size(); i++){
-        ofxSVG file;
+        ofxEditableSVG file;
         file.load(dir.getPath(i));
         svgTextures.push_back(file);
     }
@@ -168,12 +169,10 @@ void engine::update()
     }
 
     if (showTextures) {
-
-        for (int i = 0; i < 1; i++) {
-
-            svgTextures[0].draw();
-
-        }
+        
+        svgTextures[numSVG].setColorEngine(colorTriangle);
+        svgTextures[numSVG].draw();
+        
     }
 
     canvas.end();
@@ -199,6 +198,29 @@ void engine::setResolution(int width_, int height_)
     fboInput.allocate(width,height,GL_RGB);
     fboGrid.allocate(width,height,GL_RGB);
     fboPoints.allocate(width,height,GL_RGB);
+    
+    //go through and change resolutions of every SVG file
+    
+    for(int i = 0; i < svgTextures.size(); i++){
+        
+        float ratioSVG = float(svgTextures[i].getWidth()) / svgTextures[i].getHeight();
+        float ratioCanvas = float(canvas.getWidth()) / canvas.getHeight();
+        
+        if (ratioCanvas >= ratioSVG) {
+        
+            svgTextures[i].setSize(width, float(width) / ratioSVG);
+            svgTextures[i].setViewbox(0, 0, width, float(width) / ratioSVG);
+        }
+        
+        else {
+        
+            svgTextures[i].setSize(height * ratioSVG, height);
+            svgTextures[i].setViewbox(0, 0, height * ratioSVG, height);
+
+        }
+        
+    }
+
 
     if (input.isAllocated()) {
 
@@ -420,6 +442,13 @@ void engine::drawPoints() {
     ofClear(ofColor(0, 0));
 
     triangulation.setHue(colorTriangle);
+    
+    for(int i = 0; i < svgTextures.size(); i++){
+        
+        // svgTextures[i].setFillColor(colorTriangle);
+        // svgTextures[i].setStrokeColor(colorTriangle);
+        
+    }
 
     // Dibujamos los triángulos
 

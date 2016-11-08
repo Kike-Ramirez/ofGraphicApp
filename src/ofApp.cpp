@@ -10,7 +10,7 @@ void ofApp::setup()
     //ofSetFullscreen(true);
     ofSetWindowPosition(100, 100);
     ofSetWindowShape(1024, 768);
-    ofSetWindowTitle("ofGraphicApp v0.75");
+    ofSetWindowTitle("ofGraphicApp v0.76");
     ofSetFrameRate(60);
     ofSetEscapeQuitsApp(false);
 
@@ -22,8 +22,6 @@ void ofApp::setup()
     myengine.setup();
     ofEnableSmoothing();
 
-    shaderBlurX.load("shadersGL2/shaderBlurX");
-    shaderBlurY.load("shadersGL2/shaderBlurY");
 
 }
 
@@ -565,9 +563,14 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 
         if(result.bSuccess) {
           string path = result.getPath();
+            
+            
           ofPixels pixels;
           myengine.canvas.readToPixels(pixels);
+          pixels.setImageType(OF_IMAGE_COLOR);
+            
           ofImage output;
+          output.allocate(myengine.canvas.getWidth(), myengine.canvas.getHeight(), OF_IMAGE_COLOR);
           output.setFromPixels(pixels);
           output.save(path, OF_IMAGE_QUALITY_BEST);
           cout << "Saved in: " << path << endl;
@@ -856,7 +859,7 @@ void ofApp::mousePressed(int x, int y, int button){
             ofPixels pixels;
             myengine.fboInput.readToPixels(pixels);
             myengine.maskInput.setFromPixels(pixels);
-            myengine.maskInput = blur(myengine.maskInput);
+            myengine.maskInput = blur(myengine.maskInput, myengine.input.getWidth()/10);
 
             //myengine.input.getTexture().setAlphaMask(myengine.maskInput.getTexture());
 
@@ -887,7 +890,6 @@ void ofApp::mousePressed(int x, int y, int button){
             ofPixels pixels;
             myengine.fboGrid.readToPixels(pixels);
             myengine.maskGrid.setFromPixels(pixels);
-            myengine.maskGrid = blur(myengine.maskGrid);
 
             myengine.needsUpdateGrid = true;
             myengine.needsUpdatePoints = true;
@@ -919,7 +921,6 @@ void ofApp::mousePressed(int x, int y, int button){
             ofPixels pixels;
             myengine.fboPoints.readToPixels(pixels);
             myengine.maskPoints.setFromPixels(pixels);
-            myengine.maskPoints = blur(myengine.maskPoints);
 
             myengine.needsUpdateGrid = true;
             myengine.needsUpdatePoints = true;
@@ -946,8 +947,12 @@ void ofApp::mousePressed(int x, int y, int button){
             for (int i = 0; i < myengine.input.getWidth(); i++) {
 
                 for (int j = 0; j < myengine.input.getHeight(); j++) {
-
-                    if (abs(myengine.input.getColor(i,j).getHueAngle() - colorSelected.getHueAngle()) > 5) points.addVertex(ofPoint(i,j,0));
+                    
+                    ofColor colorPoint = myengine.input.getColor(i,j);
+                    
+                    float distanciaColor = sqrt( pow(colorSelected.r - colorPoint.r, 2) + pow(colorSelected.g - colorPoint.g, 2) + pow(colorSelected.b - colorPoint.b, 2));
+                    
+                    if (distanciaColor > 20) points.addVertex(ofPoint(i,j,0));
 
                 }
 
@@ -961,7 +966,7 @@ void ofApp::mousePressed(int x, int y, int button){
             ofPixels pixels;
             myengine.fboInput.readToPixels(pixels);
             myengine.maskInput.setFromPixels(pixels);
-            myengine.maskInput = blur(myengine.maskInput);
+            myengine.maskInput = blur(myengine.maskInput, 5);
 
             myengine.input.getTexture().setAlphaMask(myengine.maskInput.getTexture());
 
@@ -1006,39 +1011,14 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 }
 
 
-ofImage ofApp::blur(ofImage img) {
+ofImage ofApp::blur(ofImage img, int radio) {
 
     ofImage imgReturn;
 
-    fboBlurOnePass.allocate(myengine.canvas.getWidth(), myengine.canvas.getHeight());
-    fboBlurTwoPass.allocate(myengine.canvas.getWidth(), myengine.canvas.getHeight());
-
-    fboBlurOnePass.begin();
-
-    shaderBlurX.begin();
-    shaderBlurX.setUniform1f("blurAmnt", 2);
-
-    img.draw(0, 0);
-
-    shaderBlurX.end();
-
-    fboBlurOnePass.end();
-
-    //----------------------------------------------------------
-    fboBlurTwoPass.begin();
-
-    shaderBlurY.begin();
-    shaderBlurY.setUniform1f("blurAmnt", 2);
-
-    fboBlurOnePass.draw(0, 0);
-
-    shaderBlurY.end();
-
-    fboBlurTwoPass.end();
-
-    ofPixels pixels;
-    fboBlurTwoPass.readToPixels(pixels);
-    imgReturn.setFromPixels(pixels);
+    ofxCv::copy(img, imgReturn);
+    ofxCv::blur(imgReturn, radio);
+    imgReturn.update();
+    
     return imgReturn;
 
 }

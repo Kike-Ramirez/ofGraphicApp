@@ -4,6 +4,7 @@
 #include "engine.h"
 #include "ofxDatGui.h"
 #include "ofxDelaunay.h"
+#include "ofxCV.h"
 
 class ofApp : public ofBaseApp{
 
@@ -49,6 +50,6 @@ public:
     void onDropdownEvent(ofxDatGuiDropdownEvent e);
     void onColorPickerEvent(ofxDatGuiColorPickerEvent e);
     void onTextInputEvent(ofxDatGuiTextInputEvent e);
-    ofImage blur(ofImage img);
+    ofImage blur(ofImage img, int radio);
 
 };

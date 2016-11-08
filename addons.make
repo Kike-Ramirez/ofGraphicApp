@@ -1,3 +1,5 @@
+ofxCv
 ofxDatGui
 ofxDelaunay
 ofxEditableSVG
+ofxOpenCv

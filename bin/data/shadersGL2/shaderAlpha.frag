@@ -9,5 +9,5 @@ void main()
 {
     vec4 texel0 = texture2DRect(tex0, texCoordVarying);
     vec4 texel1 = texture2DRect(imageMask, texCoordVarying);
-    gl_FragColor = vec4(texel0.rgb, texel1.r);
+    gl_FragColor = vec4(texel0.rgb, texel1.r * texel0.a);
 }

@@ -13,6 +13,7 @@ engine::engine()
     min = 0;
     max = 255;
     numSVG = 0;
+    centerSVG = ofPoint(0,0);
 
 
 }
@@ -28,8 +29,11 @@ void engine::setup()
     needsUpdateGrid = true;
     needsUpdatePoints = true;
     showInput = true;
+    showGrid = true;
+    showPoints = true;
     showBackground = false;
     showBackgroundFile = false;
+    showBackgroundColor = true;
     showTextures = false;
     shapeDrawing = 1;
     updateBackground();
@@ -51,8 +55,8 @@ void engine::setup()
         file.load(dir.getPath(i));
         svgTextures.push_back(file);
     }
-
-
+    
+    
 
 }
 
@@ -62,10 +66,12 @@ void engine::updateBackground()
     background.begin();
     ofClear(0);
     if (showBackground) backgroundGradient(colorOne, colorTwo);
-    else if (showBackgroundFile) backgroundInput.draw(0,0);
+    if (showBackgroundColor) ofBackground(colorOne);
+    if (showBackgroundFile) backgroundInput.draw(0,0);
     background.end();
 
 }
+
 
 void engine::update()
 {
@@ -76,7 +82,7 @@ void engine::update()
     canvas.begin();
     ofClear(ofFloatColor(0));
 
-    if (showBackground || showBackgroundFile) background.draw(0,0);
+    if (showBackground || showBackgroundFile || showBackgroundColor) background.draw(0,0);
 
     float ratioInput = input.getWidth()/input.getHeight();
     float ratioCanvas = canvas.getWidth()/canvas.getHeight();
@@ -171,7 +177,10 @@ void engine::update()
     if (showTextures) {
         
         svgTextures[numSVG].setColorEngine(colorTriangle);
+        ofPushMatrix();
+        ofTranslate(centerSVG);
         svgTextures[numSVG].draw();
+        ofPopMatrix();
         
     }
 
@@ -198,6 +207,8 @@ void engine::setResolution(int width_, int height_)
     fboInput.allocate(width,height,GL_RGB);
     fboGrid.allocate(width,height,GL_RGB);
     fboPoints.allocate(width,height,GL_RGB);
+    
+    outSvg.setSize(width, height, "px");
     
     //go through and change resolutions of every SVG file
     
@@ -455,45 +466,63 @@ void engine::drawPoints() {
     ofNoFill();
     ofSetLineWidth(lineWidth);
 
-    if (lineWidth > 0) triangulation.draw();
+    if (showGrid) triangulation.draw();
 
     // Dibujamos puntos
     ofFill();
+    
+    pathSvgPoints.clear();
 
-    for (int i = 0; i < triangles.size(); i++ ) {
+    if (showPoints) {
+        for (int i = 0; i < triangles.size(); i++ ) {
 
-        ofPoint centro = ofPoint(triangles[i].x, triangles[i].y);
-        ofColor colorCentro;
-        colorCentro.set(colorTriangle);
+            ofPoint centro = ofPoint(triangles[i].x, triangles[i].y);
+            ofColor colorCentro;
+            colorCentro.set(colorTriangle);
 
-        colorCentro.a = input.getColor(centro.x, centro.y).getLightness();
+            colorCentro.a = input.getColor(centro.x, centro.y).getLightness();
+            
+            if (maskPoints.isAllocated()) colorCentro.a = colorCentro.a * maskPoints.getColor(centro.x, centro.y).getLightness() / 255;
 
-        ofSetColor(colorCentro);
+            ofSetColor(colorCentro);
 
 
-        if (shapeDrawing == 1) {
+            if (shapeDrawing == 1) {
 
-            float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, 0, pointSize);
-            ofDrawEllipse(centro, radio, radio);
+                float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, 0, pointSize);
+                ofDrawEllipse(centro, radio, radio);
+                ofPath ellipse;
+                ellipse.ellipse(centro.x, centro.y, radio, radio);
+                pathSvgPoints.append(ellipse);
+                
+            }
 
-        }
+            else if (shapeDrawing == 2) {
 
-        else if (shapeDrawing == 2) {
+                float lado = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, 0, pointSize);
+                float angle = ofRandom(0, PI);
+                ofDrawRectangle(centro.x - lado/2, centro.y - lado/2, lado, lado);
+                ofPath rectangle;
+                rectangle.rectangle(centro.x - lado/2, centro.y - lado/2, lado, lado);
+                pathSvgPoints.append(rectangle);
+            }
 
-            float lado = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, 0, pointSize);
-            float angle = ofRandom(0, PI);
-            ofDrawRectangle(centro.x - lado/2, centro.y - lado/2, lado, lado);
-        }
+            else if (shapeDrawing == 3) {
 
-        else if (shapeDrawing == 3) {
+                float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, 0, pointSize);
+                float angle = 0; //ofRandom(0, PI);
+                ofPoint punto1(centro.x + radio * cos(angle), centro.y + radio * sin(angle));
+                ofPoint punto2(centro.x + radio * cos(angle + 2*PI/3), centro.y + radio * sin(angle + 2*PI/3));
+                ofPoint punto3(centro.x + radio * cos(angle + 4*PI/3), centro.y + radio * sin(angle + 4*PI/3));
+                ofDrawTriangle(punto1, punto2, punto3);
+                ofPath triangle;
+                triangle.triangle(punto1, punto2, punto3);
+                pathSvgPoints.append(triangle);
 
-            float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, 0, pointSize);
-            float angle = 0; //ofRandom(0, PI);
-            ofPoint punto1(centro.x + radio * cos(angle), centro.y + radio * sin(angle));
-            ofPoint punto2(centro.x + radio * cos(angle + 2*PI/3), centro.y + radio * sin(angle + 2*PI/3));
-            ofPoint punto3(centro.x + radio * cos(angle + 4*PI/3), centro.y + radio * sin(angle + 4*PI/3));
-            ofDrawTriangle(punto1, punto2, punto3);
-
+            }
+            
+            pathSvgPoints.close();
+        
         }
 
     }
@@ -531,4 +560,17 @@ void engine::backgroundGradient(const ofColor& start, const ofColor& end) {
     if(depthMaskEnabled){
         glDepthMask(GL_TRUE);
     }
+}
+
+void engine::saveSVG(string path) {
+
+    ofPixels pixels;
+    ofxEditableSVG outVector;
+    background.readToPixels(pixels);
+    outVector.embedImage(pixels, 0, 0, width, height);
+    
+    outVector.addPath(pathSvgPoints);
+    
+    outVector.save(path);
+
 }

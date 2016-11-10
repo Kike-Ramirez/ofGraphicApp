@@ -33,6 +33,7 @@ public:
     ofxDatGuiTextInput* ancho;
     ofxDatGuiTextInput* alto;
     ofxDatGuiToggle* uploadBackground;
+    ofxDatGuiToggle* colorBackground;
     ofxDatGuiToggle* defineBackground;
     ofxDatGuiToggle* shapeCircle;
     ofxDatGuiToggle* shapeSquare;

@@ -10,7 +10,7 @@ void ofApp::setup()
     //ofSetFullscreen(true);
     ofSetWindowPosition(100, 100);
     ofSetWindowShape(1024, 768);
-    ofSetWindowTitle("ofGraphicApp v0.76");
+    ofSetWindowTitle("ofGraphicApp v0.8");
     ofSetFrameRate(60);
     ofSetEscapeQuitsApp(false);
 
@@ -78,7 +78,7 @@ void ofApp::loadGui() {
 //    components.push_back(component);
 
 //    y += component->getHeight() + p + 3 * dHeight;
-    component = new ofxDatGuiLabel("Area de Trabajo");
+    component = new ofxDatGuiLabel("AREA DE TRABAJO");
     component->setPosition(x, y);
     component->setWidth(x11, 0.7);
     components.push_back(component);
@@ -97,11 +97,11 @@ void ofApp::loadGui() {
     alto->onTextInputEvent(this, &ofApp::onTextInputEvent);
     components.push_back(alto);
 
-    y += alto->getHeight() + p + 2 * dHeight;
+    y += alto->getHeight() + p + 4 * dHeight;
     component = new ofxDatGuiToggle("showInput", true);
     component->setPosition(x, y);
     component->setWidth(x11, 0.3);
-    component->setLabel("Mostrar Imagen");
+    component->setLabel("MOSTRAR IMAGEN");
     component->onToggleEvent(this, &ofApp::onToggleEvent);
     components.push_back(component);
 
@@ -145,14 +145,16 @@ void ofApp::loadGui() {
     component = new ofxDatGuiButton("deleteMskImg");
     component->setPosition(x + x11 * 0.75, y);
     component->setWidth(x11 * 0.25, 0.7);
-    component->setLabel("Borrar Masc.");
+    component->setLabel("Borrar Mascara");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
-
-    y += component->getHeight() + p + 2 * dHeight;
-    component = new ofxDatGuiLabel("Malla");
+    
+    y += component->getHeight() + p + 4 * dHeight;
+    component = new ofxDatGuiToggle("showGrid", true);
     component->setPosition(x, y);
-    component->setWidth(x11, 0.7);
+    component->setWidth(x11, 0.3);
+    component->setLabel("MOSTRAR MALLA");
+    component->onToggleEvent(this, &ofApp::onToggleEvent);
     components.push_back(component);
 
     y += component->getHeight() + p;
@@ -213,15 +215,17 @@ void ofApp::loadGui() {
     component = new ofxDatGuiButton("deleteMskGrid");
     component->setPosition(x + x11 * 0.7, y);
     component->setWidth(x11 * 0.3, 0.7);
-    component->setLabel("Borrar Masc.");
+    component->setLabel("Borrar Mascara");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
-
-
-    y += component->getHeight() + p + 2 * dHeight;
-    component = new ofxDatGuiLabel("Puntos de Malla");
+    
+    
+    y += component->getHeight() + p + 4 * dHeight;
+    component = new ofxDatGuiToggle("showPoints", true);
     component->setPosition(x, y);
-    component->setWidth(x11, 0.7);
+    component->setWidth(x11, 0.3);
+    component->setLabel("MOSTRAR PUNTOS DE MALLA");
+    component->onToggleEvent(this, &ofApp::onToggleEvent);
     components.push_back(component);
 
     y += component->getHeight() + p;
@@ -264,7 +268,7 @@ void ofApp::loadGui() {
     component = new ofxDatGuiButton("defineMskPoints");
     component->setPosition(x + x11 * 0.4, y);
     component->setWidth(x11 * 0.3, 0.7);
-    component->setLabel("Definir Color");
+    component->setLabel("Definir Forma");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
 
@@ -276,10 +280,10 @@ void ofApp::loadGui() {
     components.push_back(component);
 
     y += shapeFile->getHeight() + p;
-    component = new ofxDatGuiSlider("size", 0, 50, 5);
+    component = new ofxDatGuiSlider("size", 0, 100, 5);
     component->setPosition(x, y);
     component->setWidth(x11, 0.3);
-    component->setLabel("Tamaño");
+    component->setLabel("Diametro");
     component->onSliderEvent(this, &ofApp::onSliderEvent);
     components.push_back(component);
 
@@ -294,23 +298,38 @@ void ofApp::loadGui() {
     y += component->getHeight() + p + dHeight + 8*dHeight;
     uploadBackground = new ofxDatGuiToggle("graphicElements", false);
     uploadBackground->setPosition(x, y);
-    uploadBackground->setWidth(x11, 0.3);
-    uploadBackground->setLabel("Mostrar Elementos gráficos");
+    uploadBackground->setWidth(x11 , 0.3);
+    uploadBackground->setLabel("MOSTRAR ELEMENTOS GRAFICOS");
     uploadBackground->onToggleEvent(this, &ofApp::onToggleEvent);
     components.push_back(uploadBackground);
 
-    y += component->getHeight() + p + 2 * dHeight;
+    y += component->getHeight() + p;
+    component = new ofxDatGuiButton("graphicRandom");
+    component->setPosition(x, y);
+    component->setWidth(x11, 1);
+    component->setLabel("Generar graficos");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+    
+    y += component->getHeight() + p + 4 * dHeight;
     uploadBackground = new ofxDatGuiToggle("loadBackground", false);
     uploadBackground->setPosition(x, y);
-    uploadBackground->setWidth(x11 * 0.5, 0.3);
-    uploadBackground->setLabel("Archivo Fondo");
+    uploadBackground->setWidth(x11 * 0.4, 0.3);
+    uploadBackground->setLabel("ARCHIVO FONDO");
     uploadBackground->onToggleEvent(this, &ofApp::onToggleEvent);
     components.push_back(uploadBackground);
 
+    colorBackground = new ofxDatGuiToggle("colorBackground", true);
+    colorBackground->setPosition(x + 0.4 * x11, y);
+    colorBackground->setWidth(0.3 * x11, 0.3);
+    colorBackground->setLabel("COLOR");
+    colorBackground->onToggleEvent(this, &ofApp::onToggleEvent);
+    components.push_back(colorBackground);
+    
     defineBackground = new ofxDatGuiToggle("defineBackground", false);
-    defineBackground->setPosition(x + 0.5 * x11, y);
-    defineBackground->setWidth(0.5 * x11, 0.3);
-    defineBackground->setLabel("Degradado");
+    defineBackground->setPosition(x + 0.7 * x11, y);
+    defineBackground->setWidth(0.3 * x11, 0.3);
+    defineBackground->setLabel("DEGRADADO");
     defineBackground->onToggleEvent(this, &ofApp::onToggleEvent);
     components.push_back(defineBackground);
 
@@ -333,22 +352,22 @@ void ofApp::loadGui() {
     component = new ofxDatGuiButton("saveImg");
     component->setPosition(x, y);
     component->setWidth(x11 * 0.5, 1);
-    component->setLabel("Guardar Archivo Bitmap");
+    component->setLabel("GUARDAR ARCHIVO BITMAP");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
 
     component = new ofxDatGuiButton("saveVector");
     component->setPosition(x + 0.5 * x11, y);
     component->setWidth(x11 * 0.5, 1);
-    component->setLabel("Guardar Archivo Vector");
+    component->setLabel("GUARDAR ARCHIVO VECTOR");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
 
-    y += component->getHeight() + p + 2 * dHeight;
+    y += component->getHeight() + p + 4 * dHeight;
     component = new ofxDatGuiButton("exit");
     component->setPosition(x, y);
     component->setWidth(x11, 1);
-    component->setLabel("Salir");
+    component->setLabel("SALIR");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
 
@@ -578,7 +597,29 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         }
 
     }
-
+    else if (e.target->is("saveVector")) {
+        
+        ofFileDialogResult result = ofSystemSaveDialog("default.svg", "Save");
+        
+        if(result.bSuccess) {
+            string path = result.getPath();
+            
+            myengine.saveSVG(path);
+            
+            cout << "Saved in: " << path << endl;
+            
+        }
+        
+    }
+    
+    else if (e.target->is("graphicRandom")) {
+        
+        myengine.numSVG = abs(ofRandom(myengine.svgTextures.size()));
+        myengine.centerSVG = ofPoint(ofRandom(myengine.width), ofRandom(myengine.height));
+        
+    }
+    
+    
     else if (e.target->is("exit")) {
 
         ofExit();
@@ -597,7 +638,22 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
 
 
     }
+    
+    else if (e.target->is("showGrid")) {
+        
+        myengine.showGrid = e.target->getChecked();
+        myengine.needsUpdatePoints = true;
+        
+        
+    }
 
+    else if (e.target->is("showPoints")) {
+        
+        myengine.showPoints = e.target->getChecked();
+        myengine.needsUpdatePoints = true;
+        
+    }
+    
     else if (e.target->is("defineBackground")) {
 
         myengine.showBackground = e.target->getChecked();
@@ -606,11 +662,36 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
             uploadBackground->toggle();
             myengine.showBackgroundFile = uploadBackground->getChecked();
         }
+
+        if (colorBackground->getChecked()) {
+            colorBackground->toggle();
+            myengine.showBackgroundColor = colorBackground->getChecked();
+        }
+        
         myengine.updateBackground();
 
 
     }
 
+    else if (e.target->is("colorBackground")) {
+        
+        myengine.showBackgroundColor = e.target->getChecked();
+        
+        if (uploadBackground->getChecked()) {
+            uploadBackground->toggle();
+            myengine.showBackgroundFile = uploadBackground->getChecked();
+        }
+        
+        if (defineBackground->getChecked()) {
+            defineBackground->toggle();
+            myengine.showBackground = defineBackground->getChecked();
+        }
+        
+        myengine.updateBackground();
+        
+        
+    }
+    
     else if (e.target->is("loadBackground")) {
 
         myengine.showBackgroundFile = e.target->getChecked();
@@ -632,7 +713,11 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
             defineBackground->toggle();
             myengine.showBackground = defineBackground->getChecked();
         }
-
+        
+        if (colorBackground->getChecked()) {
+            colorBackground->toggle();
+            myengine.showBackgroundColor = colorBackground->getChecked();
+        }
         myengine.updateBackground();
 
 
@@ -679,10 +764,10 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
 
     }
 
+    
     else if (e.target->is("graphicElements")) {
 
         myengine.showTextures = e.target->getChecked();
-        myengine.numSVG = abs(ofRandom(myengine.svgTextures.size()));
 
     }
 }

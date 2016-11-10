@@ -30,8 +30,11 @@ public:
     bool needsUpdateGrid;
     bool needsUpdatePoints;
     bool showInput;
+    bool showGrid;
+    bool showPoints;
     bool showBackgroundFile;
     bool showBackground;
+    bool showBackgroundColor;
     bool showTextures;
     bool definingMaskImg, definingMaskGrid, definingMaskPoints;
     bool coloringMaskImg, coloringMaskGrid, coloringMaskPoints;
@@ -40,6 +43,9 @@ public:
     ofShader shaderAlpha;
     vector<ofxEditableSVG> svgTextures;
     int numSVG;
+    ofPoint centerSVG;
+    ofxEditableSVG outSvg;
+    ofPath pathSvgGrid, pathSvgPoints;
 
 
     void setResolution(int width_, int height_);
@@ -56,6 +62,7 @@ public:
     void drawPoints();
     void updateBackground();
     void backgroundGradient(const ofColor& start, const ofColor& end);
+    void saveSVG(string path);
 
 
 };

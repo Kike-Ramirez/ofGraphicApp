@@ -14,6 +14,13 @@ engine::engine()
     max = 255;
     numSVG = 0;
     centerSVG = ofPoint(0,0);
+    opacityImg = 100;
+    opacityGrid = 100;
+    opacityPoints = 100;
+    minP = 0;
+    maxP = 255;
+    densityP = 10;
+    noiseP = 0;
 
 
 }
@@ -24,10 +31,12 @@ void engine::setup()
     colorOne = ofColor(0);
     colorTwo = ofColor(255);
     colorTriangle = ofColor(255);
+    colorPoint = ofColor(0);
 
     setResolution(width, height);
     needsUpdateGrid = true;
     needsUpdatePoints = true;
+    needsDrawPoints = true;
     showInput = true;
     showGrid = true;
     showPoints = true;
@@ -35,6 +44,7 @@ void engine::setup()
     showBackgroundFile = false;
     showBackgroundColor = true;
     showTextures = false;
+    saveVector = false;
     shapeDrawing = 1;
     updateBackground();
     shaderAlpha.load("shadersGL2/shaderAlpha");
@@ -77,7 +87,8 @@ void engine::update()
 {
 
     if (needsUpdateGrid) updateGrid();
-    if (needsUpdatePoints) drawPoints();
+    if (needsUpdatePoints) updatePoints();
+    if (needsDrawPoints) drawPoints();
 
     canvas.begin();
     ofClear(ofFloatColor(0));
@@ -86,6 +97,7 @@ void engine::update()
 
     float ratioInput = input.getWidth()/input.getHeight();
     float ratioCanvas = canvas.getWidth()/canvas.getHeight();
+    
 
     if ((showInput) && (input.isAllocated())) {
 
@@ -93,15 +105,26 @@ void engine::update()
 
             shaderAlpha.begin();
             shaderAlpha.setUniformTexture("imageMask", maskInput.getTextureReference(), 1);
+            shaderAlpha.setUniform1f("opacityImg", opacityImg/100);
+            shaderAlpha.setUniform1i("modo", 1);
             input.draw(0,0);
             shaderAlpha.end();
 
         }
 
-        else input.draw(0,0);
+        else {
+            
+            shaderAlpha.begin();
+            // shaderAlpha.setUniformTexture("imageMask", maskInput.getTextureReference(), 1);
+            shaderAlpha.setUniform1f("opacityImg", opacityImg/100);
+            shaderAlpha.setUniform1i("modo", 2);
+            input.draw(0,0);
+            shaderAlpha.end();
+            
+        }
 
     }
-
+    
     grid.draw(0,0);
 
     if (definingMaskImg) {
@@ -208,7 +231,6 @@ void engine::setResolution(int width_, int height_)
     fboGrid.allocate(width,height,GL_RGB);
     fboPoints.allocate(width,height,GL_RGB);
     
-    outSvg.setSize(width, height, "px");
     
     //go through and change resolutions of every SVG file
     
@@ -406,7 +428,6 @@ void engine::setBackground(string file)
 void engine::updateGrid()
 {
 
-    triangles.clear();
     triangulation.reset(input, colorTriangle);
 
     for (int i = 0; i < input.getWidth(); i+=density) {
@@ -420,20 +441,16 @@ void engine::updateGrid()
             ofColor colorPoint = input.getColor(punto.x, punto.y);
             float lightnessPoint = input.getColor(punto.x, punto.y).getBrightness();
 
-            float pointMask, gridMask;
+            float gridMask;
 
             if (maskGrid.isAllocated()) gridMask = maskGrid.getColor(punto.x, punto.y).getLightness();
             else gridMask = 255;
-
-            if (maskPoints.isAllocated()) pointMask = maskPoints.getColor(punto.x, punto.y).getLightness();
-            else pointMask = 255;
 
             if ((lightnessPoint > min) && (lightnessPoint < max))
             {
                     // cout << "Low Lightness: " << low.getLightness() << endl;
                     if (ofRandom(255) < lightnessPoint)
                     {
-                        if  ( pointMask > 100) triangles.push_back(punto);
                         if  ( gridMask > 100) triangulation.addPoint(punto);
                     }
             }
@@ -446,27 +463,56 @@ void engine::updateGrid()
 
 }
 
+void engine::updatePoints()
+{
+
+    triangles.clear();
+    
+    for (int i = 0; i < input.getWidth(); i+=densityP) {
+        
+        for(int j = 0; j < input.getHeight(); j += densityP) {
+            
+            ofPoint punto(i + ofRandom(-noiseP, noiseP), j + ofRandom(-noiseP, noiseP));
+            if ((punto.x < 0) || (punto.x > input.getWidth())) punto.x = i;
+            if ((punto.y < 0) || (punto.y > input.getHeight())) punto.y = j;
+            
+            ofColor colorPoint = input.getColor(punto.x, punto.y);
+            float lightnessPoint = input.getColor(punto.x, punto.y).getBrightness();
+            
+            float pointMask;
+            
+            if (maskPoints.isAllocated()) pointMask = maskPoints.getColor(punto.x, punto.y).getLightness();
+            else pointMask = 255;
+            
+            if ((lightnessPoint > minP) && (lightnessPoint < maxP))
+            {
+                // cout << "Low Lightness: " << low.getLightness() << endl;
+                // if (ofRandom(255) < lightnessPoint)
+                {
+                    if  ( pointMask > 100) triangles.push_back(punto);
+                }
+            }
+        }
+    }
+        
+    needsUpdatePoints = false;
+    
+}
 
 void engine::drawPoints() {
 
     grid.begin();
     ofClear(ofColor(0, 0));
 
-    triangulation.setHue(colorTriangle);
-    
-    for(int i = 0; i < svgTextures.size(); i++){
-        
-        // svgTextures[i].setFillColor(colorTriangle);
-        // svgTextures[i].setStrokeColor(colorTriangle);
-        
-    }
-
-    // Dibujamos los triángulos
+    triangulation.setColor(colorTriangle, opacityGrid);
 
     ofNoFill();
     ofSetLineWidth(lineWidth);
 
-    if (showGrid) triangulation.draw();
+    if (showGrid) {
+        
+        triangulation.draw();
+    }
 
     // Dibujamos puntos
     ofFill();
@@ -478,9 +524,9 @@ void engine::drawPoints() {
 
             ofPoint centro = ofPoint(triangles[i].x, triangles[i].y);
             ofColor colorCentro;
-            colorCentro.set(colorTriangle);
+            colorCentro.set(colorPoint);
 
-            colorCentro.a = input.getColor(centro.x, centro.y).getLightness();
+            colorCentro.a = opacityPoints / 100 * 255;
             
             if (maskPoints.isAllocated()) colorCentro.a = colorCentro.a * maskPoints.getColor(centro.x, centro.y).getLightness() / 255;
 
@@ -489,7 +535,7 @@ void engine::drawPoints() {
 
             if (shapeDrawing == 1) {
 
-                float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, 0, pointSize);
+                float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, pointSize, 0);
                 ofDrawEllipse(centro, radio, radio);
                 ofPath ellipse;
                 ellipse.ellipse(centro.x, centro.y, radio, radio);
@@ -499,7 +545,7 @@ void engine::drawPoints() {
 
             else if (shapeDrawing == 2) {
 
-                float lado = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, 0, pointSize);
+                float lado = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, pointSize, 0);
                 float angle = ofRandom(0, PI);
                 ofDrawRectangle(centro.x - lado/2, centro.y - lado/2, lado, lado);
                 ofPath rectangle;
@@ -509,7 +555,7 @@ void engine::drawPoints() {
 
             else if (shapeDrawing == 3) {
 
-                float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, 0, pointSize);
+                float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, pointSize, 0);
                 float angle = 0; //ofRandom(0, PI);
                 ofPoint punto1(centro.x + radio * cos(angle), centro.y + radio * sin(angle));
                 ofPoint punto2(centro.x + radio * cos(angle + 2*PI/3), centro.y + radio * sin(angle + 2*PI/3));
@@ -534,6 +580,145 @@ void engine::drawPoints() {
 
     needsUpdatePoints = false;
 
+}
+
+void engine::drawVectors(string path) {
+    
+    ofCairoRenderer file;
+    ofRectangle viewport;
+    
+    viewport.set(0, 0,canvas.getWidth(),canvas.getHeight()); // pdf dimensions
+    ofViewport(viewport);
+    
+    std::string fn = path;
+    
+    if(fn.substr(fn.find_last_of(".") + 1) == "svg") {
+        std::cout << "Yes..." << std::endl;
+        file.setup(path, ofCairoRenderer::SVG);
+        
+        
+    } else {
+        std::cout << "No..." << std::endl;
+        file.setup(path, ofCairoRenderer::PDF);
+    }
+    
+    file.viewport(viewport);
+    file.setupGraphicDefaults();
+    
+    //file.setFillMode(OF_FILLED);
+    
+    ofImage bk;
+    ofPixels pix;
+    
+    background.readToPixels(pix);
+    bk.setFromPixels(pix);
+    file.draw(bk, 0, 0, 0, canvas.getWidth(), canvas.getHeight(), 0, 0, canvas.getWidth(), canvas.getHeight() );
+    
+    ofFbo fboSvgInput;
+    fboSvgInput.allocate(canvas.getWidth(), canvas.getHeight(), GL_RGBA);
+    fboSvgInput.begin();
+    
+    ofClear(0);
+    
+    if ((showInput) && (input.isAllocated())) {
+        
+        if (maskInput.isAllocated()) {
+            
+            shaderAlpha.begin();
+            shaderAlpha.setUniformTexture("imageMask", maskInput.getTextureReference(), 1);
+            input.draw(0,0);
+            shaderAlpha.end();
+            
+        }
+        
+        else input.draw(0,0);
+        
+        if (showTextures) {
+            
+            svgTextures[numSVG].setColorEngine(colorTriangle);
+            ofPushMatrix();
+            ofTranslate(centerSVG);
+            svgTextures[numSVG].draw();
+            ofPopMatrix();
+            
+        }
+        
+    }
+    
+    fboSvgInput.end();
+    
+    ofImage vectorInput;
+    ofPixels pix2;
+    fboSvgInput.readToPixels(pix2);
+    vectorInput.setFromPixels(pix2);
+    
+    file.draw(vectorInput, 0, 0, 0, canvas.getWidth(), canvas.getHeight(), 0, 0, canvas.getWidth(), canvas.getHeight() );
+    
+    if (showGrid) {
+    
+        file.setColor(colorTriangle);
+        file.setLineWidth(lineWidth);
+        
+        file.draw(triangulation.triangleMesh, OF_MESH_WIREFRAME , true, false, false);
+        
+        
+    }
+    
+    // Dibujamos puntos
+    
+    
+    if (showPoints) {
+        for (int i = 0; i < triangles.size(); i++ ) {
+            
+            ofPoint centro = ofPoint(triangles[i].x, triangles[i].y);
+            ofColor colorCentro;
+            colorCentro.set(colorTriangle);
+            
+            colorCentro.a = input.getColor(centro.x, centro.y).getLightness();
+            
+            if (maskPoints.isAllocated()) colorCentro.a = colorCentro.a * maskPoints.getColor(centro.x, centro.y).getLightness() / 255;
+            
+            file.setColor(colorCentro);
+            
+            
+            if (shapeDrawing == 1) {
+                
+                float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, 0, pointSize);
+
+                file.drawCircle(centro.x, centro.y, 0, radio);
+                
+            }
+            
+            else if (shapeDrawing == 2) {
+                
+                float lado = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, 0, pointSize);
+                float angle = ofRandom(0, PI);
+                
+                file.drawRectangle(centro.x, centro.y, 0, lado, lado);
+                
+            }
+            
+            else if (shapeDrawing == 3) {
+                
+                float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, 0, pointSize);
+                float angle = 0; //ofRandom(0, PI);
+                ofPoint punto1(centro.x + radio * cos(angle), centro.y + radio * sin(angle));
+                ofPoint punto2(centro.x + radio * cos(angle + 2*PI/3), centro.y + radio * sin(angle + 2*PI/3));
+                ofPoint punto3(centro.x + radio * cos(angle + 4*PI/3), centro.y + radio * sin(angle + 4*PI/3));
+                file.drawTriangle(punto1.x, punto1.y, 0, punto2.x, punto2.y, 0, punto3.x, punto3.y, 0);
+                
+                
+            }
+            
+            
+        }
+        
+    }
+    
+    file.close();
+    ofViewport(ofRectangle(0,0,ofGetWidth(),ofGetHeight()));
+    
+    
 }
 
 
@@ -562,15 +747,3 @@ void engine::backgroundGradient(const ofColor& start, const ofColor& end) {
     }
 }
 
-void engine::saveSVG(string path) {
-
-    ofPixels pixels;
-    ofxEditableSVG outVector;
-    background.readToPixels(pixels);
-    outVector.embedImage(pixels, 0, 0, width, height);
-    
-    outVector.addPath(pathSvgPoints);
-    
-    outVector.save(path);
-
-}

@@ -25,10 +25,12 @@ public:
     ofFbo background;
     vector<ofPoint> triangles;
     int width, height;
-    ofColor colorTriangle, colorOne, colorTwo;
-    float min, max, density, noise, prob, lineWidth, rotation, pointSize;
+    ofColor colorTriangle, colorOne, colorTwo, colorPoint;
+    float min, max, density, noise, prob, lineWidth, rotation, pointSize, opacityImg, opacityGrid, opacityPoints;
+    float minP, maxP, densityP, noiseP;
     bool needsUpdateGrid;
     bool needsUpdatePoints;
+    bool needsDrawPoints;
     bool showInput;
     bool showGrid;
     bool showPoints;
@@ -36,6 +38,7 @@ public:
     bool showBackground;
     bool showBackgroundColor;
     bool showTextures;
+    bool saveVector;
     bool definingMaskImg, definingMaskGrid, definingMaskPoints;
     bool coloringMaskImg, coloringMaskGrid, coloringMaskPoints;
     int shapeDrawing;
@@ -44,7 +47,6 @@ public:
     vector<ofxEditableSVG> svgTextures;
     int numSVG;
     ofPoint centerSVG;
-    ofxEditableSVG outSvg;
     ofPath pathSvgGrid, pathSvgPoints;
 
 
@@ -59,10 +61,11 @@ public:
     void deleteMaskPoints();
     void setBackground(string file);
     void updateGrid();
+    void updatePoints();
     void drawPoints();
+    void drawVectors(string path);
     void updateBackground();
     void backgroundGradient(const ofColor& start, const ofColor& end);
-    void saveSVG(string path);
 
 
 };

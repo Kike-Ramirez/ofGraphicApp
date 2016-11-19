@@ -10,7 +10,7 @@ void ofApp::setup()
     //ofSetFullscreen(true);
     ofSetWindowPosition(100, 100);
     ofSetWindowShape(1024, 768);
-    ofSetWindowTitle("ofGraphicApp v0.8");
+    ofSetWindowTitle("ofGraphicApp v0.10");
     ofSetFrameRate(60);
     ofSetEscapeQuitsApp(false);
 
@@ -104,7 +104,7 @@ void ofApp::loadGui() {
     component->setLabel("MOSTRAR IMAGEN");
     component->onToggleEvent(this, &ofApp::onToggleEvent);
     components.push_back(component);
-
+    
     y += component->getHeight() + p;
     component = new ofxDatGuiButton("uploadImg");
     component->setPosition(x, y);
@@ -118,6 +118,14 @@ void ofApp::loadGui() {
     component->setWidth(x11 / 2, 0.7);
     component->setLabel("Borrar");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+    
+    y += component->getHeight() + p;
+    component = new ofxDatGuiSlider("opacityImg", 0, 100, 100);
+    component->setPosition(x, y);
+    component->setWidth(x11, 0.3);
+    component->setLabel("Opacidad");
+    component->onSliderEvent(this, &ofApp::onSliderEvent);
     components.push_back(component);
 
     y += component->getHeight() + p;
@@ -156,6 +164,15 @@ void ofApp::loadGui() {
     component->setLabel("MOSTRAR MALLA");
     component->onToggleEvent(this, &ofApp::onToggleEvent);
     components.push_back(component);
+    
+    y += component->getHeight() + p;
+    component = new ofxDatGuiSlider("opacityGrid", 0, 100, 100);
+    component->setPosition(x, y);
+    component->setWidth(x11, 0.3);
+    component->setLabel("Opacidad");
+    component->onSliderEvent(this, &ofApp::onSliderEvent);
+    components.push_back(component);
+    
 
     y += component->getHeight() + p;
     component = new ofxDatGuiSlider("min", 0, 255, 0);
@@ -198,6 +215,14 @@ void ofApp::loadGui() {
     components.push_back(component);
 
     y += component->getHeight() + p;
+    component = new ofxDatGuiColorPicker("colorGrid", ofColor::fromHex(0xFFFFFF));
+    component->setPosition(x, y);
+    component->setWidth(x11, 0.3);
+    component->setLabel("Color");
+    component->onColorPickerEvent(this, &ofApp::onColorPickerEvent);
+    components.push_back(component);
+    
+    y += component->getHeight() + p;
     component = new ofxDatGuiButton("uploadMskGrid");
     component->setPosition(x, y);
     component->setWidth(x11 * 0.4, 0.7);
@@ -227,7 +252,47 @@ void ofApp::loadGui() {
     component->setLabel("MOSTRAR PUNTOS DE MALLA");
     component->onToggleEvent(this, &ofApp::onToggleEvent);
     components.push_back(component);
+    
+    y += component->getHeight() + p;
+    component = new ofxDatGuiSlider("opacityPoints", 0, 100, 100);
+    component->setPosition(x, y);
+    component->setWidth(x11, 0.3);
+    component->setLabel("Opacidad");
+    component->onSliderEvent(this, &ofApp::onSliderEvent);
+    components.push_back(component);
 
+    y += component->getHeight() + p;
+    component = new ofxDatGuiSlider("minP", 0, 255, 0);
+    component->setPosition(x, y);
+    component->setWidth(x11, 0.3);
+    component->setLabel("Minimo");
+    component->onSliderEvent(this, &ofApp::onSliderEvent);
+    components.push_back(component);
+    
+    y += component->getHeight() + p;
+    component = new ofxDatGuiSlider("maxP", 0, 255, 255);
+    component->setPosition(x, y);
+    component->setWidth(x11, 0.3);
+    component->setLabel("Maximo");
+    component->onSliderEvent(this, &ofApp::onSliderEvent);
+    components.push_back(component);
+    
+    y += component->getHeight() + p;
+    component = new ofxDatGuiSlider("densityP", 4, 40, 10);
+    component->setPosition(x, y);
+    component->setWidth(x11, 0.3);
+    component->setLabel("Espaciado");
+    component->onSliderEvent(this, &ofApp::onSliderEvent);
+    components.push_back(component);
+    
+    y += component->getHeight() + p;
+    component = new ofxDatGuiSlider("noiseP", 0, 100, 0);
+    component->setPosition(x, y);
+    component->setWidth(x11, 0.3);
+    component->setLabel("Desplazamiento");
+    component->onSliderEvent(this, &ofApp::onSliderEvent);
+    components.push_back(component);
+    
     y += component->getHeight() + p;
     shapeCircle = new ofxDatGuiToggle("punto", true);
     shapeCircle->setPosition(x, y);
@@ -288,7 +353,7 @@ void ofApp::loadGui() {
     components.push_back(component);
 
     y += component->getHeight() + p;
-    component = new ofxDatGuiColorPicker("color", ofColor::fromHex(0xFFFFFF));
+    component = new ofxDatGuiColorPicker("color", ofColor::fromHex(0x000000));
     component->setPosition(x, y);
     component->setWidth(x11, 0.3);
     component->setLabel("Color");
@@ -455,7 +520,8 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
           string path = result.getPath();
           myengine.setInput(path);
           myengine.needsUpdateGrid = true;
-          myengine.needsUpdatePoints = true;
+            myengine.needsUpdatePoints = true;
+          myengine.needsDrawPoints = true;
           ancho->setText(std::to_string(myengine.input.getWidth()));
           alto->setText(std::to_string(myengine.input.getHeight()));
           myengine.updateBackground();
@@ -468,6 +534,7 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         myengine.deleteImg();
         myengine.needsUpdateGrid = true;
         myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
     }
 
     else if (e.target->is("uploadMskImg")) {
@@ -478,7 +545,8 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
           string path = result.getPath();
           myengine.setMask(path);
           myengine.needsUpdateGrid = true;
-          myengine.needsUpdatePoints = true;
+        myengine.needsUpdatePoints = true;
+          myengine.needsDrawPoints = true;
 
         }
     }
@@ -501,6 +569,7 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         myengine.input.getTexture().disableAlphaMask();
         myengine.needsUpdateGrid = true;
         myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
 
         while (myengine.pathInput.getNumVertices() > 0) {
 
@@ -518,7 +587,8 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
           string path = result.getPath();
           myengine.setMaskGrid(path);
           myengine.needsUpdateGrid = true;
-          myengine.needsUpdatePoints = true;
+            myengine.needsUpdatePoints = true;
+          myengine.needsDrawPoints = true;
 
         }
     }
@@ -534,6 +604,7 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         myengine.deleteMaskGrid();
         myengine.needsUpdateGrid = true;
         myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
 
         while (myengine.pathGrid.getNumVertices() > 0) {
 
@@ -552,6 +623,7 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
           myengine.setMaskPoints(path);
           myengine.needsUpdateGrid = true;
           myengine.needsUpdatePoints = true;
+          myengine.needsDrawPoints = true;
 
         }
     }
@@ -567,6 +639,7 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         myengine.deleteMaskPoints();
         myengine.needsUpdateGrid = true;
         myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
 
         while (myengine.pathPoints.getNumVertices() > 0) {
 
@@ -604,7 +677,7 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         if(result.bSuccess) {
             string path = result.getPath();
             
-            myengine.saveSVG(path);
+            myengine.drawVectors(path);
             
             cout << "Saved in: " << path << endl;
             
@@ -642,7 +715,7 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
     else if (e.target->is("showGrid")) {
         
         myengine.showGrid = e.target->getChecked();
-        myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
         
         
     }
@@ -650,7 +723,7 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
     else if (e.target->is("showPoints")) {
         
         myengine.showPoints = e.target->getChecked();
-        myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
         
     }
     
@@ -729,7 +802,7 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
         if (shapeSquare->getChecked()) shapeSquare->toggle();
         if (shapeTriangle->getChecked()) shapeTriangle->toggle();
         if (shapeFile->getChecked()) shapeFile->toggle();
-        myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
 
 
     }
@@ -740,7 +813,7 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
         if (shapeCircle->getChecked()) shapeCircle->toggle();
         if (shapeTriangle->getChecked()) shapeTriangle->toggle();
         if (shapeFile->getChecked()) shapeFile->toggle();
-        myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
 
     }
 
@@ -750,7 +823,7 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
         if (shapeCircle->getChecked()) shapeCircle->toggle();
         if (shapeSquare->getChecked()) shapeSquare->toggle();
         if (shapeFile->getChecked()) shapeFile->toggle();
-        myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
 
     }
 
@@ -760,7 +833,7 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
         if (shapeCircle->getChecked()) shapeCircle->toggle();
         if (shapeSquare->getChecked()) shapeSquare->toggle();
         if (shapeTriangle->getChecked()) shapeTriangle->toggle();
-        myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
 
     }
 
@@ -779,7 +852,7 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
 
         myengine.density = e.value;
         myengine.needsUpdateGrid = true;
-        myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
 
     }
 
@@ -787,7 +860,7 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
 
         myengine.noise = e.value;
         myengine.needsUpdateGrid = true;
-        myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
 
     }
 
@@ -795,7 +868,7 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
 
         myengine.min = e.value;
         myengine.needsUpdateGrid = true;
-        myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
 
     }
 
@@ -803,29 +876,62 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
 
         myengine.max = e.value;
         myengine.needsUpdateGrid = true;
-        myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
 
     }
 
+    if (e.target->is("DensityP")) {
+        
+        myengine.densityP = e.value;
+        myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
+        
+    }
+    
+    else if (e.target->is("NoiseP")) {
+        
+        myengine.noiseP = e.value;
+        myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
+        
+    }
+    
+    else if (e.target->is("minP")) {
+        
+        myengine.minP = e.value;
+        myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
+        
+    }
+    
+    else if (e.target->is("maxP")) {
+        
+        myengine.maxP = e.value;
+        myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
+        
+    }
+    
     else if (e.target->is("prob")) {
 
         myengine.prob = e.value;
         myengine.needsUpdateGrid = true;
         myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
 
     }
 
     else if (e.target->is("size")) {
 
         myengine.pointSize = e.value;
-        myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
 
     }
 
     else if (e.target->is("stroke")) {
 
         myengine.lineWidth = e.value;
-        myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
 
     }
 
@@ -835,7 +941,29 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
         myengine.updateBackground();
 
     }
+
+    else if (e.target->is("opacityImg")) {
+        
+        myengine.opacityImg = e.value;
+        myengine.updateBackground();
+        
+    }
+
+    else if (e.target->is("opacityGrid")) {
+        
+        myengine.opacityGrid = e.value;
+        myengine.needsDrawPoints = true;
+    }
+    
+    else if (e.target->is("opacityPoints")) {
+        
+        myengine.opacityPoints = e.value;
+        myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
+        
+    }
 }
+
 
 void ofApp::onDropdownEvent(ofxDatGuiDropdownEvent e)
 {
@@ -848,8 +976,8 @@ void ofApp::onColorPickerEvent(ofxDatGuiColorPickerEvent e)
     cout << "onColorPickerEvent: " << e.color << endl;
 
     if (e.target->is("color")) {
-        myengine.colorTriangle = e.color;
-        myengine.needsUpdatePoints = true;
+        myengine.colorPoint = e.color;
+        myengine.needsDrawPoints = true;
 
     }
     else if (e.target->is("colorOne")) {
@@ -858,6 +986,10 @@ void ofApp::onColorPickerEvent(ofxDatGuiColorPickerEvent e)
     }
     else if (e.target->is("colorTwo")) {
         myengine.colorTwo = ofColor(e.color);
+        myengine.updateBackground();
+    }
+    else if (e.target->is("colorGrid")) {
+        myengine.colorTriangle = ofColor(e.color);
         myengine.updateBackground();
     }
 }
@@ -871,7 +1003,7 @@ void ofApp::onTextInputEvent(ofxDatGuiTextInputEvent e)
         myengine.setResolution(std::stoi(e.text), myengine.height);
         myengine.updateBackground();
         myengine.needsUpdateGrid = true;
-        myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
 
 
 
@@ -882,7 +1014,7 @@ void ofApp::onTextInputEvent(ofxDatGuiTextInputEvent e)
         myengine.setResolution(myengine.width, std::stoi(e.text));
         myengine.updateBackground();
         myengine.needsUpdateGrid = true;
-        myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
 
 
     }
@@ -977,7 +1109,7 @@ void ofApp::mousePressed(int x, int y, int button){
             myengine.maskGrid.setFromPixels(pixels);
 
             myengine.needsUpdateGrid = true;
-            myengine.needsUpdatePoints = true;
+            myengine.needsDrawPoints = true;
 
         }
 
@@ -1008,7 +1140,7 @@ void ofApp::mousePressed(int x, int y, int button){
             myengine.maskPoints.setFromPixels(pixels);
 
             myengine.needsUpdateGrid = true;
-            myengine.needsUpdatePoints = true;
+            myengine.needsDrawPoints = true;
         }
 
     }

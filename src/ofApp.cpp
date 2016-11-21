@@ -10,7 +10,7 @@ void ofApp::setup()
     //ofSetFullscreen(true);
     ofSetWindowPosition(100, 100);
     ofSetWindowShape(1024, 768);
-    ofSetWindowTitle("ofGraphicApp v0.10");
+    ofSetWindowTitle("ofGraphicApp v0.11");
     ofSetFrameRate(60);
     ofSetEscapeQuitsApp(false);
 

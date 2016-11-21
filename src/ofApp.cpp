@@ -215,6 +215,28 @@ void ofApp::loadGui() {
     components.push_back(component);
 
     y += component->getHeight() + p;
+    component = new ofxDatGuiButton("uploadMskGrid");
+    component->setPosition(x, y);
+    component->setWidth(x11 * 0.4, 0.7);
+    component->setLabel("Mascara Rejilla");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+    
+    component = new ofxDatGuiButton("defineMskGrid");
+    component->setPosition(x + x11 * 0.4, y);
+    component->setWidth(x11 * 0.3, 0.7);
+    component->setLabel("Definir Forma");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+    
+    component = new ofxDatGuiButton("deleteMskGrid");
+    component->setPosition(x + x11 * 0.7, y);
+    component->setWidth(x11 * 0.3, 0.7);
+    component->setLabel("Borrar Mascara");
+    component->onButtonEvent(this, &ofApp::onButtonEvent);
+    components.push_back(component);
+    
+    y += component->getHeight() + p;
     component = new ofxDatGuiColorPicker("colorGrid", ofColor::fromHex(0xFFFFFF));
     component->setPosition(x, y);
     component->setWidth(x11, 0.3);
@@ -222,27 +244,7 @@ void ofApp::loadGui() {
     component->onColorPickerEvent(this, &ofApp::onColorPickerEvent);
     components.push_back(component);
     
-    y += component->getHeight() + p;
-    component = new ofxDatGuiButton("uploadMskGrid");
-    component->setPosition(x, y);
-    component->setWidth(x11 * 0.4, 0.7);
-    component->setLabel("Mascara Rejilla");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
 
-    component = new ofxDatGuiButton("defineMskGrid");
-    component->setPosition(x + x11 * 0.4, y);
-    component->setWidth(x11 * 0.3, 0.7);
-    component->setLabel("Definir Forma");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
-
-    component = new ofxDatGuiButton("deleteMskGrid");
-    component->setPosition(x + x11 * 0.7, y);
-    component->setWidth(x11 * 0.3, 0.7);
-    component->setLabel("Borrar Mascara");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
     
     
     y += component->getHeight() + p + 4 * dHeight;
@@ -294,6 +296,14 @@ void ofApp::loadGui() {
     components.push_back(component);
     
     y += component->getHeight() + p;
+    component = new ofxDatGuiSlider("size", 0, 100, 5);
+    component->setPosition(x, y);
+    component->setWidth(x11, 0.3);
+    component->setLabel("Diametro");
+    component->onSliderEvent(this, &ofApp::onSliderEvent);
+    components.push_back(component);
+    
+    y += component->getHeight() + p;
     shapeCircle = new ofxDatGuiToggle("punto", true);
     shapeCircle->setPosition(x, y);
     shapeCircle->setWidth(x11/4, 0.3);
@@ -322,7 +332,7 @@ void ofApp::loadGui() {
     shapeFile->onToggleEvent(this, &ofApp::onToggleEvent);
     components.push_back(shapeFile);
 
-    y += component->getHeight() + p;
+    y += shapeFile->getHeight() + p;
     component = new ofxDatGuiButton("uploadMskPoints");
     component->setPosition(x, y);
     component->setWidth(x11 * 0.4, 0.7);
@@ -344,13 +354,7 @@ void ofApp::loadGui() {
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
 
-    y += shapeFile->getHeight() + p;
-    component = new ofxDatGuiSlider("size", 0, 100, 5);
-    component->setPosition(x, y);
-    component->setWidth(x11, 0.3);
-    component->setLabel("Diametro");
-    component->onSliderEvent(this, &ofApp::onSliderEvent);
-    components.push_back(component);
+
 
     y += component->getHeight() + p;
     component = new ofxDatGuiColorPicker("color", ofColor::fromHex(0x000000));

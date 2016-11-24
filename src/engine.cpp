@@ -21,6 +21,7 @@ engine::engine()
     maxP = 255;
     densityP = 10;
     noiseP = 0;
+    levelMsk = 10;
 
 
 }
@@ -528,6 +529,8 @@ void engine::drawPoints() {
 
             colorCentro.a = opacityPoints / 100 * 255;
             
+            float radioLevel = ofMap(colorCentro.a, 0, 255, 0, pointSize);
+            
             if (maskPoints.isAllocated()) colorCentro.a = colorCentro.a * maskPoints.getColor(centro.x, centro.y).getLightness() / 255;
 
             ofSetColor(colorCentro);
@@ -535,7 +538,7 @@ void engine::drawPoints() {
 
             if (shapeDrawing == 1) {
 
-                float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, pointSize, 0);
+                float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, radioLevel, 0);
                 ofDrawEllipse(centro, radio, radio);
                 ofPath ellipse;
                 ellipse.ellipse(centro.x, centro.y, radio, radio);
@@ -545,7 +548,7 @@ void engine::drawPoints() {
 
             else if (shapeDrawing == 2) {
 
-                float lado = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, pointSize, 0);
+                float lado = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, radioLevel, 0);
                 float angle = ofRandom(0, PI);
                 ofDrawRectangle(centro.x - lado/2, centro.y - lado/2, lado, lado);
                 ofPath rectangle;
@@ -555,7 +558,7 @@ void engine::drawPoints() {
 
             else if (shapeDrawing == 3) {
 
-                float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, pointSize, 0);
+                float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, radioLevel, 0);
                 float angle = 0; //ofRandom(0, PI);
                 ofPoint punto1(centro.x + radio * cos(angle), centro.y + radio * sin(angle));
                 ofPoint punto2(centro.x + radio * cos(angle + 2*PI/3), centro.y + radio * sin(angle + 2*PI/3));
@@ -672,9 +675,12 @@ void engine::drawVectors(string path) {
             
             ofPoint centro = ofPoint(triangles[i].x, triangles[i].y);
             ofColor colorCentro;
-            colorCentro.set(colorTriangle);
+            colorCentro.set(colorPoint);
             
-            colorCentro.a = input.getColor(centro.x, centro.y).getLightness();
+            colorCentro.a = opacityPoints / 100 * 255;
+            
+            float radioLevel = ofMap(colorCentro.a, 0, 255, 0, pointSize);
+ 
             
             if (maskPoints.isAllocated()) colorCentro.a = colorCentro.a * maskPoints.getColor(centro.x, centro.y).getLightness() / 255;
             
@@ -683,15 +689,15 @@ void engine::drawVectors(string path) {
             
             if (shapeDrawing == 1) {
                 
-                float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, 0, pointSize);
+                float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, radioLevel, 0);
 
-                file.drawCircle(centro.x, centro.y, 0, radio);
+                file.drawCircle(centro.x, centro.y, 0, radio/2);
                 
             }
             
             else if (shapeDrawing == 2) {
                 
-                float lado = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, 0, pointSize);
+                float lado = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, radioLevel, 0);
                 float angle = ofRandom(0, PI);
                 
                 file.drawRectangle(centro.x, centro.y, 0, lado, lado);
@@ -700,7 +706,7 @@ void engine::drawVectors(string path) {
             
             else if (shapeDrawing == 3) {
                 
-                float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, 0, pointSize);
+                float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, radioLevel, 0);
                 float angle = 0; //ofRandom(0, PI);
                 ofPoint punto1(centro.x + radio * cos(angle), centro.y + radio * sin(angle));
                 ofPoint punto2(centro.x + radio * cos(angle + 2*PI/3), centro.y + radio * sin(angle + 2*PI/3));

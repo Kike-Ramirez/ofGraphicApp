@@ -27,7 +27,7 @@ public:
     int width, height;
     ofColor colorTriangle, colorOne, colorTwo, colorPoint;
     float min, max, density, noise, prob, lineWidth, rotation, pointSize, opacityImg, opacityGrid, opacityPoints;
-    float minP, maxP, densityP, noiseP;
+    float minP, maxP, densityP, noiseP, levelMsk;
     bool needsUpdateGrid;
     bool needsUpdatePoints;
     bool needsDrawPoints;

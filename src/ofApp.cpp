@@ -10,7 +10,7 @@ void ofApp::setup()
     //ofSetFullscreen(true);
     ofSetWindowPosition(100, 100);
     ofSetWindowShape(1024, 768);
-    ofSetWindowTitle("ofGraphicApp v0.11");
+    ofSetWindowTitle("ofGraphicApp v0.12");
     ofSetFrameRate(60);
     ofSetEscapeQuitsApp(false);
 
@@ -156,6 +156,15 @@ void ofApp::loadGui() {
     component->setLabel("Borrar Mascara");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
+    
+    y += component->getHeight() + p;
+    component = new ofxDatGuiSlider("levelMsk", 0, 100, 100);
+    component->setPosition(x, y);
+    component->setWidth(x11, 0.3);
+    component->setLabel("Umbral Masc. Color");
+    component->onSliderEvent(this, &ofApp::onSliderEvent);
+    components.push_back(component);
+    
     
     y += component->getHeight() + p + 4 * dHeight;
     component = new ofxDatGuiToggle("showGrid", true);
@@ -899,6 +908,14 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
         myengine.needsDrawPoints = true;
         
     }
+
+    else if (e.target->is("levelMsk")) {
+        
+        myengine.levelMsk = e.value;
+        myengine.needsUpdatePoints = true;
+        myengine.needsDrawPoints = true;
+        
+    }
     
     else if (e.target->is("minP")) {
         
@@ -1173,7 +1190,7 @@ void ofApp::mousePressed(int x, int y, int button){
                     
                     float distanciaColor = sqrt( pow(colorSelected.r - colorPoint.r, 2) + pow(colorSelected.g - colorPoint.g, 2) + pow(colorSelected.b - colorPoint.b, 2));
                     
-                    if (distanciaColor > 20) points.addVertex(ofPoint(i,j,0));
+                    if (distanciaColor > myengine.levelMsk) points.addVertex(ofPoint(i,j,0));
 
                 }
 

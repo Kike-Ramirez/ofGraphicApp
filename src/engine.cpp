@@ -21,7 +21,8 @@ engine::engine()
     maxP = 255;
     densityP = 10;
     noiseP = 0;
-    levelMsk = 10;
+    levelMsk = 100;
+    angleBackground = 0;
 
 
 }
@@ -64,6 +65,7 @@ void engine::setup()
     for(int i = 0; i < dir.size(); i++){
         ofxEditableSVG file;
         file.load(dir.getPath(i));
+        cout << dir.getPath(i) << endl;
         svgTextures.push_back(file);
     }
     
@@ -730,19 +732,49 @@ void engine::drawVectors(string path) {
 
 void engine::backgroundGradient(const ofColor& start, const ofColor& end) {
     float w = background.getWidth(), h = background.getHeight();
+    float angle = ofMap(angleBackground, 0, 180, 0, 2);
     ofMesh gradientMesh;
     gradientMesh.clear();
     gradientMesh.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
 
-
+    ofColor a, b, c, d;
+    
+    if (angle <= 1) {
+        a = start;
+        a.lerp(end, angle);
+        
+        b = start;
+        b.lerp(start, angle);
+        
+        c = end;
+        c.lerp(start, angle);
+        
+        d = end;
+        d.lerp(end, angle);
+    }
+    
+    else {
+        a = end;
+        a.lerp(end, angle -1);
+        
+        b = start;
+        b.lerp(end, angle -1);
+        
+        c = start;
+        c.lerp(start, angle - 1);
+        
+        d = end;
+        d.lerp(start, angle - 1);
+    }
+    
     gradientMesh.addVertex({0.f, 0.f, 0.f});
     gradientMesh.addVertex({w, 0.f, 0.f});
     gradientMesh.addVertex({w, h, 0.f});
     gradientMesh.addVertex({0.f, h, 0.f});
-    gradientMesh.addColor(start);
-    gradientMesh.addColor(start);
-    gradientMesh.addColor(end);
-    gradientMesh.addColor(end);
+    gradientMesh.addColor(a);
+    gradientMesh.addColor(b);
+    gradientMesh.addColor(c);
+    gradientMesh.addColor(d);
 
     GLboolean depthMaskEnabled;
     glGetBooleanv(GL_DEPTH_WRITEMASK,&depthMaskEnabled);

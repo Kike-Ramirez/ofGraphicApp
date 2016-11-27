@@ -10,7 +10,7 @@ void ofApp::setup()
     //ofSetFullscreen(true);
     ofSetWindowPosition(100, 100);
     ofSetWindowShape(1024, 768);
-    ofSetWindowTitle("ofGraphicApp v0.12");
+    ofSetWindowTitle("ofGraphicApp v0.13");
     ofSetFrameRate(60);
     ofSetEscapeQuitsApp(false);
 
@@ -41,9 +41,13 @@ void ofApp::draw()
 
     if ((myengine.definingMaskImg) || (myengine.definingMaskGrid) || (myengine.definingMaskPoints)) {
 
-        ofSetColor(255,0,0);
-        ofLine(mouseX - 5, mouseY, mouseX + 5, mouseY);
-        ofLine(mouseX, mouseY - 5, mouseX, mouseY + 5);
+        if ((mouseX > xCanvas) && (mouseX < xCanvas + widthCanvas) && (mouseY > yCanvas) && (mouseY< yCanvas + heightCanvas)) {
+            
+            ofSetColor(255,0,0);
+            ofLine(mouseX - 5, mouseY, mouseX + 5, mouseY);
+            ofLine(mouseX, mouseY - 5, mouseX, mouseY + 5);
+            
+        }
 
         ofDrawBitmapString("Definiendo Mascara", xCanvas + 10, yCanvas + 20);
         ofDrawBitmapString("Cierra haciendo click en el primer punto para aplicar mascara", xCanvas + 10, yCanvas + 40);
@@ -53,13 +57,18 @@ void ofApp::draw()
 
     if (myengine.coloringMaskImg) {
 
-        ofSetColor(255,0,0);
-        ofLine(mouseX - 5, mouseY, mouseX + 5, mouseY);
-        ofLine(mouseX, mouseY - 5, mouseX, mouseY + 5);
-
+        if ((mouseX > xCanvas) && (mouseX < xCanvas + widthCanvas) && (mouseY > yCanvas) && (mouseY< yCanvas + heightCanvas)) {
+            
+            ofSetColor(255,0,0);
+            ofLine(mouseX - 5, mouseY, mouseX + 5, mouseY);
+            ofLine(mouseX, mouseY - 5, mouseX, mouseY + 5);
+        
+        }
+        
         ofDrawBitmapString("Seleccion de Color", xCanvas + 10, yCanvas + 20);
-        ofDrawBitmapString("Pulsa <Q> para salir sin seleccionar", xCanvas + 10, yCanvas + 40);
+        ofDrawBitmapString("Pulsa <A> para aceptar los cambios", xCanvas + 10, yCanvas + 40);
         ofSetColor(255);
+        
     }
 
 }
@@ -410,6 +419,14 @@ void ofApp::loadGui() {
     defineBackground->setLabel("DEGRADADO");
     defineBackground->onToggleEvent(this, &ofApp::onToggleEvent);
     components.push_back(defineBackground);
+    
+    y += component->getHeight() + p;
+    component = new ofxDatGuiSlider("angleBackground", 0, 180, 0);
+    component->setPosition(x, y);
+    component->setWidth(x11, 0.3);
+    component->setLabel("Angulo Degradado");
+    component->onSliderEvent(this, &ofApp::onSliderEvent);
+    components.push_back(component);
 
     y += defineBackground->getHeight() + p;
     component = new ofxDatGuiColorPicker("colorOne", ofColor::fromHex(0x000000));
@@ -700,8 +717,12 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
     
     else if (e.target->is("graphicRandom")) {
         
-        myengine.numSVG = abs(ofRandom(myengine.svgTextures.size()));
-        myengine.centerSVG = ofPoint(ofRandom(myengine.width), ofRandom(myengine.height));
+        myengine.numSVG++;
+        if (myengine.numSVG == myengine.svgTextures.size()) myengine.numSVG = 0;
+        
+        //myengine.numSVG = abs(ofRandom(myengine.svgTextures.size()));
+        cout << myengine.numSVG << endl;
+        // myengine.centerSVG = ofPoint(ofRandom(myengine.width), ofRandom(myengine.height));
         
     }
     
@@ -915,6 +936,62 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
         myengine.needsUpdatePoints = true;
         myengine.needsDrawPoints = true;
         
+        
+        
+        if ((myengine.coloringMaskImg)) {
+            
+            if (myengine.input.isAllocated()) {
+                
+                float xPoint = ofMap(mouseX - xCanvas, 0, widthCanvas, 0, myengine.canvas.getWidth());
+                float yPoint = ofMap(mouseY - yCanvas, 0, heightCanvas, 0, myengine.canvas.getHeight());
+                ofColor colorSelected = myengine.input.getColor(xPoint, yPoint);
+                
+                myengine.fboInput.begin();
+                
+                // Cleaning everthing with alpha mask on 0 in order to make it transparent by default
+                ofClear(0, 0, 0, 0);
+                
+                ofMesh points;
+                points.setMode(OF_PRIMITIVE_POINTS);
+                
+                for (int i = 0; i < myengine.input.getWidth(); i++) {
+                    
+                    for (int j = 0; j < myengine.input.getHeight(); j++) {
+                        
+                        ofColor colorPoint = myengine.input.getColor(i,j);
+                        
+                        float distanciaColor = sqrt( pow(colorSelected.r - colorPoint.r, 2) + pow(colorSelected.g - colorPoint.g, 2) + pow(colorSelected.b - colorPoint.b, 2));
+                        
+                        if (distanciaColor > myengine.levelMsk) points.addVertex(ofPoint(i,j,0));
+                        
+                    }
+                    
+                }
+                
+                ofSetColor(255);
+                points.draw();
+                
+                myengine.fboInput.end();
+                
+                ofPixels pixels;
+                myengine.fboInput.readToPixels(pixels);
+                myengine.maskInput.setFromPixels(pixels);
+                myengine.maskInput = blur(myengine.maskInput, 5);
+                
+                myengine.input.getTexture().setAlphaMask(myengine.maskInput.getTexture());
+                
+                
+                
+            }
+            
+            // myengine.coloringMaskImg = false;
+            
+        }
+        
+        
+        
+        
+        
     }
     
     else if (e.target->is("minP")) {
@@ -956,9 +1033,9 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
 
     }
 
-    else if (e.target->is("angle")) {
+    else if (e.target->is("angleBackground")) {
 
-        myengine.rotation = e.value;
+        myengine.angleBackground = e.value;
         myengine.updateBackground();
 
     }
@@ -1051,9 +1128,15 @@ void ofApp::keyPressed(int key){
         if (myengine.definingMaskImg) myengine.definingMaskImg = false;
         if (myengine.definingMaskGrid) myengine.definingMaskGrid = false;
         if (myengine.definingMaskPoints) myengine.definingMaskPoints = false;
-        if (myengine.coloringMaskImg) myengine.coloringMaskImg = false;
 
     }
+
+    else if ((key == 'a') || (key == 'A')) {
+        
+        if (myengine.coloringMaskImg) myengine.coloringMaskImg = false;
+        
+    }
+
 }
 
 //--------------------------------------------------------------
@@ -1211,8 +1294,6 @@ void ofApp::mousePressed(int x, int y, int button){
 
 
         }
-
-        myengine.coloringMaskImg = false;
 
     }
 

@@ -3,3 +3,4 @@ ofxDatGui
 ofxDelaunay
 ofxEditableSVG
 ofxOpenCv
+ofxXmlSettings

@@ -53,8 +53,8 @@ void engine::setup()
 
     svgTextures.clear();
     
-    //some path, may be absolute or relative to bin/data
-    string path = "Textures/";
+    //some path,  be absolute or relative to bin/data
+    string path = "\Textures";
     ofDirectory dir(path);
     //only show png files
     dir.allowExt("svg");
@@ -62,9 +62,9 @@ void engine::setup()
     dir.listDir();
     
     //go through and print out all the paths
-    for(int i = 0; i < dir.size(); i++){
+    for(int i = dir.size() - 1; i >= 0; i--){
         ofxEditableSVG file;
-        file.load(dir.getPath(i));
+		file.load(dir.getPath(i));
         cout << dir.getPath(i) << endl;
         svgTextures.push_back(file);
     }
@@ -204,9 +204,15 @@ void engine::update()
         
         svgTextures[numSVG].setColorEngine(colorTriangle);
         ofPushMatrix();
-        ofTranslate(centerSVG);
+        // ofTranslate(centerSVG);
+		float zoom = width / svgTextures[numSVG].getWidth();
+		float zoom2 = height / svgTextures[numSVG].getHeight();
+
+		if (zoom < zoom2) ofScale(zoom, zoom, 0);
+		else ofScale(zoom2, zoom2, 0);
+
         svgTextures[numSVG].draw();
-        ofPopMatrix();
+		ofPopMatrix();
         
     }
 

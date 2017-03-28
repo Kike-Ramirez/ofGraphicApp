@@ -5,6 +5,7 @@
 #include "ofxDatGui.h"
 #include "ofxDelaunay.h"
 #include "ofxCV.h"
+#include "ofxXmlSettings.h"
 
 class ofApp : public ofBaseApp{
 
@@ -41,6 +42,7 @@ public:
     ofxDatGuiToggle* shapeFile;
     ofShader shaderBlurX, shaderBlurY;
     ofFbo fboBlurOnePass, fboBlurTwoPass;
+	ofxXmlSettings xmlParameters;
 
     int dWidth, dHeight;
     float xCanvas, yCanvas, widthCanvas, heightCanvas;
@@ -52,5 +54,7 @@ public:
     void onColorPickerEvent(ofxDatGuiColorPickerEvent e);
     void onTextInputEvent(ofxDatGuiTextInputEvent e);
     ofImage blur(ofImage img, int radio);
+	void createSettings();
+	
 
 };

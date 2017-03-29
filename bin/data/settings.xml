@@ -2,33 +2,33 @@
     <width>1024</width>
     <height>768</height>
     <showInput>1</showInput>
-    <opacityImg>100</opacityImg>
-    <levelMsk>100</levelMsk>
+    <opacityImg>100.000000000</opacityImg>
+    <levelMsk>100.000000000</levelMsk>
     <showGrid>1</showGrid>
-    <opacityGrid>100</opacityGrid>
-    <min>0</min>
-    <max>255</max>
-    <density>4</density>
-    <noise>0</noise>
-    <stroke>1</stroke>
-    <colorGrid>16777215</colorGrid>
+    <opacityGrid>100.000000000</opacityGrid>
+    <min>0.000000000</min>
+    <max>255.000000000</max>
+    <density>4.000000000</density>
+    <noise>0.000000000</noise>
+    <stroke>1.000000000</stroke>
+    <colorGrid>FFFFFF</colorGrid>
     <showPoints>1</showPoints>
-    <opacityPoints>100</opacityPoints>
-    <minP>0</minP>
-    <maxP>255</maxP>
-    <densityP>100</densityP>
-    <noiseP>0</noiseP>
-    <size>5</size>
+    <opacityPoints>100.000000000</opacityPoints>
+    <minP>0.000000000</minP>
+    <maxP>255.000000000</maxP>
+    <densityP>40.000000000</densityP>
+    <noiseP>0.000000000</noiseP>
+    <size>5.000000000</size>
     <punto>1</punto>
     <cuadrado>0</cuadrado>
     <triangulo>0</triangulo>
     <archivo>0</archivo>
-    <color>0</color>
+    <color>000000</color>
     <graphicElements>0</graphicElements>
     <loadBackground>0</loadBackground>
-    <colorBackground>1</colorBackground>
-    <defineBackground>0</defineBackground>
-    <angleBackground>0</angleBackground>
-    <colorOne>0</colorOne>
-    <colorTwo>16777215</colorTwo>
+    <colorBackground>0</colorBackground>
+    <defineBackground>1</defineBackground>
+    <angleBackground>0.000000000</angleBackground>
+    <colorOne>000000</colorOne>
+    <colorTwo>FFFFFF</colorTwo>
 </settings>

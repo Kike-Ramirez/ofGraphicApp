@@ -33,14 +33,40 @@ public:
     ofxDatGuiComponent* component;
     ofxDatGuiTextInput* ancho;
     ofxDatGuiTextInput* alto;
-    ofxDatGuiToggle* uploadBackground;
-    ofxDatGuiToggle* colorBackground;
-    ofxDatGuiToggle* defineBackground;
-    ofxDatGuiToggle* shapeCircle;
-    ofxDatGuiToggle* shapeSquare;
-    ofxDatGuiToggle* shapeTriangle;
-    ofxDatGuiToggle* shapeFile;
-    ofShader shaderBlurX, shaderBlurY;
+	ofxDatGuiToggle* showInput;
+
+
+	ofxDatGuiSlider* opacityImg;
+	ofxDatGuiSlider* levelMsk;
+	ofxDatGuiToggle* showGrid;
+	ofxDatGuiSlider* opacityGrid;
+	ofxDatGuiSlider* min;
+	ofxDatGuiSlider* max;
+	ofxDatGuiSlider* density;
+	ofxDatGuiSlider* noise;
+	ofxDatGuiSlider* stroke;
+	ofxDatGuiColorPicker* colorGrid;
+	ofxDatGuiToggle* showPoints;
+	ofxDatGuiSlider* opacityPoints;
+	ofxDatGuiSlider* minP;
+	ofxDatGuiSlider* maxP;
+	ofxDatGuiSlider* densityP;
+	ofxDatGuiSlider* noiseP;
+	ofxDatGuiSlider* size;
+	ofxDatGuiToggle* punto;
+	ofxDatGuiToggle* cuadrado;
+	ofxDatGuiToggle* triangulo;
+	ofxDatGuiToggle* archivo;
+	ofxDatGuiColorPicker* color;
+	ofxDatGuiToggle* graphicElements;
+	ofxDatGuiToggle* loadBackground;
+	ofxDatGuiToggle* colorBackground;
+	ofxDatGuiToggle* defineBackground;
+	ofxDatGuiSlider* angleBackground;
+	ofxDatGuiColorPicker* colorOne;
+	ofxDatGuiColorPicker* colorTwo;
+
+	ofShader shaderBlurX, shaderBlurY;
     ofFbo fboBlurOnePass, fboBlurTwoPass;
 	ofxXmlSettings xmlParameters;
 
@@ -54,7 +80,9 @@ public:
     void onColorPickerEvent(ofxDatGuiColorPickerEvent e);
     void onTextInputEvent(ofxDatGuiTextInputEvent e);
     ofImage blur(ofImage img, int radio);
-	void createSettings();
+	void resetSettings();
+	void loadSettings();
+	void saveSettings();
 	
 
 };

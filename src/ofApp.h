@@ -83,6 +83,7 @@ public:
 	void resetSettings();
 	void loadSettings();
 	void saveSettings();
+	void updateValues();
 	
 
 };

@@ -1398,10 +1398,7 @@ void ofApp::resetSettings() {
 	colorOne->setColor(0x000000);
 	colorTwo->setColor(0xFFFFFF);
 
-	myengine.colorPoint = color->getColor();
-	myengine.colorOne = colorOne->getColor();
-	myengine.colorTwo = colorTwo->getColor();
-	myengine.colorTriangle = colorGrid->getColor();
+	updateValues();
 
 	myengine.needsUpdateGrid = true;
 	myengine.needsDrawPoints = true;
@@ -1450,11 +1447,8 @@ void ofApp::loadSettings() {
 	colorOne->setColor(ofHexToInt(xmlParameters.getValue("settings:colorOne", "0x000000")));
 	colorTwo->setColor(ofHexToInt(xmlParameters.getValue("settings:colorTwo", "0xFFFFFF")));
 
-	myengine.colorPoint = color->getColor();
-	myengine.colorOne = colorOne->getColor();
-	myengine.colorTwo = colorTwo->getColor();
-	myengine.colorTriangle = colorGrid->getColor();
-	myengine.angleBackground = angleBackground->getValue();
+	cout << "defineBackground: " << defineBackground->getChecked() << endl;
+	updateValues();
 
 	myengine.needsUpdateGrid = true;
 	myengine.needsDrawPoints = true;
@@ -1501,5 +1495,44 @@ void ofApp::saveSettings() {
 	xmlParameters.setValue("settings:colorTwo", colorTwo->getText() );
 
 	xmlParameters.saveFile("settings.xml");
+
+}
+
+void ofApp::updateValues() {
+
+	myengine.width = ofToInt(ancho->getText());
+	myengine.height = ofToInt(alto->getText());
+	myengine.showInput = showInput->getChecked();
+	myengine.opacityImg = opacityImg->getValue();
+	myengine.levelMsk = levelMsk->getValue();
+	myengine.showGrid = showGrid->getChecked();
+	myengine.opacityGrid = opacityGrid->getValue();
+	myengine.min = min->getValue();
+	myengine.max = max->getValue();
+	myengine.density = density->getValue();
+	myengine.noise = noise->getValue();
+	myengine.lineWidth = stroke->getValue();
+	myengine.colorTriangle = colorGrid->getColor();
+	myengine.showPoints = showPoints->getChecked();
+	myengine.opacityPoints = opacityPoints->getValue();
+	myengine.minP = minP->getValue();
+	myengine.maxP = maxP->getValue();
+	myengine.densityP = densityP->getValue();
+	myengine.noiseP = noiseP->getValue();
+	myengine.pointSize = size->getValue();
+
+	if (punto->getChecked()) myengine.shapeDrawing = 0;
+	else if (cuadrado->getChecked()) myengine.shapeDrawing = 1;
+	else if (triangulo->getChecked()) myengine.shapeDrawing = 2;
+	else if (archivo->getChecked()) myengine.shapeDrawing = 3;
+
+	myengine.colorPoint = color->getColor();
+	myengine.showTextures = graphicElements->getChecked();
+	myengine.showBackground = defineBackground->getChecked();
+	myengine.showBackgroundColor = colorBackground->getChecked();
+	myengine.showBackgroundFile = loadBackground->getChecked();
+	myengine.angleBackground = angleBackground->getValue();
+	myengine.colorOne = colorOne->getColor();
+	myengine.colorTwo = colorTwo->getColor();
 
 }

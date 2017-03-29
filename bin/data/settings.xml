@@ -1,40 +1,40 @@
 <settings>
-    <width>1200</width>
-    <height>896</height>
+    <width>922</width>
+    <height>691</height>
     <showInput>1</showInput>
     <opacityImg>100.000000000</opacityImg>
     <levelMsk>100.000000000</levelMsk>
     <showGrid>1</showGrid>
     <opacityGrid>100.000000000</opacityGrid>
-    <min>49.000000000</min>
-    <max>220.000000000</max>
-    <density>20.000000000</density>
-    <noise>20.000000000</noise>
+    <min>0.000000000</min>
+    <max>255.000000000</max>
+    <density>40.000000000</density>
+    <noise>0.000000000</noise>
     <stroke>1.000000000</stroke>
-    <colorGrid>F0FF00</colorGrid>
+    <colorGrid>FFFFFF</colorGrid>
     <showPoints>1</showPoints>
     <opacityPoints>100.000000000</opacityPoints>
-    <minP>41.000000000</minP>
-    <maxP>205.000000000</maxP>
-    <densityP>25.000000000</densityP>
-    <noiseP>67.000000000</noiseP>
-    <size>50.000000000</size>
-    <punto>0</punto>
+    <minP>0.000000000</minP>
+    <maxP>255.000000000</maxP>
+    <densityP>40.000000000</densityP>
+    <noiseP>0.000000000</noiseP>
+    <size>5.000000000</size>
+    <punto>1</punto>
     <cuadrado>0</cuadrado>
-    <triangulo>1</triangulo>
+    <triangulo>0</triangulo>
     <archivo>0</archivo>
-    <color>FF0000</color>
-    <graphicElements>1</graphicElements>
+    <color>000000</color>
+    <graphicElements>0</graphicElements>
     <loadBackground>0</loadBackground>
-    <colorBackground>0</colorBackground>
-    <defineBackground>1</defineBackground>
+    <colorBackground>1</colorBackground>
+    <defineBackground>0</defineBackground>
     <angleBackground>0.000000000</angleBackground>
-    <colorOne>F00000</colorOne>
-    <colorTwo>FF0000</colorTwo>
-    <pathImg>C:\Users\Kike Ramirez\Pictures\JUAN_RETRATO_BN.JPG</pathImg>
-    <pathMskImg>C:\Users\Kike Ramirez\Pictures\JUAN_RETRATO_BN_maskInput.jpg</pathMskImg>
-    <pathMskGrid>C:\Users\Kike Ramirez\Pictures\JUAN_RETRATO_BN_maskGrid.jpg</pathMskGrid>
-    <pathMskPoints>C:\Users\Kike Ramirez\Pictures\JUAN_RETRATO_BN_maskPoints.jpg</pathMskPoints>
+    <colorOne>000000</colorOne>
+    <colorTwo>FFFFFF</colorTwo>
+    <pathImg>/Users/innovacionF6/Documents/Imagenes/Accesorio rPI.jpg</pathImg>
+    <pathMskImg></pathMskImg>
+    <pathMskGrid></pathMskGrid>
+    <pathMskPoints></pathMskPoints>
     <pathBackground></pathBackground>
     <numSVG>4</numSVG>
 </settings>

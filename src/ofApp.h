@@ -69,6 +69,12 @@ public:
 	ofShader shaderBlurX, shaderBlurY;
     ofFbo fboBlurOnePass, fboBlurTwoPass;
 	ofxXmlSettings xmlParameters;
+	string pathImg;
+	string pathMskImg;
+	string pathMskGrid;
+	string pathMskPoints;
+	string pathBackground;
+	int numSVG;
 
     int dWidth, dHeight;
     float xCanvas, yCanvas, widthCanvas, heightCanvas;

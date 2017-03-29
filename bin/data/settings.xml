@@ -1,34 +1,40 @@
 <settings>
-    <width>1024</width>
-    <height>768</height>
-    <showInput>0</showInput>
-    <opacityImg>0.000000000</opacityImg>
-    <levelMsk>0.000000000</levelMsk>
-    <showGrid>0</showGrid>
-    <opacityGrid>0.000000000</opacityGrid>
-    <min>255.000000000</min>
-    <max>0.000000000</max>
-    <density>40.000000000</density>
-    <noise>100.000000000</noise>
-    <stroke>10.000000000</stroke>
-    <colorGrid>403600</colorGrid>
+    <width>1200</width>
+    <height>896</height>
+    <showInput>1</showInput>
+    <opacityImg>100.000000000</opacityImg>
+    <levelMsk>100.000000000</levelMsk>
+    <showGrid>1</showGrid>
+    <opacityGrid>100.000000000</opacityGrid>
+    <min>49.000000000</min>
+    <max>220.000000000</max>
+    <density>20.000000000</density>
+    <noise>20.000000000</noise>
+    <stroke>1.000000000</stroke>
+    <colorGrid>F0FF00</colorGrid>
     <showPoints>1</showPoints>
     <opacityPoints>100.000000000</opacityPoints>
-    <minP>0.000000000</minP>
-    <maxP>255.000000000</maxP>
-    <densityP>40.000000000</densityP>
-    <noiseP>0.000000000</noiseP>
-    <size>5.000000000</size>
+    <minP>41.000000000</minP>
+    <maxP>205.000000000</maxP>
+    <densityP>25.000000000</densityP>
+    <noiseP>67.000000000</noiseP>
+    <size>50.000000000</size>
     <punto>0</punto>
-    <cuadrado>1</cuadrado>
-    <triangulo>0</triangulo>
+    <cuadrado>0</cuadrado>
+    <triangulo>1</triangulo>
     <archivo>0</archivo>
-    <color>AE00E3</color>
+    <color>FF0000</color>
     <graphicElements>1</graphicElements>
     <loadBackground>0</loadBackground>
     <colorBackground>0</colorBackground>
     <defineBackground>1</defineBackground>
     <angleBackground>0.000000000</angleBackground>
-    <colorOne>FB8E50</colorOne>
-    <colorTwo>FFFFFF</colorTwo>
+    <colorOne>F00000</colorOne>
+    <colorTwo>FF0000</colorTwo>
+    <pathImg>C:\Users\Kike Ramirez\Pictures\JUAN_RETRATO_BN.JPG</pathImg>
+    <pathMskImg>C:\Users\Kike Ramirez\Pictures\JUAN_RETRATO_BN_maskInput.jpg</pathMskImg>
+    <pathMskGrid>C:\Users\Kike Ramirez\Pictures\JUAN_RETRATO_BN_maskGrid.jpg</pathMskGrid>
+    <pathMskPoints>C:\Users\Kike Ramirez\Pictures\JUAN_RETRATO_BN_maskPoints.jpg</pathMskPoints>
+    <pathBackground></pathBackground>
+    <numSVG>4</numSVG>
 </settings>

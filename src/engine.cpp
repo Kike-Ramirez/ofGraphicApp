@@ -202,11 +202,15 @@ void engine::update()
 
     if (showTextures) {
         
+
         svgTextures[numSVG].setColorEngine(colorTriangle);
         ofPushMatrix();
         // ofTranslate(centerSVG);
-		float zoom = width / svgTextures[numSVG].getWidth();
-		float zoom2 = height / svgTextures[numSVG].getHeight();
+
+		float wsvg = float(svgTextures[numSVG].getWidth());
+		float hsvg = float(svgTextures[numSVG].getHeight());
+		float zoom = float(width) / wsvg;
+		float zoom2 = float(height) / hsvg;
 
 		if (zoom < zoom2) ofScale(zoom, zoom, 0);
 		else ofScale(zoom2, zoom2, 0);
@@ -239,29 +243,6 @@ void engine::setResolution(int width_, int height_)
     fboInput.allocate(width,height,GL_RGB);
     fboGrid.allocate(width,height,GL_RGB);
     fboPoints.allocate(width,height,GL_RGB);
-    
-    
-    //go through and change resolutions of every SVG file
-    
-    for(int i = 0; i < svgTextures.size(); i++){
-        
-        float ratioSVG = float(svgTextures[i].getWidth()) / svgTextures[i].getHeight();
-        float ratioCanvas = float(canvas.getWidth()) / canvas.getHeight();
-        
-        if (ratioCanvas >= ratioSVG) {
-        
-            svgTextures[i].setSize(width, float(width) / ratioSVG);
-            svgTextures[i].setViewbox(0, 0, width, float(width) / ratioSVG);
-        }
-        
-        else {
-        
-            svgTextures[i].setSize(height * ratioSVG, height);
-            svgTextures[i].setViewbox(0, 0, height * ratioSVG, height);
-
-        }
-        
-    }
 
 
     if (input.isAllocated()) {
@@ -646,11 +627,19 @@ void engine::drawVectors(string path) {
         
         if (showTextures) {
             
-            svgTextures[numSVG].setColorEngine(colorTriangle);
-            ofPushMatrix();
-            ofTranslate(centerSVG);
-            svgTextures[numSVG].draw();
-            ofPopMatrix();
+			svgTextures[numSVG].setColorEngine(colorTriangle);
+			ofPushMatrix();
+			// ofTranslate(centerSVG);
+			float wsvg = float(svgTextures[numSVG].getWidth());
+			float hsvg = float(svgTextures[numSVG].getHeight());
+			float zoom = float(width) / wsvg;
+			float zoom2 = float(height) / hsvg;
+
+			if (zoom < zoom2) ofScale(zoom, zoom, 0);
+			else ofScale(zoom2, zoom2, 0);
+
+			svgTextures[numSVG].draw();
+			ofPopMatrix();
             
         }
         

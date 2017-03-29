@@ -19,9 +19,12 @@ void ofApp::setup()
 
 	xmlParameters.loadFile("settings.xml");
 
-    loadGui();
 
-    myengine.setup();
+    loadGui();
+	myengine.setup();
+
+	loadSettings();
+
     ofEnableSmoothing();
 
 
@@ -551,10 +554,10 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         ofFileDialogResult result = ofSystemLoadDialog("Load file");
 
         if(result.bSuccess) {
-          string path = result.getPath();
-          myengine.setInput(path);
+          pathImg = result.getPath();
+          myengine.setInput(pathImg);
           myengine.needsUpdateGrid = true;
-            myengine.needsUpdatePoints = true;
+          myengine.needsUpdatePoints = true;
           myengine.needsDrawPoints = true;
           ancho->setText(std::to_string(myengine.input.getWidth()));
           alto->setText(std::to_string(myengine.input.getHeight()));
@@ -576,10 +579,10 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         ofFileDialogResult result = ofSystemLoadDialog("Load file");
 
         if(result.bSuccess) {
-          string path = result.getPath();
-          myengine.setMask(path);
+          pathMskImg = result.getPath();
+          myengine.setMask(pathMskImg);
           myengine.needsUpdateGrid = true;
-        myengine.needsUpdatePoints = true;
+		  myengine.needsUpdatePoints = true;
           myengine.needsDrawPoints = true;
 
         }
@@ -618,8 +621,8 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         ofFileDialogResult result = ofSystemLoadDialog("Load file");
 
         if(result.bSuccess) {
-          string path = result.getPath();
-          myengine.setMaskGrid(path);
+          pathMskGrid = result.getPath();
+          myengine.setMaskGrid(pathMskGrid);
           myengine.needsUpdateGrid = true;
             myengine.needsUpdatePoints = true;
           myengine.needsDrawPoints = true;
@@ -653,8 +656,8 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         ofFileDialogResult result = ofSystemLoadDialog("Load file");
 
         if(result.bSuccess) {
-          string path = result.getPath();
-          myengine.setMaskPoints(path);
+          pathMskPoints = result.getPath();
+          myengine.setMaskPoints(pathMskPoints);
           myengine.needsUpdateGrid = true;
           myengine.needsUpdatePoints = true;
           myengine.needsDrawPoints = true;
@@ -723,9 +726,9 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         
         myengine.numSVG++;
         if (myengine.numSVG == myengine.svgTextures.size()) myengine.numSVG = 0;
-        
+		numSVG = myengine.numSVG;
+
         //myengine.numSVG = abs(ofRandom(myengine.svgTextures.size()));
-        cout << myengine.numSVG << endl;
         myengine.centerSVG = ofPoint(ofRandom(myengine.width), ofRandom(myengine.height));
         
     }
@@ -1398,6 +1401,16 @@ void ofApp::resetSettings() {
 	colorOne->setColor(0x000000);
 	colorTwo->setColor(0xFFFFFF);
 
+	pathImg = "";
+	pathMskImg = "";
+	pathMskGrid = "";
+	pathMskPoints = "";
+
+	myengine.deleteImg();
+	myengine.deleteMask();
+	myengine.deleteMaskGrid();
+	myengine.deleteMaskPoints();
+
 	updateValues();
 
 	myengine.needsUpdateGrid = true;
@@ -1413,6 +1426,7 @@ void ofApp::resetSettings() {
 void ofApp::loadSettings() {
 
 	xmlParameters.loadFile("Settings.xml");
+
 
 	ancho->setText(ofToString(xmlParameters.getValue("settings:width", 1024)));
 	alto->setText(ofToString(xmlParameters.getValue("settings:height", 768)));
@@ -1440,6 +1454,7 @@ void ofApp::loadSettings() {
 	archivo->setChecked(ofToBool(xmlParameters.getValue("settings:archivo", "false")));
 	color->setColor(ofHexToInt(xmlParameters.getValue("settings:color", "0x000000")));
 	graphicElements->setChecked(ofToBool(xmlParameters.getValue("settings:graphicElements", "false")));
+	numSVG = xmlParameters.getValue("settings:numSVG", 0);
 	loadBackground->setChecked(ofToBool(xmlParameters.getValue("settings:loadBackground", "false")));
 	colorBackground->setChecked(ofToBool(xmlParameters.getValue("settings:colorBackground", "true")));
 	defineBackground->setChecked(ofToBool(xmlParameters.getValue("settings:defineBackground", "false")));
@@ -1447,12 +1462,31 @@ void ofApp::loadSettings() {
 	colorOne->setColor(ofHexToInt(xmlParameters.getValue("settings:colorOne", "0x000000")));
 	colorTwo->setColor(ofHexToInt(xmlParameters.getValue("settings:colorTwo", "0xFFFFFF")));
 
-	cout << "defineBackground: " << defineBackground->getChecked() << endl;
+	pathImg = xmlParameters.getValue("settings:pathImg", "");
+	pathMskImg = xmlParameters.getValue("settings:pathMskImg", "");
+	pathMskGrid = xmlParameters.getValue("settings:pathMskGrid", "");
+	pathMskPoints = xmlParameters.getValue("settings:pathMskPoints", "");
+	pathBackground = xmlParameters.getValue("settings:pathBackground", "");
+
+	if (pathImg != "") myengine.setInput(pathImg);
+	else myengine.deleteImg();
+
+	if (pathMskImg != "") myengine.setMask(pathMskImg);
+	else myengine.deleteMask();
+
+	if (pathMskGrid != "") myengine.setMaskGrid(pathMskGrid);
+	else myengine.deleteMaskGrid();
+
+	if (pathMskPoints != "") myengine.setMaskPoints(pathMskPoints);
+	else myengine.deleteMaskPoints();
+
+	if (pathBackground != "") myengine.setBackground(pathBackground);
+
 	updateValues();
 
 	myengine.needsUpdateGrid = true;
 	myengine.needsDrawPoints = true;
-	myengine.setResolution(xmlParameters.getValue("settings:width", 1024), xmlParameters.getValue("settings:height", 768));
+	myengine.setResolution(myengine.width, myengine.height);
 	myengine.updateBackground();
 	myengine.update();
 
@@ -1487,12 +1521,18 @@ void ofApp::saveSettings() {
 	xmlParameters.setValue("settings:archivo", archivo->getChecked());
 	xmlParameters.setValue("settings:color", color->getText());
 	xmlParameters.setValue("settings:graphicElements", graphicElements->getChecked());
+	xmlParameters.setValue("settings:numSVG", numSVG);
 	xmlParameters.setValue("settings:loadBackground", loadBackground->getChecked());
 	xmlParameters.setValue("settings:colorBackground", colorBackground->getChecked());
 	xmlParameters.setValue("settings:defineBackground", defineBackground->getChecked());
 	xmlParameters.setValue("settings:angleBackground", angleBackground->getValue());
 	xmlParameters.setValue("settings:colorOne", colorOne->getText() );
 	xmlParameters.setValue("settings:colorTwo", colorTwo->getText() );
+	xmlParameters.setValue("settings:pathImg", pathImg);
+	xmlParameters.setValue("settings:pathMskImg", pathMskImg);
+	xmlParameters.setValue("settings:pathMskGrid", pathMskGrid);
+	xmlParameters.setValue("settings:pathMskPoints", pathMskPoints);
+	xmlParameters.setValue("settings:pathBackground", pathBackground);
 
 	xmlParameters.saveFile("settings.xml");
 
@@ -1520,11 +1560,13 @@ void ofApp::updateValues() {
 	myengine.densityP = densityP->getValue();
 	myengine.noiseP = noiseP->getValue();
 	myengine.pointSize = size->getValue();
+	myengine.numSVG = numSVG;
 
-	if (punto->getChecked()) myengine.shapeDrawing = 0;
-	else if (cuadrado->getChecked()) myengine.shapeDrawing = 1;
-	else if (triangulo->getChecked()) myengine.shapeDrawing = 2;
-	else if (archivo->getChecked()) myengine.shapeDrawing = 3;
+	if (punto->getChecked()) myengine.shapeDrawing = 1;
+	else if (cuadrado->getChecked()) myengine.shapeDrawing = 2;
+	else if (triangulo->getChecked()) myengine.shapeDrawing = 3;
+	else if (archivo->getChecked()) myengine.shapeDrawing = 4;
+
 
 	myengine.colorPoint = color->getColor();
 	myengine.showTextures = graphicElements->getChecked();

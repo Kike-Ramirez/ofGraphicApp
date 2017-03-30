@@ -25,7 +25,7 @@ public:
     ofFbo background;
     vector<ofPoint> triangles;
     int width, height;
-    ofColor colorTriangle, colorOne, colorTwo, colorPoint;
+    ofColor colorTriangle, colorOne, colorTwo, colorPoint, colorSVG;
     float min, max, density, noise, prob, lineWidth, rotation, pointSize, opacityImg, opacityGrid, opacityPoints;
     float minP, maxP, densityP, noiseP, levelMsk, angleBackground;
     bool needsUpdateGrid;

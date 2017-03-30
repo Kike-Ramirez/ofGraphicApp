@@ -15,9 +15,9 @@ C:\of_v0.9.4_vs_release\addons\ofxDatGui\src\components\ofxDatGuiGroups.h(390): 
 C:\of_v0.9.4_vs_release\addons\ofxDatGui\src\components\ofxDatGuiGroups.h(449): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
 C:\of_v0.9.4_vs_release\addons\ofxDatGui\src\components\ofxDatGuiGroups.h(485): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
 src\ofApp.cpp(47): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-src\ofApp.cpp(1192): warning C4267: 'argument': conversion from 'size_t' to 'ofIndexType', possible loss of data
-src\ofApp.cpp(1223): warning C4267: 'argument': conversion from 'size_t' to 'ofIndexType', possible loss of data
-src\ofApp.cpp(1254): warning C4267: 'argument': conversion from 'size_t' to 'ofIndexType', possible loss of data
+src\ofApp.cpp(1256): warning C4267: 'argument': conversion from 'size_t' to 'ofIndexType', possible loss of data
+src\ofApp.cpp(1287): warning C4267: 'argument': conversion from 'size_t' to 'ofIndexType', possible loss of data
+src\ofApp.cpp(1318): warning C4267: 'argument': conversion from 'size_t' to 'ofIndexType', possible loss of data
 C:\of_v0.9.4_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Tracker.h(166): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   C:\of_v0.9.4_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Tracker.h(164): note: while compiling class template member function 'const std::vector<ofIndexType,std::allocator<_Ty>> &ofxCv::Tracker<cv::Rect>::track(const std::vector<cv::Rect,std::allocator<cv::Rect_<int>>> &)'
           with

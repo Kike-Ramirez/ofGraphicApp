@@ -404,8 +404,16 @@ void ofApp::loadGui() {
     component->setLabel("Generar graficos");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
+
+	y += component->getHeight() + p;
+	colorSVG = new ofxDatGuiColorPicker("colorSVG", ofColor::fromHex(xmlParameters.getValue("settings:color", 0x000000)));
+	colorSVG->setPosition(x, y);
+	colorSVG->setWidth(x11, 0.3);
+	colorSVG->setLabel("Color");
+	colorSVG->onColorPickerEvent(this, &ofApp::onColorPickerEvent);
+	components.push_back(colorSVG);
     
-    y += component->getHeight() + p + 4 * dHeight;
+    y += colorSVG->getHeight() + p + 8 * dHeight;
     loadBackground = new ofxDatGuiToggle("loadBackground", xmlParameters.getValue("settings:loadBackground", false));
     loadBackground->setPosition(x, y);
     loadBackground->setWidth(x11 * 0.4, 0.3);
@@ -464,6 +472,28 @@ void ofApp::loadGui() {
     component->setLabel("GUARDAR ARCHIVO VECTOR");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
+
+	y += component->getHeight() + p + dHeight;
+	component = new ofxDatGuiButton("reset");
+	component->setPosition(x, y);
+	component->setWidth(x11 * 0.333, 1);
+	component->setLabel("RESET");
+	component->onButtonEvent(this, &ofApp::onButtonEvent);
+	components.push_back(component);
+
+	component = new ofxDatGuiButton("loadProject");
+	component->setPosition(x + 0.333 * x11, y);
+	component->setWidth(x11 * 0.333, 1);
+	component->setLabel("CARGAR PROYECTO");
+	component->onButtonEvent(this, &ofApp::onButtonEvent);
+	components.push_back(component);
+
+	component = new ofxDatGuiButton("saveProject");
+	component->setPosition(x + 0.666 * x11, y);
+	component->setWidth(x11 * 0.334, 1);
+	component->setLabel("GUARDAR PROYECTO");
+	component->onButtonEvent(this, &ofApp::onButtonEvent);
+	components.push_back(component);
 
     y += component->getHeight() + p + 4 * dHeight;
     component = new ofxDatGuiButton("exit");
@@ -640,8 +670,8 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 
         myengine.deleteMaskGrid();
         myengine.needsUpdateGrid = true;
-        myengine.needsUpdatePoints = true;
-        myengine.needsDrawPoints = true;
+        //myengine.needsUpdatePoints = true;
+        //myengine.needsDrawPoints = true;
 
         while (myengine.pathGrid.getNumVertices() > 0) {
 
@@ -658,7 +688,7 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         if(result.bSuccess) {
           pathMskPoints = result.getPath();
           myengine.setMaskPoints(pathMskPoints);
-          myengine.needsUpdateGrid = true;
+          // myengine.needsUpdateGrid = true;
           myengine.needsUpdatePoints = true;
           myengine.needsDrawPoints = true;
 
@@ -732,7 +762,36 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         myengine.centerSVG = ofPoint(ofRandom(myengine.width), ofRandom(myengine.height));
         
     }
+
+	else if (e.target->is("loadProject")) {
+
+		ofFileDialogResult result = ofSystemLoadDialog("Load project file");
+
+		if (result.bSuccess) {
+			pathProject = result.getPath();
+
+			loadSettings();
+
+		}
+	}
     
+	else if (e.target->is("saveProject")) {
+
+		ofFileDialogResult result = ofSystemSaveDialog("project.xml", "Save project file");
+
+		if (result.bSuccess) {
+			pathProject = result.getPath();
+
+			saveSettings();
+
+		}
+	}
+
+	else if (e.target->is("reset")) {
+
+		resetSettings();
+
+	}
     
     else if (e.target->is("exit")) {
 
@@ -816,8 +875,8 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
 
             if(result.bSuccess) {
 
-              string path = result.getPath();
-              myengine.setBackground(path);
+              pathBackground = result.getPath();
+              myengine.setBackground(pathBackground);
 
               // load your file at `path`
             }
@@ -1095,8 +1154,13 @@ void ofApp::onColorPickerEvent(ofxDatGuiColorPickerEvent e)
     }
     else if (e.target->is("colorGrid")) {
         myengine.colorTriangle = ofColor(e.color);
-        myengine.updateBackground();
+        // myengine.updateBackground();
     }
+
+	else if (e.target->is("colorSVG")) {
+		myengine.colorSVG = ofColor(e.color);
+		// myengine.updateBackground();
+	}
 }
 
 
@@ -1373,27 +1437,29 @@ void ofApp::resetSettings() {
 	showInput->setChecked(true);
 	opacityImg->setValue(100);
 	levelMsk->setValue(100);
-	showGrid->setChecked(true);
+	showGrid->setChecked(false);
 	opacityGrid->setValue(100);
 	min->setValue(0);
 	max->setValue(255);
-	density->setValue(4);
-	noise->setValue(0);
+	density->setValue(20);
+	noise->setValue(5);
 	stroke->setValue(1);
 	colorGrid->setColor(0xFFFFFF);
-	showPoints->setChecked(true);
+	showPoints->setChecked(false);
 	opacityPoints->setValue(100);
 	minP->setValue(0);
 	maxP->setValue(255);
-	densityP->setValue(100);
-	noiseP->setValue(0);
-	size->setValue(5);
+	densityP->setValue(20);
+	noiseP->setValue(5);
+	size->setValue(20);
 	punto->setChecked(true);
 	cuadrado->setChecked(false);
 	triangulo->setChecked(false);
 	archivo->setChecked(false);
 	color->setColor(0x000000);
 	graphicElements->setChecked(false);
+	numSVG = 0;
+	colorSVG->setColor(0xFFFFFF);
 	loadBackground->setChecked(false);
 	colorBackground->setChecked(true);
 	defineBackground->setChecked(false);
@@ -1411,9 +1477,34 @@ void ofApp::resetSettings() {
 	myengine.deleteMaskGrid();
 	myengine.deleteMaskPoints();
 
+	myengine.deleteMask();
+	myengine.input.getTexture().disableAlphaMask();
+
+
+	while (myengine.pathInput.getNumVertices() > 0) {
+
+		myengine.pathInput.removeVertex(0);
+
+	}
+
+	myengine.deleteMaskGrid();
+	while (myengine.pathGrid.getNumVertices() > 0) {
+
+		myengine.pathGrid.removeVertex(0);
+
+	}
+
+	myengine.deleteMaskPoints();
+	while (myengine.pathPoints.getNumVertices() > 0) {
+
+		myengine.pathPoints.removeVertex(0);
+
+	}
+
 	updateValues();
 
 	myengine.needsUpdateGrid = true;
+	myengine.needsUpdatePoints = true;
 	myengine.needsDrawPoints = true;
 	myengine.setResolution(1024, 768);
 	myengine.updateBackground();
@@ -1425,7 +1516,7 @@ void ofApp::resetSettings() {
 
 void ofApp::loadSettings() {
 
-	xmlParameters.loadFile("Settings.xml");
+	xmlParameters.loadFile(pathProject);
 
 
 	ancho->setText(ofToString(xmlParameters.getValue("settings:width", 1024)));
@@ -1440,7 +1531,6 @@ void ofApp::loadSettings() {
 	density->setValue(xmlParameters.getValue("settings:density", 4));
 	noise->setValue(xmlParameters.getValue("settings:noise", 0));
 	stroke->setValue(xmlParameters.getValue("settings:stroke", 1));
-	colorGrid->setColor(ofHexToInt(xmlParameters.getValue("settings:colorGrid", "0xFFFFFF")));
 	showPoints->setChecked(ofToBool(xmlParameters.getValue("settings:showPoints", "true")));
 	opacityPoints->setValue(xmlParameters.getValue("settings:opacityPoints", 100));
 	minP->setValue(xmlParameters.getValue("settings:minP", 0));
@@ -1452,15 +1542,32 @@ void ofApp::loadSettings() {
 	cuadrado->setChecked(ofToBool(xmlParameters.getValue("settings:cuadrado", "false")));
 	triangulo->setChecked(ofToBool(xmlParameters.getValue("settings:triangulo", "false")));
 	archivo->setChecked(ofToBool(xmlParameters.getValue("settings:archivo", "false")));
-	color->setColor(ofHexToInt(xmlParameters.getValue("settings:color", "0x000000")));
 	graphicElements->setChecked(ofToBool(xmlParameters.getValue("settings:graphicElements", "false")));
 	numSVG = xmlParameters.getValue("settings:numSVG", 0);
 	loadBackground->setChecked(ofToBool(xmlParameters.getValue("settings:loadBackground", "false")));
 	colorBackground->setChecked(ofToBool(xmlParameters.getValue("settings:colorBackground", "true")));
 	defineBackground->setChecked(ofToBool(xmlParameters.getValue("settings:defineBackground", "false")));
 	angleBackground->setValue(xmlParameters.getValue("settings:angleBackground", 0));
-	colorOne->setColor(ofHexToInt(xmlParameters.getValue("settings:colorOne", "0x000000")));
-	colorTwo->setColor(ofHexToInt(xmlParameters.getValue("settings:colorTwo", "0xFFFFFF")));
+
+	string strColorGrid = xmlParameters.getValue("settings:colorGrid", "0xFFFFFF");
+	colorGrid->setText(strColorGrid);
+	colorGrid->setColor(ofHexToInt(strColorGrid));
+
+	string strColor = xmlParameters.getValue("settings:color", "0x000000");
+	color->setText(strColor);
+	color->setColor(ofHexToInt(strColor));
+
+	string strColorOne = xmlParameters.getValue("settings:colorOne", "0x000000");
+	colorOne->setText(strColorOne);
+	colorOne->setColor(ofHexToInt(strColorOne));
+
+	string strColorTwo = xmlParameters.getValue("settings:colorTwo", "0xFFFFFF");
+	colorTwo->setText(strColorTwo);
+	colorTwo->setColor(ofHexToInt(strColorTwo));
+
+	string strColorSVG = xmlParameters.getValue("settings:colorSVG", "0xFFFFFF");
+	colorSVG->setText(strColorSVG);
+	colorSVG->setColor(ofHexToInt(strColorSVG));
 
 	pathImg = xmlParameters.getValue("settings:pathImg", "");
 	pathMskImg = xmlParameters.getValue("settings:pathMskImg", "");
@@ -1480,13 +1587,64 @@ void ofApp::loadSettings() {
 	if (pathMskPoints != "") myengine.setMaskPoints(pathMskPoints);
 	else myengine.deleteMaskPoints();
 
-	if (pathBackground != "") myengine.setBackground(pathBackground);
+	if (pathBackground != "") myengine.setBackground(pathBackground);	
+
+
+	myengine.pathInput.clear();
+	xmlParameters.pushTag("pathInput");
+	int numberOfSavedPoints = xmlParameters.getNumTags("position");
+	for (int i = 0; i < numberOfSavedPoints; i++) {
+		xmlParameters.pushTag("position", i);
+
+		ofPoint p;
+		p.x = xmlParameters.getValue("X", 0);
+		p.y = xmlParameters.getValue("Y", 0);
+
+		myengine.pathInput.addVertex(p);
+		xmlParameters.popTag();
+	}
+	xmlParameters.popTag(); //pop position
+
+
+	myengine.pathGrid.clear();
+	xmlParameters.pushTag("pathGrid");
+	numberOfSavedPoints = xmlParameters.getNumTags("position");
+	for (int i = 0; i < numberOfSavedPoints; i++) {
+		xmlParameters.pushTag("position", i);
+
+		ofPoint p;
+		p.x = xmlParameters.getValue("X", 0);
+		p.y = xmlParameters.getValue("Y", 0);
+
+		myengine.pathGrid.addVertex(p);
+		xmlParameters.popTag();
+	}
+	xmlParameters.popTag(); //pop position
+
+
+
+	myengine.pathPoints.clear();
+	xmlParameters.pushTag("pathPoints");
+	numberOfSavedPoints = xmlParameters.getNumTags("position");
+	for (int i = 0; i < numberOfSavedPoints; i++) {
+		xmlParameters.pushTag("position", i);
+
+		ofPoint p;
+		p.x = xmlParameters.getValue("X", 0);
+		p.y = xmlParameters.getValue("Y", 0);
+
+		myengine.pathPoints.addVertex(p);
+		xmlParameters.popTag();
+	}
+	xmlParameters.popTag(); //pop position
+
 
 	updateValues();
 
-	myengine.needsUpdateGrid = true;
-	myengine.needsDrawPoints = true;
 	myengine.setResolution(myengine.width, myengine.height);
+	myengine.updateGrid();
+	myengine.updatePoints();
+	myengine.drawPoints();
 	myengine.updateBackground();
 	myengine.update();
 
@@ -1519,9 +1677,10 @@ void ofApp::saveSettings() {
 	xmlParameters.setValue("settings:cuadrado", cuadrado->getChecked());
 	xmlParameters.setValue("settings:triangulo", triangulo->getChecked());
 	xmlParameters.setValue("settings:archivo", archivo->getChecked());
-	xmlParameters.setValue("settings:color", color->getText());
+	xmlParameters.setValue("settings:color",  color->getText());
 	xmlParameters.setValue("settings:graphicElements", graphicElements->getChecked());
 	xmlParameters.setValue("settings:numSVG", numSVG);
+	xmlParameters.setValue("settings:colorSVG", colorSVG->getText());
 	xmlParameters.setValue("settings:loadBackground", loadBackground->getChecked());
 	xmlParameters.setValue("settings:colorBackground", colorBackground->getChecked());
 	xmlParameters.setValue("settings:defineBackground", defineBackground->getChecked());
@@ -1533,8 +1692,52 @@ void ofApp::saveSettings() {
 	xmlParameters.setValue("settings:pathMskGrid", pathMskGrid);
 	xmlParameters.setValue("settings:pathMskPoints", pathMskPoints);
 	xmlParameters.setValue("settings:pathBackground", pathBackground);
+	xmlParameters.addTag("pathInput");
 
-	xmlParameters.saveFile("settings.xml");
+	xmlParameters.pushTag("pathInput");
+	//points is a vector<ofPoint> that we want to save to a file
+	for (int i = 0; i < myengine.pathInput.getNumVertices(); i++) {
+		//each position tag represents one point
+		xmlParameters.addTag("position");
+		xmlParameters.pushTag("position", i);
+		//so set the three values in the file
+		xmlParameters.addValue("X", myengine.pathInput.getVertex(i).x);
+		xmlParameters.addValue("Y", myengine.pathInput.getVertex(i).y);
+		xmlParameters.popTag();//pop position
+	}
+	xmlParameters.popTag(); //pop position
+
+	xmlParameters.addTag("pathGrid");
+
+	xmlParameters.pushTag("pathGrid");
+	//points is a vector<ofPoint> that we want to save to a file
+	for (int i = 0; i < myengine.pathGrid.getNumVertices(); i++) {
+		//each position tag represents one point
+		xmlParameters.addTag("position");
+		xmlParameters.pushTag("position", i);
+		//so set the three values in the file
+		xmlParameters.addValue("X", myengine.pathGrid.getVertex(i).x);
+		xmlParameters.addValue("Y", myengine.pathGrid.getVertex(i).y);
+		xmlParameters.popTag();//pop position
+	}
+	xmlParameters.popTag(); //pop position
+
+	xmlParameters.addTag("pathPoints");
+
+	xmlParameters.pushTag("pathPoints");
+	//points is a vector<ofPoint> that we want to save to a file
+	for (int i = 0; i < myengine.pathPoints.getNumVertices(); i++) {
+		//each position tag represents one point
+		xmlParameters.addTag("position");
+		xmlParameters.pushTag("position", i);
+		//so set the three values in the file
+		xmlParameters.addValue("X", myengine.pathPoints.getVertex(i).x);
+		xmlParameters.addValue("Y", myengine.pathPoints.getVertex(i).y);
+		xmlParameters.popTag();//pop position
+	}
+	xmlParameters.popTag(); //pop position
+
+	xmlParameters.saveFile(pathProject);
 
 }
 
@@ -1569,6 +1772,8 @@ void ofApp::updateValues() {
 
 
 	myengine.colorPoint = color->getColor();
+	myengine.colorTriangle = colorGrid->getColor();
+	myengine.colorSVG = colorSVG->getColor();
 	myengine.showTextures = graphicElements->getChecked();
 	myengine.showBackground = defineBackground->getChecked();
 	myengine.showBackgroundColor = colorBackground->getChecked();

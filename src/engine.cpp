@@ -34,6 +34,7 @@ void engine::setup()
     colorTwo = ofColor(255);
     colorTriangle = ofColor(255);
     colorPoint = ofColor(0);
+	colorSVG = ofColor(255);
 
     setResolution(width, height);
     needsUpdateGrid = true;
@@ -203,7 +204,7 @@ void engine::update()
     if (showTextures) {
         
 
-        svgTextures[numSVG].setColorEngine(colorTriangle);
+        svgTextures[numSVG].setColorEngine(colorSVG);
         ofPushMatrix();
         // ofTranslate(centerSVG);
 

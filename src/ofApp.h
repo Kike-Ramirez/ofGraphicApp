@@ -65,6 +65,7 @@ public:
 	ofxDatGuiSlider* angleBackground;
 	ofxDatGuiColorPicker* colorOne;
 	ofxDatGuiColorPicker* colorTwo;
+	ofxDatGuiColorPicker* colorSVG;
 
 	ofShader shaderBlurX, shaderBlurY;
     ofFbo fboBlurOnePass, fboBlurTwoPass;
@@ -74,6 +75,8 @@ public:
 	string pathMskGrid;
 	string pathMskPoints;
 	string pathBackground;
+	string pathProject;
+
 	int numSVG;
 
     int dWidth, dHeight;

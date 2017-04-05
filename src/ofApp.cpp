@@ -10,7 +10,7 @@ void ofApp::setup()
     //ofSetFullscreen(true);
     ofSetWindowPosition(100, 100);
     ofSetWindowShape(1024, 768);
-    ofSetWindowTitle("ofGraphicApp v0.99");
+    ofSetWindowTitle("ofGraphicApp v1.00");
     ofSetFrameRate(60);
     ofSetEscapeQuitsApp(false);
 
@@ -1444,7 +1444,7 @@ void ofApp::resetSettings() {
 	density->setValue(20);
 	noise->setValue(5);
 	stroke->setValue(1);
-	colorGrid->setColor(0xFFFFFF);
+	colorGrid->setColor(0xC75B12);
 	showPoints->setChecked(false);
 	opacityPoints->setValue(100);
 	minP->setValue(0);
@@ -1456,7 +1456,7 @@ void ofApp::resetSettings() {
 	cuadrado->setChecked(false);
 	triangulo->setChecked(false);
 	archivo->setChecked(false);
-	color->setColor(0x000000);
+	color->setColor(0x4D5357);
 	graphicElements->setChecked(false);
 	numSVG = 0;
 	colorSVG->setColor(0xFFFFFF);
@@ -1464,8 +1464,8 @@ void ofApp::resetSettings() {
 	colorBackground->setChecked(true);
 	defineBackground->setChecked(false);
 	angleBackground->setValue(0);
-	colorOne->setColor(0x000000);
-	colorTwo->setColor(0xFFFFFF);
+	colorOne->setColor(0x203244);
+	colorTwo->setColor(0xDDDBD6);
 
 	pathImg = "";
 	pathMskImg = "";

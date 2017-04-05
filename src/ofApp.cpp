@@ -1550,24 +1550,26 @@ void ofApp::loadSettings() {
 	angleBackground->setValue(xmlParameters.getValue("settings:angleBackground", 0));
 
 	string strColorGrid = xmlParameters.getValue("settings:colorGrid", "0xFFFFFF");
+	cout << "colorGrid: " << strColorGrid << endl;
+
+	colorGrid->setColor(ofHexToInt("0x" + strColorGrid));
 	colorGrid->setText(strColorGrid);
-	colorGrid->setColor(ofHexToInt(strColorGrid));
 
 	string strColor = xmlParameters.getValue("settings:color", "0x000000");
-	color->setText(strColor);
 	color->setColor(ofHexToInt(strColor));
+	color->setText(strColor);
 
 	string strColorOne = xmlParameters.getValue("settings:colorOne", "0x000000");
-	colorOne->setText(strColorOne);
 	colorOne->setColor(ofHexToInt(strColorOne));
+	colorOne->setText(strColorOne);
 
 	string strColorTwo = xmlParameters.getValue("settings:colorTwo", "0xFFFFFF");
-	colorTwo->setText(strColorTwo);
 	colorTwo->setColor(ofHexToInt(strColorTwo));
+	colorTwo->setText(strColorTwo);
 
 	string strColorSVG = xmlParameters.getValue("settings:colorSVG", "0xFFFFFF");
-	colorSVG->setText(strColorSVG);
 	colorSVG->setColor(ofHexToInt(strColorSVG));
+	colorSVG->setText(strColorSVG);
 
 	pathImg = xmlParameters.getValue("settings:pathImg", "");
 	pathMskImg = xmlParameters.getValue("settings:pathMskImg", "");
@@ -1605,6 +1607,21 @@ void ofApp::loadSettings() {
 	}
 	xmlParameters.popTag(); //pop position
 
+	if (myengine.pathInput.getNumVertices() > 2) {
+
+		myengine.definingMaskImg = false;
+		myengine.fboInput.begin();
+		ofBackground(0);
+		myengine.pathInput.draw();
+		myengine.fboInput.end();
+
+		ofPixels pixels;
+		myengine.fboInput.readToPixels(pixels);
+		myengine.maskInput.setFromPixels(pixels);
+		myengine.maskInput = blur(myengine.maskInput, myengine.input.getWidth() / 10);
+
+	}
+
 
 	myengine.pathGrid.clear();
 	xmlParameters.pushTag("pathGrid");
@@ -1621,7 +1638,19 @@ void ofApp::loadSettings() {
 	}
 	xmlParameters.popTag(); //pop position
 
+	if (myengine.pathGrid.getNumVertices() > 2) {
 
+		myengine.definingMaskGrid = false;
+		myengine.fboGrid.begin();
+		ofBackground(0, 0, 0, 0);
+		myengine.pathGrid.draw();
+		myengine.fboGrid.end();
+
+		ofPixels pixels;
+		myengine.fboGrid.readToPixels(pixels);
+		myengine.maskGrid.setFromPixels(pixels);
+
+	}
 
 	myengine.pathPoints.clear();
 	xmlParameters.pushTag("pathPoints");
@@ -1637,6 +1666,25 @@ void ofApp::loadSettings() {
 		xmlParameters.popTag();
 	}
 	xmlParameters.popTag(); //pop position
+
+	if (myengine.pathPoints.getNumVertices() > 2) {
+
+		myengine.definingMaskPoints = false;
+		myengine.fboPoints.begin();
+		ofBackground(0, 0, 0, 0);
+		myengine.pathPoints.draw();
+		myengine.fboPoints.end();
+
+		ofPixels pixels;
+		myengine.fboPoints.readToPixels(pixels);
+		myengine.maskPoints.setFromPixels(pixels);
+
+	}
+
+
+
+
+
 
 
 	updateValues();
@@ -1781,5 +1829,7 @@ void ofApp::updateValues() {
 	myengine.angleBackground = angleBackground->getValue();
 	myengine.colorOne = colorOne->getColor();
 	myengine.colorTwo = colorTwo->getColor();
+
+
 
 }

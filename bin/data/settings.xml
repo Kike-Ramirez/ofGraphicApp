@@ -11,7 +11,7 @@
     <density>20.000000000</density>
     <noise>5.000000000</noise>
     <stroke>1.000000000</stroke>
-    <colorGrid>FFFFFF</colorGrid>
+    <colorGrid>C75B12</colorGrid>
     <showPoints>0</showPoints>
     <opacityPoints>100.000000000</opacityPoints>
     <minP>0.000000000</minP>
@@ -23,18 +23,22 @@
     <cuadrado>0</cuadrado>
     <triangulo>0</triangulo>
     <archivo>0</archivo>
-    <color>000000</color>
+    <color>4D5357</color>
     <graphicElements>0</graphicElements>
     <loadBackground>0</loadBackground>
     <colorBackground>1</colorBackground>
     <defineBackground>0</defineBackground>
     <angleBackground>0.000000000</angleBackground>
-    <colorOne>000000</colorOne>
-    <colorTwo>FFFFFF</colorTwo>
+    <colorOne>203244</colorOne>
+    <colorTwo>DDDBD6</colorTwo>
     <pathImg></pathImg>
     <pathMskImg></pathMskImg>
     <pathMskGrid></pathMskGrid>
     <pathMskPoints></pathMskPoints>
     <pathBackground></pathBackground>
-    <numSVG>4</numSVG>
+    <numSVG>0</numSVG>
+    <colorSVG>FFFFFF</colorSVG>
 </settings>
+<pathInput></pathInput>
+<pathGrid></pathGrid>
+<pathPoints></pathPoints>

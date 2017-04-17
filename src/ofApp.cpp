@@ -10,7 +10,7 @@ void ofApp::setup()
     //ofSetFullscreen(true);
     ofSetWindowPosition(100, 100);
     ofSetWindowShape(1024, 768);
-    ofSetWindowTitle("ofGraphicApp v1.00");
+    ofSetWindowTitle("ofGraphicApp v1.10");
     ofSetFrameRate(60);
     ofSetEscapeQuitsApp(false);
 
@@ -1595,14 +1595,14 @@ void ofApp::loadSettings() {
 	opacityGrid->setValue(xmlParameters.getValue("settings:opacityGrid", 100));
 	min->setValue(xmlParameters.getValue("settings:min", 0));
 	max->setValue(xmlParameters.getValue("settings:max", 255));
-	density->setValue(xmlParameters.getValue("settings:density", 4));
+	density->setValue(xmlParameters.getValue("settings:density", 40));
 	noise->setValue(xmlParameters.getValue("settings:noise", 0));
 	stroke->setValue(xmlParameters.getValue("settings:stroke", 1));
 	showPoints->setChecked(ofToBool(xmlParameters.getValue("settings:showPoints", "true")));
 	opacityPoints->setValue(xmlParameters.getValue("settings:opacityPoints", 100));
 	minP->setValue(xmlParameters.getValue("settings:minP", 0));
 	maxP->setValue(xmlParameters.getValue("settings:maxP", 255));
-	densityP->setValue(xmlParameters.getValue("settings:densityP", 100));
+	densityP->setValue(xmlParameters.getValue("settings:densityP", 40));
 	noiseP->setValue(xmlParameters.getValue("settings:noiseP", 0));
 	size->setValue(xmlParameters.getValue("settings:size", 5));
 	punto->setChecked(ofToBool(xmlParameters.getValue("settings:punto", "true")));

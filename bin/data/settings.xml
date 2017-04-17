@@ -8,7 +8,7 @@
     <opacityGrid>100.000000000</opacityGrid>
     <min>0.000000000</min>
     <max>255.000000000</max>
-    <density>20.000000000</density>
+    <density>40.000000000</density>
     <noise>5.000000000</noise>
     <stroke>1.000000000</stroke>
     <colorGrid>C75B12</colorGrid>
@@ -16,7 +16,7 @@
     <opacityPoints>100.000000000</opacityPoints>
     <minP>0.000000000</minP>
     <maxP>255.000000000</maxP>
-    <densityP>20.000000000</densityP>
+    <densityP>40.000000000</densityP>
     <noiseP>5.000000000</noiseP>
     <size>20.000000000</size>
     <punto>1</punto>

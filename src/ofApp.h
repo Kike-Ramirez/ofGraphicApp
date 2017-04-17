@@ -6,6 +6,7 @@
 #include "ofxDelaunay.h"
 #include "ofxCV.h"
 #include "ofxXmlSettings.h"
+#include "ColorSelector.h"
 
 class ofApp : public ofBaseApp{
 
@@ -45,6 +46,7 @@ public:
 	ofxDatGuiSlider* density;
 	ofxDatGuiSlider* noise;
 	ofxDatGuiSlider* stroke;
+	ColorSelector colorSelectorGrid;
 	ofxDatGuiColorPicker* colorGrid;
 	ofxDatGuiToggle* showPoints;
 	ofxDatGuiSlider* opacityPoints;
@@ -57,14 +59,18 @@ public:
 	ofxDatGuiToggle* cuadrado;
 	ofxDatGuiToggle* triangulo;
 	ofxDatGuiToggle* archivo;
+	ColorSelector colorSelectorPoint;
 	ofxDatGuiColorPicker* color;
 	ofxDatGuiToggle* graphicElements;
 	ofxDatGuiToggle* loadBackground;
 	ofxDatGuiToggle* colorBackground;
 	ofxDatGuiToggle* defineBackground;
 	ofxDatGuiSlider* angleBackground;
+	ColorSelector colorSelectorOne;
 	ofxDatGuiColorPicker* colorOne;
+	ColorSelector colorSelectorTwo;
 	ofxDatGuiColorPicker* colorTwo;
+	ColorSelector colorSelectorColorSVG;
 	ofxDatGuiColorPicker* colorSVG;
 
 	ofShader shaderBlurX, shaderBlurY;

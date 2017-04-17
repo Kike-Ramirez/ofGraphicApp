@@ -1,14 +1,58 @@
-﻿     Creating library bin\ofGraphicApp.lib and object bin\ofGraphicApp.exp
+﻿  ofApp.cpp
+C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\libs\openFrameworks\math\ofMatrix4x4.h(320): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\libs\openFrameworks\math\ofMatrix4x4.h(325): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\libs\openFrameworks\math\ofMatrix4x4.h(969): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\libs\openFrameworks\math\ofMatrix4x4.h(970): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\libs\openFrameworks\math\ofMatrix4x4.h(971): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\libs\openFrameworks\math\ofMatrix4x4.h(972): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kike ramirez\documents\of_v0.9.8_vs_release\addons\ofxdatgui\src\components\ofxDatGuiTextInputField.h(162): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kike ramirez\documents\of_v0.9.8_vs_release\addons\ofxdatgui\src\components\ofxDatGuiSlider.h(140): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kike ramirez\documents\of_v0.9.8_vs_release\addons\ofxdatgui\src\components\ofxDatGuiSlider.h(141): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kike ramirez\documents\of_v0.9.8_vs_release\addons\ofxdatgui\src\components\ofxDatGuiSlider.h(343): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kike ramirez\documents\of_v0.9.8_vs_release\addons\ofxdatgui\src\components\ofxDatGuiSlider.h(346): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kike ramirez\documents\of_v0.9.8_vs_release\addons\ofxdatgui\src\components\ofxDatGuiScrollView.h(160): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\addons\ofxDatGui\src\components\ofxDatGuiGroups.h(390): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\addons\ofxDatGui\src\components\ofxDatGuiGroups.h(449): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\addons\ofxDatGui\src\components\ofxDatGuiGroups.h(485): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+src\ofApp.cpp(47): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+src\ofApp.cpp(1321): warning C4267: 'argument': conversion from 'size_t' to 'ofIndexType', possible loss of data
+src\ofApp.cpp(1352): warning C4267: 'argument': conversion from 'size_t' to 'ofIndexType', possible loss of data
+src\ofApp.cpp(1383): warning C4267: 'argument': conversion from 'size_t' to 'ofIndexType', possible loss of data
+C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Tracker.h(166): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Tracker.h(164): note: while compiling class template member function 'const std::vector<ofIndexType,std::allocator<_Ty>> &ofxCv::Tracker<cv::Rect>::track(const std::vector<cv::Rect,std::allocator<cv::Rect_<int>>> &)'
+          with
+          [
+              _Ty=ofIndexType
+          ]
+  C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Tracker.h(322): note: see reference to function template instantiation 'const std::vector<ofIndexType,std::allocator<_Ty>> &ofxCv::Tracker<cv::Rect>::track(const std::vector<cv::Rect,std::allocator<cv::Rect_<int>>> &)' being compiled
+          with
+          [
+              _Ty=ofIndexType
+          ]
+  C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Tracker.h(307): note: see reference to class template instantiation 'ofxCv::Tracker<cv::Rect>' being compiled
+C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Tracker.h(167): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Tracker.h(200): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Tracker.h(212): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Utilities.h(127): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Utilities.h(130): note: see reference to function template instantiation 'int ofxCv::getChannels<unsigned char>(ofPixels_<unsigned char> &)' being compiled
+  C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Utilities.h(253): note: see reference to function template instantiation 'int ofxCv::getChannels<unsigned char>(ofBaseHasPixels_<unsigned char> &)' being compiled
+  C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Utilities.h(274): note: see reference to function template instantiation 'void ofxCv::copy<S,D>(S &,D &,int)' being compiled
+          with
+          [
+              S=ofImage,
+              D=ofImage
+          ]
+  src\ofApp.cpp(1492): note: see reference to function template instantiation 'void ofxCv::copy<ofImage,ofImage>(S &,D &)' being compiled
+          with
+          [
+              S=ofImage,
+              D=ofImage
+          ]
+C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Utilities.h(236): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Utilities.h(239): note: see reference to function template instantiation 'cv::Mat ofxCv::toCv<unsigned char>(ofPixels_<unsigned char> &)' being compiled
+  C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Utilities.h(254): note: see reference to function template instantiation 'cv::Mat ofxCv::toCv<unsigned char>(ofBaseHasPixels_<unsigned char> &)' being compiled
+     Creating library bin\ofGraphicApp.lib and object bin\ofGraphicApp.exp
   LINK : /LTCG specified but no code generation required; remove /LTCG from the link command line to improve linker performance
-  ofGraphicApp.vcxproj -> C:\of_v0.9.4_vs_release\apps\ofGraphicApp\bin\ofGraphicApp.exe
+  ofGraphicApp.vcxproj -> C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\apps\myApps\ofGraphicApp\bin\ofGraphicApp.exe
   
-  	                   9	C:\of_v0.9.4_vs_release\export\vs\x64\
-  	    Nuevo arch		 4171776	C:\of_v0.9.4_vs_release\export\vs\x64\assimp.dll
-  	    Nuevo arch		 1503232	C:\of_v0.9.4_vs_release\export\vs\x64\fmodex64.dll
-  	    Nuevo arch		 1552384	C:\of_v0.9.4_vs_release\export\vs\x64\fmodexL64.dll
-  	    Nuevo arch		 6402560	C:\of_v0.9.4_vs_release\export\vs\x64\FreeImage.dll
-  	    Nuevo arch		  734720	C:\of_v0.9.4_vs_release\export\vs\x64\freetype.dll
-  	    Nuevo arch		  289792	C:\of_v0.9.4_vs_release\export\vs\x64\glut32.dll
-  	    Nuevo arch		 2208256	C:\of_v0.9.4_vs_release\export\vs\x64\libeay32.dll
-  	    Nuevo arch		  458240	C:\of_v0.9.4_vs_release\export\vs\x64\ssleay32.dll
-  	    Nuevo arch		   81408	C:\of_v0.9.4_vs_release\export\vs\x64\Zlib.dll
+  	                   9	C:\Users\Kike Ramirez\Documents\of_v0.9.8_vs_release\export\vs\x64\

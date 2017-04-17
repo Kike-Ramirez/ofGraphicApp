@@ -46,6 +46,14 @@ void ofApp::draw()
     fitCanvas();
     for(int i=components.size()-1; i>=0; i--) components[i]->draw();
 
+	colorSelectorGrid.display();
+	colorSelectorPoint.display();
+	colorSelectorColorSVG.display();
+	colorSelectorOne.display();
+	colorSelectorTwo.display();
+
+
+
     if ((myengine.definingMaskImg) || (myengine.definingMaskGrid) || (myengine.definingMaskPoints)) {
 
         if ((mouseX > xCanvas) && (mouseX < xCanvas + widthCanvas) && (mouseY > yCanvas) && (mouseY< yCanvas + heightCanvas)) {
@@ -260,8 +268,11 @@ void ofApp::loadGui() {
     component->setLabel("Borrar Mascara");
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
+
+	y += component->getHeight() + p;
+	colorSelectorGrid.setup(ofVec3f(x, y), ofVec3f(x11, 20));
     
-    y += component->getHeight() + p;
+    y += 20 + p;
     colorGrid = new ofxDatGuiColorPicker("colorGrid", ofColor::fromHex(xmlParameters.getValue("settings:colorGrid", 0xFFFFFF)));
 	colorGrid->setPosition(x, y);
 	colorGrid->setWidth(x11, 0.3);
@@ -379,9 +390,10 @@ void ofApp::loadGui() {
     component->onButtonEvent(this, &ofApp::onButtonEvent);
     components.push_back(component);
 
+	y += component->getHeight() + p;
+	colorSelectorPoint.setup(ofVec3f(x, y), ofVec3f(x11, 20));
 
-
-    y += component->getHeight() + p;
+	y += 20 + p;
     color = new ofxDatGuiColorPicker("color", ofColor::fromHex(xmlParameters.getValue("settings:color", 0x000000)));
 	color->setPosition(x, y);
 	color->setWidth(x11, 0.3);
@@ -406,6 +418,11 @@ void ofApp::loadGui() {
     components.push_back(component);
 
 	y += component->getHeight() + p;
+
+	colorSelectorColorSVG.setup(ofVec3f(x, y), ofVec3f(x11, 20));
+
+	y += 20 + p;
+
 	colorSVG = new ofxDatGuiColorPicker("colorSVG", ofColor::fromHex(xmlParameters.getValue("settings:color", 0x000000)));
 	colorSVG->setPosition(x, y);
 	colorSVG->setWidth(x11, 0.3);
@@ -443,7 +460,14 @@ void ofApp::loadGui() {
 	angleBackground->onSliderEvent(this, &ofApp::onSliderEvent);
     components.push_back(angleBackground);
 
-    y += angleBackground->getHeight() + p;
+	y += angleBackground->getHeight() + p;
+
+	colorSelectorOne.setup(ofVec3f(x, y), ofVec3f(x11/2, 20));
+
+	colorSelectorTwo.setup(ofVec3f(x + x11 / 2, y), ofVec3f(x11/2, 20));
+
+	y += 20 + p;
+
     colorOne = new ofxDatGuiColorPicker("colorOne", ofColor::fromHex(xmlParameters.getValue("settings:colorOne", 0x000000)));
 	colorOne->setPosition(x, y);
 	colorOne->setWidth(x11 / 2, 0.6);
@@ -1245,6 +1269,47 @@ void ofApp::mouseDragged(int x, int y, int button){
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
 
+	colorSelectorGrid.mousePressed(x, y, button);
+	if (colorSelectorGrid.selectedColor != ofColor(0)) {
+	
+		colorGrid->setColor(colorSelectorGrid.selectedColor);
+		myengine.colorTriangle.set(colorSelectorGrid.selectedColor);
+
+	}
+
+
+	colorSelectorPoint.mousePressed(x, y, button);
+	if (colorSelectorPoint.selectedColor != ofColor(0)) {
+
+		color->setColor(colorSelectorPoint.selectedColor);
+		myengine.colorPoint.set(colorSelectorPoint.selectedColor);
+		myengine.needsDrawPoints = true;
+
+	}
+
+	colorSelectorColorSVG.mousePressed(x, y, button);
+	if (colorSelectorColorSVG.selectedColor != ofColor(0)) {
+	
+		colorSVG->setColor(colorSelectorColorSVG.selectedColor);
+		myengine.colorSVG = colorSelectorColorSVG.selectedColor;
+	}
+
+	colorSelectorOne.mousePressed(x, y, button);
+	if (colorSelectorOne.selectedColor != ofColor(0)) {
+
+		colorOne->setColor(colorSelectorOne.selectedColor);
+		myengine.colorOne.set(colorSelectorOne.selectedColor);
+		myengine.updateBackground();
+	}
+
+	colorSelectorTwo.mousePressed(x, y, button);
+	if (colorSelectorTwo.selectedColor != ofColor(0)) {
+
+		colorTwo->setColor(colorSelectorTwo.selectedColor);
+		myengine.colorTwo.set(colorSelectorTwo.selectedColor);
+		myengine.updateBackground();
+	}
+
     if ((myengine.definingMaskImg) && (mouseX > xCanvas) && (mouseX < xCanvas + widthCanvas) && (mouseY > yCanvas) && (mouseY< yCanvas + heightCanvas)) {
 
         myengine.pathInput.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
@@ -1330,6 +1395,8 @@ void ofApp::mousePressed(int x, int y, int button){
             ofPixels pixels;
             myengine.fboPoints.readToPixels(pixels);
             myengine.maskPoints.setFromPixels(pixels);
+			myengine.maskPoints = blur(myengine.maskPoints, myengine.maskPoints.getWidth() / 10);
+
 
             myengine.needsUpdateGrid = true;
             myengine.needsDrawPoints = true;

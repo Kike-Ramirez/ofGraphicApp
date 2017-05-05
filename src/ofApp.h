@@ -81,6 +81,7 @@ public:
 	string pathMskGrid;
 	string pathMskPoints;
 	string pathBackground;
+	string pathShape;
 	string pathProject;
 
 	int numSVG;

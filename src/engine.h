@@ -42,6 +42,7 @@ public:
     bool definingMaskImg, definingMaskGrid, definingMaskPoints;
     bool coloringMaskImg, coloringMaskGrid, coloringMaskPoints;
     int shapeDrawing;
+	ofxEditableSVG shapefile;
     ofxDelaunay triangulation;
     ofShader shaderAlpha;
     vector<ofxEditableSVG> svgTextures;
@@ -55,6 +56,7 @@ public:
     void setMask(string file);
     void setMaskGrid(string file);
     void setMaskPoints(string file);
+	void setShape(string file);
     void deleteImg();
     void deleteMask();
     void deleteMaskGrid();

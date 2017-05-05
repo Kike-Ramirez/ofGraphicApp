@@ -953,7 +953,15 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
 
     else if (e.target->is("archivo")) {
 
+		ofFileDialogResult result = ofSystemLoadDialog("Load file");
+
+		if (result.bSuccess) {
+			pathShape = result.getPath();
+			myengine.setShape(pathShape);
+		}
+
         myengine.shapeDrawing = 4;
+
         if (punto->getChecked()) punto->toggle();
         if (cuadrado->getChecked()) cuadrado->toggle();
         if (triangulo->getChecked()) triangulo->toggle();
@@ -1538,6 +1546,8 @@ void ofApp::resetSettings() {
 	pathMskImg = "";
 	pathMskGrid = "";
 	pathMskPoints = "";
+	pathShape = "";
+
 
 	myengine.deleteImg();
 	myengine.deleteMask();
@@ -1643,6 +1653,7 @@ void ofApp::loadSettings() {
 	pathMskGrid = xmlParameters.getValue("settings:pathMskGrid", "");
 	pathMskPoints = xmlParameters.getValue("settings:pathMskPoints", "");
 	pathBackground = xmlParameters.getValue("settings:pathBackground", "");
+	pathShape = xmlParameters.getValue("settings:pathShape", "");
 
 	if (pathImg != "") myengine.setInput(pathImg);
 	else myengine.deleteImg();
@@ -1657,6 +1668,8 @@ void ofApp::loadSettings() {
 	else myengine.deleteMaskPoints();
 
 	if (pathBackground != "") myengine.setBackground(pathBackground);	
+
+	if (pathShape != "") myengine.setShape(pathShape);
 
 
 	myengine.pathInput.clear();
@@ -1807,6 +1820,7 @@ void ofApp::saveSettings() {
 	xmlParameters.setValue("settings:pathMskGrid", pathMskGrid);
 	xmlParameters.setValue("settings:pathMskPoints", pathMskPoints);
 	xmlParameters.setValue("settings:pathBackground", pathBackground);
+	xmlParameters.setValue("settings:pathShape", pathShape);
 	xmlParameters.addTag("pathInput");
 
 	xmlParameters.pushTag("pathInput");

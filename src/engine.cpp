@@ -381,6 +381,13 @@ void engine::setMaskPoints(string file_)
     setResolution(width, height);
 }
 
+void engine::setShape(string file_)
+{
+
+	shapefile.load(file_);
+
+}
+
 void engine::deleteImg()
 {
 
@@ -559,7 +566,20 @@ void engine::drawPoints() {
                 pathSvgPoints.append(triangle);
 
             }
-            
+
+			else if (shapeDrawing == 4) {
+
+				float radio = ofMap(input.getColor(centro.x, centro.y).getLightness(), 0, 255, radioLevel, 0);
+				float angle = 0; //ofRandom(0, PI);
+				shapefile.setSize(radio, radio);
+				shapefile.draw();
+
+				//ofPath triangle;
+				//triangle.triangle(punto1, punto2, punto3);
+				//pathSvgPoints.append(triangle);
+
+			}
+
             pathSvgPoints.close();
         
         }

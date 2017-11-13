@@ -47,6 +47,7 @@ public:
     ofShader shaderAlpha;
     vector<ofxEditableSVG> svgTextures;
     int numSVG;
+	float svgSize;
     ofPoint centerSVG;
     ofPath pathSvgGrid, pathSvgPoints;
 

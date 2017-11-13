@@ -72,6 +72,7 @@ public:
 	ofxDatGuiColorPicker* colorTwo;
 	ColorSelector colorSelectorColorSVG;
 	ofxDatGuiColorPicker* colorSVG;
+	ofxDatGuiSlider* svgSize;
 
 	ofShader shaderBlurX, shaderBlurY;
     ofFbo fboBlurOnePass, fboBlurTwoPass;

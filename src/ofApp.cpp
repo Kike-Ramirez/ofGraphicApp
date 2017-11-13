@@ -10,7 +10,7 @@ void ofApp::setup()
     //ofSetFullscreen(true);
     ofSetWindowPosition(100, 100);
     ofSetWindowShape(1024, 768);
-    ofSetWindowTitle("ofGraphicApp v1.10");
+    ofSetWindowTitle("ofGraphicApp v1.30");
     ofSetFrameRate(60);
     ofSetEscapeQuitsApp(false);
 
@@ -402,7 +402,7 @@ void ofApp::loadGui() {
     components.push_back(color);
 
     y += color->getHeight() + p + dHeight + 8*dHeight;
-    graphicElements = new ofxDatGuiToggle("graphicElements", xmlParameters.getValue("settings:graficElements", false));
+    graphicElements = new ofxDatGuiToggle("graphicElements", xmlParameters.getValue("settings:graphicElements", false));
 	graphicElements->setPosition(x, y);
 	graphicElements->setWidth(x11 , 0.3);
 	graphicElements->setLabel("MOSTRAR ELEMENTOS GRAFICOS");
@@ -418,6 +418,14 @@ void ofApp::loadGui() {
     components.push_back(component);
 
 	y += component->getHeight() + p;
+	svgSize = new ofxDatGuiSlider("svgSize", 0.1, 5, xmlParameters.getValue("settings:svgSize", 1));
+	svgSize->setPosition(x, y);
+	svgSize->setWidth(x11, 0.3);
+	svgSize->setLabel("Escala");
+	svgSize->onSliderEvent(this, &ofApp::onSliderEvent);
+	components.push_back(svgSize);
+
+	y += svgSize->getHeight() + p;
 
 	colorSelectorColorSVG.setup(ofVec3f(x, y), ofVec3f(x11, 20));
 
@@ -765,9 +773,11 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         
         ofFileDialogResult result = ofSystemSaveDialog("default.svg", "Save");
         
+		// KIKE: Revisar qué es este path que estamos guardando aquí.
         if(result.bSuccess) {
             string path = result.getPath();
             
+			// KIKE: Aquí se llama a drawVectors que guarda el vectorial
             myengine.drawVectors(path);
             
             cout << "Saved in: " << path << endl;
@@ -1158,6 +1168,12 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
         myengine.needsDrawPoints = true;
         
     }
+
+	else if (e.target->is("svgSize")) {
+
+		myengine.svgSize = e.value;
+
+	}
 }
 
 
@@ -1621,6 +1637,7 @@ void ofApp::loadSettings() {
 	archivo->setChecked(ofToBool(xmlParameters.getValue("settings:archivo", "false")));
 	graphicElements->setChecked(ofToBool(xmlParameters.getValue("settings:graphicElements", "false")));
 	numSVG = xmlParameters.getValue("settings:numSVG", 0);
+	svgSize->setValue(xmlParameters.getValue("settings:svgSize", 1));
 	loadBackground->setChecked(ofToBool(xmlParameters.getValue("settings:loadBackground", "false")));
 	colorBackground->setChecked(ofToBool(xmlParameters.getValue("settings:colorBackground", "true")));
 	defineBackground->setChecked(ofToBool(xmlParameters.getValue("settings:defineBackground", "false")));
@@ -1809,6 +1826,7 @@ void ofApp::saveSettings() {
 	xmlParameters.setValue("settings:graphicElements", graphicElements->getChecked());
 	xmlParameters.setValue("settings:numSVG", numSVG);
 	xmlParameters.setValue("settings:colorSVG", colorSVG->getText());
+	xmlParameters.setValue("settings:svgSize", svgSize->getValue());
 	xmlParameters.setValue("settings:loadBackground", loadBackground->getChecked());
 	xmlParameters.setValue("settings:colorBackground", colorBackground->getChecked());
 	xmlParameters.setValue("settings:defineBackground", defineBackground->getChecked());

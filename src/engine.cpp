@@ -13,6 +13,7 @@ engine::engine()
     min = 0;
     max = 255;
     numSVG = 0;
+	svgSize = 1.0;
     centerSVG = ofPoint(0,0);
     opacityImg = 100;
     opacityGrid = 100;
@@ -202,21 +203,11 @@ void engine::update()
     }
 
     if (showTextures) {
-        
 
-        svgTextures[numSVG].setColorEngine(colorSVG);
-        ofPushMatrix();
-        // ofTranslate(centerSVG);
-
-		float wsvg = float(svgTextures[numSVG].getWidth());
-		float hsvg = float(svgTextures[numSVG].getHeight());
-		float zoom = float(width) / wsvg;
-		float zoom2 = float(height) / hsvg;
-
-		if (zoom < zoom2) ofScale(zoom, zoom, 0);
-		else ofScale(zoom2, zoom2, 0);
-
-        svgTextures[numSVG].draw();
+		ofPushMatrix();
+		svgTextures[numSVG].setColorEngine(colorSVG);
+		ofScale(svgSize, svgSize);
+		svgTextures[numSVG].draw();
 		ofPopMatrix();
         
     }
@@ -646,24 +637,6 @@ void engine::drawVectors(string path) {
         
         else input.draw(0,0);
         
-        if (showTextures) {
-            
-			svgTextures[numSVG].setColorEngine(colorTriangle);
-			ofPushMatrix();
-			// ofTranslate(centerSVG);
-			float wsvg = float(svgTextures[numSVG].getWidth());
-			float hsvg = float(svgTextures[numSVG].getHeight());
-			float zoom = float(width) / wsvg;
-			float zoom2 = float(height) / hsvg;
-
-			if (zoom < zoom2) ofScale(zoom, zoom, 0);
-			else ofScale(zoom2, zoom2, 0);
-
-			svgTextures[numSVG].draw();
-			ofPopMatrix();
-            
-        }
-        
     }
     
     fboSvgInput.end();
@@ -685,8 +658,27 @@ void engine::drawVectors(string path) {
         
     }
     
+
     // Dibujamos puntos
     
+	if (showTextures) {
+
+		file.setColor(colorSVG);
+
+		file.pushMatrix();
+		file.scale(svgSize, svgSize);
+
+		int n = svgTextures[numSVG].getNumPath();
+
+		for (int i = 0; i < n; i++) {
+
+			file.draw(svgTextures[numSVG].getPathAt(i));
+		}
+
+
+		file.popMatrix();
+
+	}
     
     if (showPoints) {
         for (int i = 0; i < triangles.size(); i++ ) {

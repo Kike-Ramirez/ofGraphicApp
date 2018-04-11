@@ -1044,61 +1044,56 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
         myengine.needsUpdatePoints = true;
         myengine.needsDrawPoints = true;
         
-        
-        
-        if ((myengine.coloringMaskImg)) {
-            
-            if (myengine.input.isAllocated()) {
-                
-                float xPoint = ofMap(mouseX - xCanvas, 0, widthCanvas, 0, myengine.canvas.getWidth());
-                float yPoint = ofMap(mouseY - yCanvas, 0, heightCanvas, 0, myengine.canvas.getHeight());
-                ofColor colorSelected = myengine.input.getColor(xPoint, yPoint);
-                
-                myengine.fboInput.begin();
-                
-                // Cleaning everthing with alpha mask on 0 in order to make it transparent by default
-                ofClear(0, 0, 0, 0);
-                
-                ofMesh points;
-                points.setMode(OF_PRIMITIVE_POINTS);
-                
-                for (int i = 0; i < myengine.input.getWidth(); i++) {
-                    
-                    for (int j = 0; j < myengine.input.getHeight(); j++) {
-                        
-                        ofColor colorPoint = myengine.input.getColor(i,j);
-                        
-                        float distanciaColor = sqrt( pow(colorSelected.r - colorPoint.r, 2) + pow(colorSelected.g - colorPoint.g, 2) + pow(colorSelected.b - colorPoint.b, 2));
-                        
-                        if (distanciaColor > myengine.levelMsk) points.addVertex(ofPoint(i,j,0));
-                        
-                    }
-                    
-                }
-                
-                ofSetColor(255);
-                points.draw();
-                
-                myengine.fboInput.end();
-                
-                ofPixels pixels;
-                myengine.fboInput.readToPixels(pixels);
-                myengine.maskInput.setFromPixels(pixels);
-                myengine.maskInput = blur(myengine.maskInput, 5);
-                
-                myengine.input.getTexture().setAlphaMask(myengine.maskInput.getTexture());
-                
-                
-                
-            }
-            
-            // myengine.coloringMaskImg = false;
-            
-        }
-        
-        
-        
-        
+		if ((myengine.colorMaskPoint != NULL) && (myengine.input.isAllocated())) {
+
+			cout << "KIKEEEEEEEEEEEEERRRRR: Dentro de IF"  << endl;
+
+			myengine.fboInput.begin();
+
+			cout << "KIKEEEEEEEEEEEEERRRRR: FBO Abierto" << endl;
+
+			// Cleaning everthing with alpha mask on 0 in order to make it transparent by default
+			ofClear(0, 0, 0, 0);
+
+			ofMesh points;
+			points.setMode(OF_PRIMITIVE_POINTS);
+			points.clear();
+
+			for (int i = 0; i < myengine.input.getWidth(); i++) {
+
+				for (int j = 0; j < myengine.input.getHeight(); j++) {
+
+					ofColor colorPoint = myengine.input.getColor(i, j);
+
+					float distanciaColor = sqrt(pow(myengine.colorMaskPoint.r - colorPoint.r, 2) + pow(myengine.colorMaskPoint.g - colorPoint.g, 2) + pow(myengine.colorMaskPoint.b - colorPoint.b, 2)) / (255.0 * 3.0);
+
+					if (distanciaColor > myengine.levelMsk / 100.0) points.addVertex(ofPoint(i, j, 0));
+
+				}
+
+			}
+
+			cout << "KIKEEEEEEEEEEEEERRRRR: Mascara calculada con número puntos: " << ofToString(points.getNumVertices()) << endl;
+
+			ofSetColor(255);
+			points.draw();
+
+			cout << "KIKEEEEEEEEEEEEERRRRR: Mascara dibujada" << endl;
+
+			myengine.fboInput.end();
+
+			cout << "KIKEEEEEEEEEEEEERRRRR: FBO Cerrado" << endl;
+
+
+			ofPixels pixels;
+			myengine.fboInput.readToPixels(pixels);
+			myengine.maskInput.setFromPixels(pixels);
+			myengine.maskInput = blur(myengine.maskInput, 5);
+
+			myengine.input.getTexture().setAlphaMask(myengine.maskInput.getTexture());
+			
+
+		}        
         
     }
     
@@ -1434,7 +1429,7 @@ void ofApp::mousePressed(int x, int y, int button){
 
             float xPoint = ofMap(mouseX - xCanvas, 0, widthCanvas, 0, myengine.canvas.getWidth());
             float yPoint = ofMap(mouseY - yCanvas, 0, heightCanvas, 0, myengine.canvas.getHeight());
-            ofColor colorSelected = myengine.input.getColor(xPoint, yPoint);
+            myengine.colorMaskPoint = myengine.input.getColor(xPoint, yPoint);
 
             myengine.fboInput.begin();
 
@@ -1450,9 +1445,9 @@ void ofApp::mousePressed(int x, int y, int button){
                     
                     ofColor colorPoint = myengine.input.getColor(i,j);
                     
-                    float distanciaColor = sqrt( pow(colorSelected.r - colorPoint.r, 2) + pow(colorSelected.g - colorPoint.g, 2) + pow(colorSelected.b - colorPoint.b, 2));
+                    float distanciaColor = sqrt( pow(myengine.colorMaskPoint.r - colorPoint.r, 2) + pow(myengine.colorMaskPoint.g - colorPoint.g, 2) + pow(myengine.colorMaskPoint.b - colorPoint.b, 2)) / (255.0 * 3.0);
                     
-                    if (distanciaColor > myengine.levelMsk) points.addVertex(ofPoint(i,j,0));
+                    if (distanciaColor > myengine.levelMsk / 100.0) points.addVertex(ofPoint(i,j,0));
 
                 }
 
@@ -1665,6 +1660,56 @@ void ofApp::loadSettings() {
 	colorSVG->setColor(ofHexToInt(strColorSVG));
 	colorSVG->setText(strColorSVG);
 
+	string strColorMaskPoint = xmlParameters.getValue("settings:colorMaskPoint", "NULL");
+
+	if (strColorMaskPoint != "NULL") {
+	
+		myengine.colorMaskPoint = ofHexToInt(strColorSVG);
+
+		if (myengine.input.isAllocated()) {
+
+			myengine.fboInput.begin();
+
+			// Cleaning everthing with alpha mask on 0 in order to make it transparent by default
+			ofClear(0, 0, 0, 0);
+
+			ofMesh points;
+			points.setMode(OF_PRIMITIVE_POINTS);
+
+			for (int i = 0; i < myengine.input.getWidth(); i++) {
+
+				for (int j = 0; j < myengine.input.getHeight(); j++) {
+
+					ofColor colorPoint = myengine.input.getColor(i, j);
+
+					float distanciaColor = sqrt(pow(myengine.colorMaskPoint.r - colorPoint.r, 2) + pow(myengine.colorMaskPoint.g - colorPoint.g, 2) + pow(myengine.colorMaskPoint.b - colorPoint.b, 2)) / (255.0 * 3.0);
+
+					if (distanciaColor > myengine.levelMsk / 100.0) points.addVertex(ofPoint(i, j, 0));
+
+				}
+
+			}
+
+			ofSetColor(255);
+			points.draw();
+
+			myengine.fboInput.end();
+
+			ofPixels pixels;
+			myengine.fboInput.readToPixels(pixels);
+			myengine.maskInput.setFromPixels(pixels);
+			myengine.maskInput = blur(myengine.maskInput, 5);
+
+			myengine.input.getTexture().setAlphaMask(myengine.maskInput.getTexture());
+
+
+		}
+
+	}
+
+	else myengine.colorMaskPoint = NULL;
+
+
 	pathImg = xmlParameters.getValue("settings:pathImg", "");
 	pathMskImg = xmlParameters.getValue("settings:pathMskImg", "");
 	pathMskGrid = xmlParameters.getValue("settings:pathMskGrid", "");
@@ -1802,6 +1847,15 @@ void ofApp::saveSettings() {
 	xmlParameters.setValue("settings:height", ofToInt(alto->getText()));
 	xmlParameters.setValue("settings:showInput", showInput->getChecked());
 	xmlParameters.setValue("settings:opacityImg", opacityImg->getValue());
+
+	if (myengine.colorMaskPoint != NULL) {
+
+		xmlParameters.setValue("settings:colorMaskPoint", ofToString(myengine.colorMaskPoint));
+
+	}
+
+	else xmlParameters.setValue("settings:colorMaskPoint", ofToString(myengine.colorMaskPoint));
+	
 	xmlParameters.setValue("settings:levelMsk", levelMsk->getValue());
 	xmlParameters.setValue("settings:showGrid", showGrid->getChecked());
 	xmlParameters.setValue("settings:opacityGrid", opacityGrid->getValue());

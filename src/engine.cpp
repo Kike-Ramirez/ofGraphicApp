@@ -36,6 +36,7 @@ void engine::setup()
     colorTriangle = ofColor(255);
     colorPoint = ofColor(0);
 	colorSVG = ofColor(255);
+	colorMaskPoint = NULL;
 
     setResolution(width, height);
     needsUpdateGrid = true;
@@ -392,6 +393,7 @@ void engine::deleteMask()
     origMaskInput.clear();
     maskInput.clear();
     pathInput.clear();
+	colorMaskPoint = NULL;
 }
 
 void engine::deleteMaskGrid()

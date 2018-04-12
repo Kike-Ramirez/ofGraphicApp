@@ -4,6 +4,8 @@
 #include "ofMain.h"
 #include "ofxDelaunay.h"
 #include "ofxEditableSVG.h"
+#include "ofxCV.h"
+
 
 class engine
 {
@@ -31,6 +33,7 @@ public:
     bool needsUpdateGrid;
     bool needsUpdatePoints;
     bool needsDrawPoints;
+	bool needsUpdateMask;
     bool showInput;
     bool showGrid;
     bool showPoints;
@@ -65,9 +68,11 @@ public:
     void setBackground(string file);
     void updateGrid();
     void updatePoints();
+	void updateMask();
     void drawPoints();
     void drawVectors(string path);
     void updateBackground();
+	ofImage blur(ofImage img, int radio);
     void backgroundGradient(const ofColor& start, const ofColor& end);
 
 

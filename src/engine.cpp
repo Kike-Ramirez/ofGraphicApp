@@ -42,6 +42,7 @@ void engine::setup()
     needsUpdateGrid = true;
     needsUpdatePoints = true;
     needsDrawPoints = true;
+	needsUpdateMask = false;
     showInput = true;
     showGrid = true;
     showPoints = true;
@@ -95,6 +96,7 @@ void engine::update()
     if (needsUpdateGrid) updateGrid();
     if (needsUpdatePoints) updatePoints();
     if (needsDrawPoints) drawPoints();
+	if (needsUpdateMask) updateMask();
 
     canvas.begin();
     ofClear(ofFloatColor(0));
@@ -490,6 +492,46 @@ void engine::updatePoints()
     
 }
 
+void engine::updateMask() {
+
+	if ((colorMaskPoint != NULL) && (input.isAllocated())) {
+
+		cout << "KIKEEEEEEEEEEEEERRRRR: Dentro de IF" << endl;
+
+
+		ofPixels pixels = origInput.getPixels();
+
+		for (int pos = 0; pos < pixels.size(); pos = pos+3) {
+
+			ofColor colorPoint;
+			colorPoint.r= pixels[pos];
+			colorPoint.g = pixels[pos + 1];
+			colorPoint.b = pixels[pos + 2];
+
+
+			float distanciaColor = sqrt(pow(colorMaskPoint.r - colorPoint.r, 2) + pow(colorMaskPoint.g - colorPoint.g, 2) + pow(colorMaskPoint.b - colorPoint.b, 2)) / (255.0 * 3.0);
+
+			if (distanciaColor <= levelMsk / 100.0) {
+
+				pixels[pos] = ofColor(0).r;
+				pixels[pos + 1] = ofColor(0).g;
+				pixels[pos + 2] = ofColor(0).b;
+			}
+
+		}
+
+
+		maskInput.setFromPixels(pixels);
+		maskInput = blur(maskInput, 5);
+
+		input.getTexture().setAlphaMask(maskInput.getTexture());
+
+
+	}
+
+	needsUpdateMask = false;
+}
+
 void engine::drawPoints() {
 
     grid.begin();
@@ -795,3 +837,14 @@ void engine::backgroundGradient(const ofColor& start, const ofColor& end) {
     }
 }
 
+ofImage engine::blur(ofImage img, int radio) {
+
+	ofImage imgReturn;
+
+	ofxCv::copy(img, imgReturn);
+	ofxCv::blur(imgReturn, radio);
+	imgReturn.update();
+
+	return imgReturn;
+
+}

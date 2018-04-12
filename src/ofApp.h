@@ -4,7 +4,6 @@
 #include "engine.h"
 #include "ofxDatGui.h"
 #include "ofxDelaunay.h"
-#include "ofxCV.h"
 #include "ofxXmlSettings.h"
 #include "ColorSelector.h"
 
@@ -96,7 +95,6 @@ public:
     void onDropdownEvent(ofxDatGuiDropdownEvent e);
     void onColorPickerEvent(ofxDatGuiColorPickerEvent e);
     void onTextInputEvent(ofxDatGuiTextInputEvent e);
-    ofImage blur(ofImage img, int radio);
 	void resetSettings();
 	void loadSettings();
 	void saveSettings();

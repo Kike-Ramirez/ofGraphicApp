@@ -1043,58 +1043,8 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
         myengine.levelMsk = e.value;
         myengine.needsUpdatePoints = true;
         myengine.needsDrawPoints = true;
-        
-		if ((myengine.colorMaskPoint != NULL) && (myengine.input.isAllocated())) {
-
-			cout << "KIKEEEEEEEEEEEEERRRRR: Dentro de IF"  << endl;
-
-			myengine.fboInput.begin();
-
-			cout << "KIKEEEEEEEEEEEEERRRRR: FBO Abierto" << endl;
-
-			// Cleaning everthing with alpha mask on 0 in order to make it transparent by default
-			ofClear(0, 0, 0, 0);
-
-			ofMesh points;
-			points.setMode(OF_PRIMITIVE_POINTS);
-			points.clear();
-
-			for (int i = 0; i < myengine.input.getWidth(); i++) {
-
-				for (int j = 0; j < myengine.input.getHeight(); j++) {
-
-					ofColor colorPoint = myengine.input.getColor(i, j);
-
-					float distanciaColor = sqrt(pow(myengine.colorMaskPoint.r - colorPoint.r, 2) + pow(myengine.colorMaskPoint.g - colorPoint.g, 2) + pow(myengine.colorMaskPoint.b - colorPoint.b, 2)) / (255.0 * 3.0);
-
-					if (distanciaColor > myengine.levelMsk / 100.0) points.addVertex(ofPoint(i, j, 0));
-
-				}
-
-			}
-
-			cout << "KIKEEEEEEEEEEEEERRRRR: Mascara calculada con número puntos: " << ofToString(points.getNumVertices()) << endl;
-
-			ofSetColor(255);
-			points.draw();
-
-			cout << "KIKEEEEEEEEEEEEERRRRR: Mascara dibujada" << endl;
-
-			myengine.fboInput.end();
-
-			cout << "KIKEEEEEEEEEEEEERRRRR: FBO Cerrado" << endl;
-
-
-			ofPixels pixels;
-			myengine.fboInput.readToPixels(pixels);
-			myengine.maskInput.setFromPixels(pixels);
-			myengine.maskInput = blur(myengine.maskInput, 5);
-
-			myengine.input.getTexture().setAlphaMask(myengine.maskInput.getTexture());
-			
-
-		}        
-        
+		myengine.needsUpdateMask = true;
+                
     }
     
     else if (e.target->is("minP")) {
@@ -1352,7 +1302,7 @@ void ofApp::mousePressed(int x, int y, int button){
             ofPixels pixels;
             myengine.fboInput.readToPixels(pixels);
             myengine.maskInput.setFromPixels(pixels);
-            myengine.maskInput = blur(myengine.maskInput, myengine.input.getWidth()/10);
+            myengine.maskInput = myengine.blur(myengine.maskInput, myengine.input.getWidth()/10);
 
             //myengine.input.getTexture().setAlphaMask(myengine.maskInput.getTexture());
 
@@ -1414,7 +1364,7 @@ void ofApp::mousePressed(int x, int y, int button){
             ofPixels pixels;
             myengine.fboPoints.readToPixels(pixels);
             myengine.maskPoints.setFromPixels(pixels);
-			myengine.maskPoints = blur(myengine.maskPoints, myengine.maskPoints.getWidth() / 10);
+			myengine.maskPoints = myengine.blur(myengine.maskPoints, myengine.maskPoints.getWidth() / 10);
 
 
             myengine.needsUpdateGrid = true;
@@ -1425,48 +1375,14 @@ void ofApp::mousePressed(int x, int y, int button){
 
     if ((myengine.coloringMaskImg) && (mouseX > xCanvas) && (mouseX < xCanvas + widthCanvas) && (mouseY > yCanvas) && (mouseY< yCanvas + heightCanvas)) {
 
+
         if (myengine.input.isAllocated()) {
 
             float xPoint = ofMap(mouseX - xCanvas, 0, widthCanvas, 0, myengine.canvas.getWidth());
             float yPoint = ofMap(mouseY - yCanvas, 0, heightCanvas, 0, myengine.canvas.getHeight());
             myengine.colorMaskPoint = myengine.input.getColor(xPoint, yPoint);
 
-            myengine.fboInput.begin();
-
-            // Cleaning everthing with alpha mask on 0 in order to make it transparent by default
-            ofClear(0, 0, 0, 0);
-
-            ofMesh points;
-            points.setMode(OF_PRIMITIVE_POINTS);
-
-            for (int i = 0; i < myengine.input.getWidth(); i++) {
-
-                for (int j = 0; j < myengine.input.getHeight(); j++) {
-                    
-                    ofColor colorPoint = myengine.input.getColor(i,j);
-                    
-                    float distanciaColor = sqrt( pow(myengine.colorMaskPoint.r - colorPoint.r, 2) + pow(myengine.colorMaskPoint.g - colorPoint.g, 2) + pow(myengine.colorMaskPoint.b - colorPoint.b, 2)) / (255.0 * 3.0);
-                    
-                    if (distanciaColor > myengine.levelMsk / 100.0) points.addVertex(ofPoint(i,j,0));
-
-                }
-
-            }
-
-            ofSetColor(255);
-            points.draw();
-
-            myengine.fboInput.end();
-
-            ofPixels pixels;
-            myengine.fboInput.readToPixels(pixels);
-            myengine.maskInput.setFromPixels(pixels);
-            myengine.maskInput = blur(myengine.maskInput, 5);
-
-            myengine.input.getTexture().setAlphaMask(myengine.maskInput.getTexture());
-
-
-
+			myengine.needsUpdateMask = true;
         }
 
     }
@@ -1504,25 +1420,13 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 }
 
 
-ofImage ofApp::blur(ofImage img, int radio) {
-
-    ofImage imgReturn;
-
-    ofxCv::copy(img, imgReturn);
-    ofxCv::blur(imgReturn, radio);
-    imgReturn.update();
-    
-    return imgReturn;
-
-}
-
 void ofApp::resetSettings() {
 
 	ancho->setText(ofToString(1024));
 	alto->setText(ofToString(768));
 	showInput->setChecked(true);
 	opacityImg->setValue(100);
-	levelMsk->setValue(100);
+	levelMsk->setValue(25);
 	showGrid->setChecked(false);
 	opacityGrid->setValue(100);
 	min->setValue(0);
@@ -1611,7 +1515,7 @@ void ofApp::loadSettings() {
 	alto->setText(ofToString(xmlParameters.getValue("settings:height", 768)));
 	showInput->setChecked(ofToBool(xmlParameters.getValue("settings:showInput", "true")));
 	opacityImg->setValue(xmlParameters.getValue("settings:opacityImg", 100));
-	levelMsk->setValue(xmlParameters.getValue("settings:levelMsk", 100));
+	levelMsk->setValue(xmlParameters.getValue("settings:levelMsk", 25));
 	showGrid->setChecked(ofToBool(xmlParameters.getValue("settings:showGrid", "true")));
 	opacityGrid->setValue(xmlParameters.getValue("settings:opacityGrid", 100));
 	min->setValue(xmlParameters.getValue("settings:min", 0));
@@ -1698,7 +1602,7 @@ void ofApp::loadSettings() {
 			ofPixels pixels;
 			myengine.fboInput.readToPixels(pixels);
 			myengine.maskInput.setFromPixels(pixels);
-			myengine.maskInput = blur(myengine.maskInput, 5);
+			myengine.maskInput = myengine.blur(myengine.maskInput, 5);
 
 			myengine.input.getTexture().setAlphaMask(myengine.maskInput.getTexture());
 
@@ -1760,7 +1664,7 @@ void ofApp::loadSettings() {
 		ofPixels pixels;
 		myengine.fboInput.readToPixels(pixels);
 		myengine.maskInput.setFromPixels(pixels);
-		myengine.maskInput = blur(myengine.maskInput, myengine.input.getWidth() / 10);
+		myengine.maskInput = myengine.blur(myengine.maskInput, myengine.input.getWidth() / 10);
 
 	}
 

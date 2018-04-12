@@ -3,7 +3,7 @@
     <height>768</height>
     <showInput>1</showInput>
     <opacityImg>100.000000000</opacityImg>
-    <levelMsk>100.000000000</levelMsk>
+    <levelMsk>25.000000000</levelMsk>
     <showGrid>0</showGrid>
     <opacityGrid>100.000000000</opacityGrid>
     <min>0.000000000</min>

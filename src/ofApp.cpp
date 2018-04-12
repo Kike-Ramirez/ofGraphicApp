@@ -1566,53 +1566,6 @@ void ofApp::loadSettings() {
 
 	string strColorMaskPoint = xmlParameters.getValue("settings:colorMaskPoint", "NULL");
 
-	if (strColorMaskPoint != "NULL") {
-	
-		myengine.colorMaskPoint = ofHexToInt(strColorSVG);
-
-		if (myengine.input.isAllocated()) {
-
-			myengine.fboInput.begin();
-
-			// Cleaning everthing with alpha mask on 0 in order to make it transparent by default
-			ofClear(0, 0, 0, 0);
-
-			ofMesh points;
-			points.setMode(OF_PRIMITIVE_POINTS);
-
-			for (int i = 0; i < myengine.input.getWidth(); i++) {
-
-				for (int j = 0; j < myengine.input.getHeight(); j++) {
-
-					ofColor colorPoint = myengine.input.getColor(i, j);
-
-					float distanciaColor = sqrt(pow(myengine.colorMaskPoint.r - colorPoint.r, 2) + pow(myengine.colorMaskPoint.g - colorPoint.g, 2) + pow(myengine.colorMaskPoint.b - colorPoint.b, 2)) / (255.0 * 3.0);
-
-					if (distanciaColor > myengine.levelMsk / 100.0) points.addVertex(ofPoint(i, j, 0));
-
-				}
-
-			}
-
-			ofSetColor(255);
-			points.draw();
-
-			myengine.fboInput.end();
-
-			ofPixels pixels;
-			myengine.fboInput.readToPixels(pixels);
-			myengine.maskInput.setFromPixels(pixels);
-			myengine.maskInput = myengine.blur(myengine.maskInput, 5);
-
-			myengine.input.getTexture().setAlphaMask(myengine.maskInput.getTexture());
-
-
-		}
-
-	}
-
-	else myengine.colorMaskPoint = NULL;
-
 
 	pathImg = xmlParameters.getValue("settings:pathImg", "");
 	pathMskImg = xmlParameters.getValue("settings:pathMskImg", "");
@@ -1636,6 +1589,19 @@ void ofApp::loadSettings() {
 	if (pathBackground != "") myengine.setBackground(pathBackground);	
 
 	if (pathShape != "") myengine.setShape(pathShape);
+
+	cout << "String color: " << strColorMaskPoint << endl;
+
+	if (strColorMaskPoint != "NULL") {
+
+		myengine.colorMaskPoint.setHex(ofHexToInt(strColorMaskPoint));
+		myengine.updateMask();
+
+	}
+
+	else myengine.colorMaskPoint = NULL;
+
+	cout << "ofColor color: " << myengine.colorMaskPoint << endl;
 
 
 	myengine.pathInput.clear();
@@ -1727,12 +1693,6 @@ void ofApp::loadSettings() {
 
 	}
 
-
-
-
-
-
-
 	updateValues();
 
 	myengine.setResolution(myengine.width, myengine.height);
@@ -1754,11 +1714,12 @@ void ofApp::saveSettings() {
 
 	if (myengine.colorMaskPoint != NULL) {
 
-		xmlParameters.setValue("settings:colorMaskPoint", ofToString(myengine.colorMaskPoint));
+		xmlParameters.setValue("settings:colorMaskPoint", ofToHex(myengine.colorMaskPoint.getHex()));
+		cout << ofToHex(myengine.colorMaskPoint.getHex()) << endl;
 
 	}
 
-	else xmlParameters.setValue("settings:colorMaskPoint", ofToString(myengine.colorMaskPoint));
+	else xmlParameters.setValue("settings:colorMaskPoint", "NULL");
 	
 	xmlParameters.setValue("settings:levelMsk", levelMsk->getValue());
 	xmlParameters.setValue("settings:showGrid", showGrid->getChecked());

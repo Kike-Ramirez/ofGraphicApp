@@ -1,12 +1,23 @@
-﻿  engine.cpp
+﻿  ofApp.cpp
 C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\libs\openFrameworks\math\ofMatrix4x4.h(320): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
 C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\libs\openFrameworks\math\ofMatrix4x4.h(325): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
 C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\libs\openFrameworks\math\ofMatrix4x4.h(969): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
 C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\libs\openFrameworks\math\ofMatrix4x4.h(970): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
 C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\libs\openFrameworks\math\ofMatrix4x4.h(971): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
 C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\libs\openFrameworks\math\ofMatrix4x4.h(972): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-src\engine.cpp(61): warning C4129: 'T': unrecognized character escape sequence
-src\engine.cpp(69): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+c:\users\visa-2017-05\documents\of_v0.9.8_vs_release\addons\ofxdatgui\src\components\ofxDatGuiTextInputField.h(162): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\visa-2017-05\documents\of_v0.9.8_vs_release\addons\ofxdatgui\src\components\ofxDatGuiSlider.h(140): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+c:\users\visa-2017-05\documents\of_v0.9.8_vs_release\addons\ofxdatgui\src\components\ofxDatGuiSlider.h(141): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\visa-2017-05\documents\of_v0.9.8_vs_release\addons\ofxdatgui\src\components\ofxDatGuiSlider.h(343): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+c:\users\visa-2017-05\documents\of_v0.9.8_vs_release\addons\ofxdatgui\src\components\ofxDatGuiSlider.h(346): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\visa-2017-05\documents\of_v0.9.8_vs_release\addons\ofxdatgui\src\components\ofxDatGuiScrollView.h(160): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\addons\ofxDatGui\src\components\ofxDatGuiGroups.h(390): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\addons\ofxDatGui\src\components\ofxDatGuiGroups.h(449): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\addons\ofxDatGui\src\components\ofxDatGuiGroups.h(485): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+src\ofApp.cpp(47): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+src\ofApp.cpp(1290): warning C4267: 'argument': conversion from 'size_t' to 'ofIndexType', possible loss of data
+src\ofApp.cpp(1321): warning C4267: 'argument': conversion from 'size_t' to 'ofIndexType', possible loss of data
+src\ofApp.cpp(1352): warning C4267: 'argument': conversion from 'size_t' to 'ofIndexType', possible loss of data
 C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Tracker.h(166): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Tracker.h(164): note: while compiling class template member function 'const std::vector<ofIndexType,std::allocator<_Ty>> &ofxCv::Tracker<cv::Rect>::track(const std::vector<cv::Rect,std::allocator<cv::Rect_<int>>> &)'
           with
@@ -22,27 +33,6 @@ C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\inc
 C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Tracker.h(167): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
 C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Tracker.h(200): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
 C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Tracker.h(212): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\libs\openFrameworks\graphics\ofImage.h(636): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-  src\engine.cpp(245): note: see reference to function template instantiation 'void ofImage_<unsigned char>::clone<unsigned char>(const ofImage_<unsigned char> &)' being compiled
-  src\engine.cpp(245): note: see reference to function template instantiation 'void ofImage_<unsigned char>::clone<unsigned char>(const ofImage_<unsigned char> &)' being compiled
-C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Utilities.h(127): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
-  C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Utilities.h(130): note: see reference to function template instantiation 'int ofxCv::getChannels<unsigned char>(ofPixels_<unsigned char> &)' being compiled
-  C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Utilities.h(253): note: see reference to function template instantiation 'int ofxCv::getChannels<unsigned char>(ofBaseHasPixels_<unsigned char> &)' being compiled
-  C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Utilities.h(274): note: see reference to function template instantiation 'void ofxCv::copy<S,D>(S &,D &,int)' being compiled
-          with
-          [
-              S=ofImage,
-              D=ofImage
-          ]
-  src\engine.cpp(856): note: see reference to function template instantiation 'void ofxCv::copy<ofImage,ofImage>(S &,D &)' being compiled
-          with
-          [
-              S=ofImage,
-              D=ofImage
-          ]
-C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Utilities.h(236): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-  C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Utilities.h(239): note: see reference to function template instantiation 'cv::Mat ofxCv::toCv<unsigned char>(ofPixels_<unsigned char> &)' being compiled
-  C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\addons\ofxCv\libs\ofxCv\include\ofxCv/Utilities.h(254): note: see reference to function template instantiation 'cv::Mat ofxCv::toCv<unsigned char>(ofBaseHasPixels_<unsigned char> &)' being compiled
      Creating library bin\ofGraphicApp.lib and object bin\ofGraphicApp.exp
   LINK : /LTCG specified but no code generation required; remove /LTCG from the link command line to improve linker performance
   ofGraphicApp.vcxproj -> C:\Users\VISA-2017-05\Documents\of_v0.9.8_vs_release\apps\myApps\ofGraphicApp\bin\ofGraphicApp.exe

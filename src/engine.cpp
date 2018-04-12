@@ -494,10 +494,10 @@ void engine::updatePoints()
 
 void engine::updateMask() {
 
+	cout << "checking to enter in loop... "<< (colorMaskPoint == NULL) << " " << input.isAllocated() << endl;
 	if ((colorMaskPoint != NULL) && (input.isAllocated())) {
 
-		cout << "KIKEEEEEEEEEEEEERRRRR: Dentro de IF" << endl;
-
+		cout << "Inside Loope... Updating COLOR MASK..." << endl;
 
 		ofPixels pixels = origInput.getPixels();
 

@@ -69,7 +69,6 @@ void engine::setup()
     for(int i = dir.size() - 1; i >= 0; i--){
         ofxEditableSVG file;
 		file.load(dir.getPath(i));
-        cout << dir.getPath(i) << endl;
         svgTextures.push_back(file);
     }
     
@@ -441,7 +440,6 @@ void engine::updateGrid()
 
             if ((lightnessPoint > min) && (lightnessPoint < max))
             {
-                    // cout << "Low Lightness: " << low.getLightness() << endl;
                     if (ofRandom(255) < lightnessPoint)
                     {
                         if  ( gridMask > 100) triangulation.addPoint(punto);
@@ -479,7 +477,6 @@ void engine::updatePoints()
             
             if ((lightnessPoint > minP) && (lightnessPoint < maxP))
             {
-                // cout << "Low Lightness: " << low.getLightness() << endl;
                 // if (ofRandom(255) < lightnessPoint)
                 {
                     if  ( pointMask > 100) triangles.push_back(punto);
@@ -494,10 +491,7 @@ void engine::updatePoints()
 
 void engine::updateMask() {
 
-	cout << "checking to enter in loop... "<< (colorMaskPoint == NULL) << " " << input.isAllocated() << endl;
 	if ((colorMaskPoint != NULL) && (input.isAllocated())) {
-
-		cout << "Inside Loope... Updating COLOR MASK..." << endl;
 
 		ofPixels pixels = origInput.getPixels();
 
@@ -641,12 +635,10 @@ void engine::drawVectors(string path) {
     std::string fn = path;
     
     if(fn.substr(fn.find_last_of(".") + 1) == "svg") {
-        std::cout << "Yes..." << std::endl;
         file.setup(path, ofCairoRenderer::SVG);
         
         
     } else {
-        std::cout << "No..." << std::endl;
         file.setup(path, ofCairoRenderer::PDF);
     }
     

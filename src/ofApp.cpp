@@ -10,7 +10,7 @@ void ofApp::setup()
     //ofSetFullscreen(true);
     ofSetWindowPosition(100, 100);
     ofSetWindowShape(1024, 768);
-    ofSetWindowTitle("ofGraphicApp v1.30");
+    ofSetWindowTitle("ofGraphicApp v1.40");
     ofSetFrameRate(60);
     ofSetEscapeQuitsApp(false);
 
@@ -609,7 +609,6 @@ void ofApp::fitCanvas()
 
 void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 {
-    cout << "onButtonEvent: " << e.target->getLabel() << endl;
 
     if (e.target->is("UploadImg")) {
 
@@ -764,7 +763,6 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
           output.allocate(myengine.canvas.getWidth(), myengine.canvas.getHeight(), OF_IMAGE_COLOR);
           output.setFromPixels(pixels);
           output.save(path, OF_IMAGE_QUALITY_BEST);
-          cout << "Saved in: " << path << endl;
 
         }
 
@@ -780,7 +778,6 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 			// KIKE: Aquí se llama a drawVectors que guarda el vectorial
             myengine.drawVectors(path);
             
-            cout << "Saved in: " << path << endl;
             
         }
         
@@ -837,7 +834,6 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 
 void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
 {
-    cout << "onToggleEvent: " << e.target->getLabel() << "::" <<  e.target->getChecked() << endl;
 
     if (e.target->is("showInput")) {
 
@@ -989,7 +985,6 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
 
 void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
 {
-    cout << "onSliderEvent: " << e.value << "::" << e.scale << endl;
     if (e.target->is("Density")) {
 
         myengine.density = e.value;
@@ -1124,13 +1119,11 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
 
 void ofApp::onDropdownEvent(ofxDatGuiDropdownEvent e)
 {
-    cout << "onDropdownEvent: " << e.child << endl;
 }
 
 
 void ofApp::onColorPickerEvent(ofxDatGuiColorPickerEvent e)
 {
-    cout << "onColorPickerEvent: " << e.color << endl;
 
     if (e.target->is("color")) {
         myengine.colorPoint = e.color;
@@ -1159,7 +1152,6 @@ void ofApp::onColorPickerEvent(ofxDatGuiColorPickerEvent e)
 
 void ofApp::onTextInputEvent(ofxDatGuiTextInputEvent e)
 {
-    cout << "onButtonEvent: " << e.text << endl;
     if (e.target->is("Definir Ancho")) {
 
         myengine.setResolution(std::stoi(e.text), myengine.height);
@@ -1543,7 +1535,6 @@ void ofApp::loadSettings() {
 	angleBackground->setValue(xmlParameters.getValue("settings:angleBackground", 0));
 
 	string strColorGrid = xmlParameters.getValue("settings:colorGrid", "0xFFFFFF");
-	cout << "colorGrid: " << strColorGrid << endl;
 
 	colorGrid->setColor(ofHexToInt("0x" + strColorGrid));
 	colorGrid->setText(strColorGrid);
@@ -1590,7 +1581,6 @@ void ofApp::loadSettings() {
 
 	if (pathShape != "") myengine.setShape(pathShape);
 
-	cout << "String color: " << strColorMaskPoint << endl;
 
 	if (strColorMaskPoint != "NULL") {
 
@@ -1601,7 +1591,6 @@ void ofApp::loadSettings() {
 
 	else myengine.colorMaskPoint = NULL;
 
-	cout << "ofColor color: " << myengine.colorMaskPoint << endl;
 
 
 	myengine.pathInput.clear();
@@ -1715,7 +1704,6 @@ void ofApp::saveSettings() {
 	if (myengine.colorMaskPoint != NULL) {
 
 		xmlParameters.setValue("settings:colorMaskPoint", ofToHex(myengine.colorMaskPoint.getHex()));
-		cout << ofToHex(myengine.colorMaskPoint.getHex()) << endl;
 
 	}
 

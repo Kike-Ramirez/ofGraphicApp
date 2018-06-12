@@ -10,7 +10,7 @@ void ofApp::setup()
     //ofSetFullscreen(true);
     ofSetWindowPosition(100, 100);
     ofSetWindowShape(1024, 768);
-    ofSetWindowTitle("ofGraphicApp v1.40");
+    ofSetWindowTitle("ofGraphicApp v1.50");
     ofSetFrameRate(60);
     ofSetEscapeQuitsApp(false);
 
@@ -1485,6 +1485,8 @@ void ofApp::resetSettings() {
 
 	}
 
+	// KIKE: Aquí falta actualizar la parte del reset para puntos y triangulaciones.
+
 	updateValues();
 
 	myengine.needsUpdateGrid = true;
@@ -1682,13 +1684,48 @@ void ofApp::loadSettings() {
 
 	}
 
+	myengine.triangulation.reset(myengine.input, myengine.colorTriangle);
+	xmlParameters.pushTag("triangulationGrid");
+	numberOfSavedPoints = xmlParameters.getNumTags("position");
+	for (int i = 0; i < numberOfSavedPoints; i++) {
+		xmlParameters.pushTag("position", i);
+
+		ofPoint p;
+		p.x = xmlParameters.getValue("X", 0);
+		p.y = xmlParameters.getValue("Y", 0);
+
+		myengine.triangulation.addPoint(p);
+		xmlParameters.popTag();
+	}
+	xmlParameters.popTag(); //pop position
+
+	myengine.triangulation.triangulate();
+
+	myengine.triangles.clear();
+	xmlParameters.pushTag("pointsGrid");
+	numberOfSavedPoints = xmlParameters.getNumTags("position");
+	for (int i = 0; i < numberOfSavedPoints; i++) {
+		xmlParameters.pushTag("position", i);
+
+		ofPoint p;
+		p.x = xmlParameters.getValue("X", 0);
+		p.y = xmlParameters.getValue("Y", 0);
+
+		myengine.triangles.push_back(p);
+		xmlParameters.popTag();
+	}
+	xmlParameters.popTag(); //pop position
+
 	updateValues();
 
 	myengine.setResolution(myengine.width, myengine.height);
-	myengine.updateGrid();
-	myengine.updatePoints();
-	myengine.drawPoints();
+
 	myengine.updateBackground();
+	myengine.needsUpdateGrid = false;
+	myengine.needsUpdatePoints = false;
+	myengine.needsDrawPoints = true;
+	myengine.needsUpdateMask = false;
+
 	myengine.update();
 
 
@@ -1787,6 +1824,35 @@ void ofApp::saveSettings() {
 		//so set the three values in the file
 		xmlParameters.addValue("X", myengine.pathPoints.getVertex(i).x);
 		xmlParameters.addValue("Y", myengine.pathPoints.getVertex(i).y);
+		xmlParameters.popTag();//pop position
+	}
+	xmlParameters.popTag(); //pop position
+
+	xmlParameters.addTag("triangulationGrid");
+
+	xmlParameters.pushTag("triangulationGrid");
+	//points is a vector<ofPoint> that we want to save to a file
+	for (int i = 0; i < myengine.triangulation.triangleMesh.getNumVertices(); i++) {
+		//each position tag represents one point
+		xmlParameters.addTag("position");
+		xmlParameters.pushTag("position", i);
+		//so set the three values in the file
+		xmlParameters.addValue("X", myengine.triangulation.triangleMesh.getVertex(i).x);
+		xmlParameters.addValue("Y", myengine.triangulation.triangleMesh.getVertex(i).y);
+		xmlParameters.popTag();//pop position
+	}
+	xmlParameters.popTag(); //pop position
+
+	xmlParameters.addTag("pointsGrid");
+	xmlParameters.pushTag("pointsGrid");
+	//points is a vector<ofPoint> that we want to save to a file
+	for (int i = 0; i < myengine.triangles.size(); i++) {
+		//each position tag represents one point
+		xmlParameters.addTag("position");
+		xmlParameters.pushTag("position", i);
+		//so set the three values in the file
+		xmlParameters.addValue("X", myengine.triangles[i].x);
+		xmlParameters.addValue("Y", myengine.triangles[i].y);
 		xmlParameters.popTag();//pop position
 	}
 	xmlParameters.popTag(); //pop position

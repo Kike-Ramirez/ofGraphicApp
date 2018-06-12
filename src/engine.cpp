@@ -230,13 +230,15 @@ void engine::setResolution(int width_, int height_)
     width = width_;
     height = height_;
 
-    canvas.allocate(width, height);
+    canvas.allocate(width, height, GL_RGBA);
     grid.allocate(width, height);
-    background.allocate(width, height);
+    background.allocate(width, height, GL_RGBA);
 
-    fboInput.allocate(width,height,GL_RGB);
-    fboGrid.allocate(width,height,GL_RGB);
-    fboPoints.allocate(width,height,GL_RGB);
+	//maskInput.setImageType(OF_IMAGE_COLOR_ALPHA);
+	//origMaskInput.setImageType(OF_IMAGE_COLOR_ALPHA);
+    fboInput.allocate(width,height,GL_RGBA);
+    fboGrid.allocate(width,height,GL_RGBA);
+    fboPoints.allocate(width,height,GL_RGBA);
 
 
     if (input.isAllocated()) {
@@ -627,6 +629,8 @@ void engine::drawPoints() {
 void engine::drawVectors(string path) {
     
     ofCairoRenderer file;
+	//file.setupGraphicDefaults();
+
     ofRectangle viewport;
     
     viewport.set(0, 0,canvas.getWidth(),canvas.getHeight()); // pdf dimensions
@@ -649,9 +653,14 @@ void engine::drawVectors(string path) {
     
     ofImage bk;
     ofPixels pix;
+
+	bk.allocate(canvas.getWidth(), canvas.getHeight(), OF_IMAGE_COLOR_ALPHA );
+	pix.allocate(canvas.getWidth(), canvas.getHeight(), OF_IMAGE_COLOR_ALPHA);
+
     
     background.readToPixels(pix);
     bk.setFromPixels(pix);
+
     file.draw(bk, 0, 0, 0, canvas.getWidth(), canvas.getHeight(), 0, 0, canvas.getWidth(), canvas.getHeight() );
     
     ofFbo fboSvgInput;

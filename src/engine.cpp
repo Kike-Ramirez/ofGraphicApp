@@ -112,7 +112,7 @@ void engine::update()
 
             shaderAlpha.begin();
             shaderAlpha.setUniformTexture("imageMask", maskInput.getTextureReference(), 1);
-            shaderAlpha.setUniform1f("opacityImg", opacityImg/100);
+            shaderAlpha.setUniform1f("opacityImg", opacityImg/100.0);
             shaderAlpha.setUniform1i("modo", 1);
             input.draw(0,0);
             shaderAlpha.end();
@@ -123,7 +123,7 @@ void engine::update()
             
             shaderAlpha.begin();
             // shaderAlpha.setUniformTexture("imageMask", maskInput.getTextureReference(), 1);
-            shaderAlpha.setUniform1f("opacityImg", opacityImg/100);
+            shaderAlpha.setUniform1f("opacityImg", opacityImg/100.0);
             shaderAlpha.setUniform1i("modo", 2);
             input.draw(0,0);
             shaderAlpha.end();
@@ -675,6 +675,7 @@ void engine::drawVectors(string path) {
             
             shaderAlpha.begin();
             shaderAlpha.setUniformTexture("imageMask", maskInput.getTextureReference(), 1);
+			shaderAlpha.setUniform1f("opacityImg", opacityImg / 100.0);
             input.draw(0,0);
             shaderAlpha.end();
             
@@ -688,8 +689,13 @@ void engine::drawVectors(string path) {
     
     ofImage vectorInput;
     ofPixels pix2;
+
+	vectorInput.allocate(canvas.getWidth(), canvas.getHeight(), OF_IMAGE_COLOR_ALPHA);
+	pix2.allocate(canvas.getWidth(), canvas.getHeight(), OF_IMAGE_COLOR_ALPHA);
+
     fboSvgInput.readToPixels(pix2);
     vectorInput.setFromPixels(pix2);
+	vectorInput.save("inputmask.png");
     
     file.draw(vectorInput, 0, 0, 0, canvas.getWidth(), canvas.getHeight(), 0, 0, canvas.getWidth(), canvas.getHeight() );
     

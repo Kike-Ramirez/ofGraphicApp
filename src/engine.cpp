@@ -627,30 +627,8 @@ void engine::drawPoints() {
 }
 
 void engine::drawVectors(string path) {
-    
-    ofCairoRenderer file;
-	//file.setupGraphicDefaults();
-
-    ofRectangle viewport;
-    
-    viewport.set(0, 0,canvas.getWidth(),canvas.getHeight()); // pdf dimensions
-    ofViewport(viewport);
-    
-    std::string fn = path;
-    
-    if(fn.substr(fn.find_last_of(".") + 1) == "svg") {
-        file.setup(path, ofCairoRenderer::SVG);
-        
-        
-    } else {
-        file.setup(path, ofCairoRenderer::PDF);
-    }
-    
-    file.viewport(viewport);
-    file.setupGraphicDefaults();
-    
-    //file.setFillMode(OF_FILLED);
-    
+  
+	// Read Background to bk image
     ofImage bk;
     ofPixels pix;
 
@@ -661,13 +639,14 @@ void engine::drawVectors(string path) {
     background.readToPixels(pix);
     bk.setFromPixels(pix);
 
-    file.draw(bk, 0, 0, 0, canvas.getWidth(), canvas.getHeight(), 0, 0, canvas.getWidth(), canvas.getHeight() );
     
+	// Read input image and apply filters in pix2
     ofFbo fboSvgInput;
     fboSvgInput.allocate(canvas.getWidth(), canvas.getHeight(), GL_RGBA);
     fboSvgInput.begin();
     
     ofClear(0);
+	ofClearAlpha();
     
     if ((showInput) && (input.isAllocated())) {
         
@@ -696,9 +675,27 @@ void engine::drawVectors(string path) {
     fboSvgInput.readToPixels(pix2);
     vectorInput.setFromPixels(pix2);
 	vectorInput.save("inputmask.png");
+
+	// Vector file definition
+	ofCairoRenderer file;
+	ofRectangle viewport;
+
+	viewport.set(0, 0, canvas.getWidth(), canvas.getHeight()); // pdf dimensions
+	file.setup(path, ofCairoRenderer::FROM_FILE_EXTENSION);
+	ofViewport(viewport);
+
+	file.viewport(viewport);
+	file.setupGraphicDefaults();
+	// file.setBlendMode(OF_BLENDMODE_DISABLED);
+
+	// Apply background
+	file.background(0);
+	file.draw(bk, 0, 0, 0, canvas.getWidth(), canvas.getHeight(), 0, 0, canvas.getWidth(), canvas.getHeight());
     
-    file.draw(vectorInput, 0, 0, 0, canvas.getWidth(), canvas.getHeight(), 0, 0, canvas.getWidth(), canvas.getHeight() );
+	// Apply input image
+	file.draw(vectorInput, 0, 0, 0, canvas.getWidth(), canvas.getHeight(), 0, 0, canvas.getWidth(), canvas.getHeight() );
     
+	// Apply grid
     if (showGrid) {
     
         file.setColor(colorTriangle);
@@ -710,8 +707,7 @@ void engine::drawVectors(string path) {
     }
     
 
-    // Dibujamos puntos
-    
+    // Apply SVG Textures
 	if (showTextures) {
 
 		file.setColor(colorSVG);
@@ -731,6 +727,7 @@ void engine::drawVectors(string path) {
 
 	}
     
+	// Apply points grid
     if (showPoints) {
         for (int i = 0; i < triangles.size(); i++ ) {
             
@@ -782,7 +779,10 @@ void engine::drawVectors(string path) {
         
     }
     
+	// Close file
     file.close();
+
+	// Set normal viewport
     ofViewport(ofRectangle(0,0,ofGetWidth(),ofGetHeight()));
     
     

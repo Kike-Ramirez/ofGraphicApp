@@ -632,7 +632,7 @@ void engine::drawVectors(string path) {
     ofImage bk;
     ofPixels pix;
 
-	bk.allocate(canvas.getWidth(), canvas.getHeight(), OF_IMAGE_COLOR_ALPHA );
+	bk.allocate(canvas.getWidth(), canvas.getHeight(), OF_IMAGE_COLOR_ALPHA);
 	pix.allocate(canvas.getWidth(), canvas.getHeight(), OF_IMAGE_COLOR_ALPHA);
 
     
@@ -686,10 +686,11 @@ void engine::drawVectors(string path) {
 
 	file.viewport(viewport);
 	file.setupGraphicDefaults();
-	// file.setBlendMode(OF_BLENDMODE_DISABLED);
+	file.setBlendMode(OF_BLENDMODE_ALPHA);
 
 	// Apply background
 	file.background(0);
+	file.clearAlpha();
 	file.draw(bk, 0, 0, 0, canvas.getWidth(), canvas.getHeight(), 0, 0, canvas.getWidth(), canvas.getHeight());
     
 	// Apply input image

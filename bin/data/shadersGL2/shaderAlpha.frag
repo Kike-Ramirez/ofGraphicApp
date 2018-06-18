@@ -14,7 +14,12 @@ void main()
     if (modo == 1) {
         vec4 texel0 = texture2DRect(tex0, texCoordVarying);
         vec4 texel1 = texture2DRect(imageMask, texCoordVarying);
-        color = vec4(texel0.rgb, (texel1.r+texel1.g+texel1.b) / 3 * texel0.a * opacityImg);
+        float r = texel1.r;
+        float g = texel1.g;
+        float b = texel1.b;
+        float mv = texel0.a;
+        float alphaCalc = (r + g + b) / 3.0 * mv * opacityImg; 
+        color = vec4(texel0.rgb, alphaCalc);
     }
     
     else {

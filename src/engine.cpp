@@ -108,27 +108,16 @@ void engine::update()
 
     if ((showInput) && (input.isAllocated())) {
 
-        if (maskInput.isAllocated()) {
+		if (maskInput.isAllocated()) {
 
-            shaderAlpha.begin();
-            shaderAlpha.setUniformTexture("imageMask", maskInput.getTextureReference(), 1);
-            shaderAlpha.setUniform1f("opacityImg", opacityImg/100.0);
-            shaderAlpha.setUniform1i("modo", 1);
-            input.draw(0,0);
-            shaderAlpha.end();
-
-        }
-
-        else {
+			input.getTexture().setAlphaMask(maskInput.getTexture());
+		}
             
-            shaderAlpha.begin();
-            // shaderAlpha.setUniformTexture("imageMask", maskInput.getTextureReference(), 1);
-            shaderAlpha.setUniform1f("opacityImg", opacityImg/100.0);
-            shaderAlpha.setUniform1i("modo", 2);
-            input.draw(0,0);
-            shaderAlpha.end();
-            
-        }
+        shaderAlpha.begin();
+        shaderAlpha.setUniform1f("opacityImg", opacityImg/100.0);
+        shaderAlpha.setUniform1i("modo", 2);
+        input.draw(0,0);
+        shaderAlpha.end();
 
     }
     
@@ -640,41 +629,54 @@ void engine::drawVectors(string path) {
     bk.setFromPixels(pix);
 
     
-	// Read input image and apply filters in pix2
-    ofFbo fboSvgInput;
-    fboSvgInput.allocate(canvas.getWidth(), canvas.getHeight(), GL_RGBA);
-    fboSvgInput.begin();
-    
-    ofClear(0);
-	ofClearAlpha();
-    
-    if ((showInput) && (input.isAllocated())) {
-        
-        if (maskInput.isAllocated()) {
-            
-            shaderAlpha.begin();
-            shaderAlpha.setUniformTexture("imageMask", maskInput.getTextureReference(), 1);
-			shaderAlpha.setUniform1f("opacityImg", opacityImg / 100.0);
-            input.draw(0,0);
-            shaderAlpha.end();
-            
-        }
-        
-        else input.draw(0,0);
-        
-    }
-    
-    fboSvgInput.end();
-    
-    ofImage vectorInput;
-    ofPixels pix2;
+	//// Read input image and apply filters in pix2
+ //   ofFbo fboSvgInput;
+ //   fboSvgInput.allocate(canvas.getWidth(), canvas.getHeight(), GL_RGBA);
+ //   fboSvgInput.begin();
+ //   
+ //   ofClear(ofFloatColor(0, 0));
 
-	vectorInput.allocate(canvas.getWidth(), canvas.getHeight(), OF_IMAGE_COLOR_ALPHA);
-	pix2.allocate(canvas.getWidth(), canvas.getHeight(), OF_IMAGE_COLOR_ALPHA);
+	//// bk.draw(0, 0);
+ //   
+ //   if ((showInput) && (input.isAllocated())) {
+ //       
+ //       if (maskInput.isAllocated()) {
+ //           
+	//		input.getTexture().setAlphaMask(maskInput.getTexture());
+	//		input.draw(0, 0);
 
-    fboSvgInput.readToPixels(pix2);
-    vectorInput.setFromPixels(pix2);
-	vectorInput.save("inputmask.png");
+	//		/*shaderAlpha.begin();
+	//		shaderAlpha.setUniformTexture("imageMask", maskInput.getTextureReference(), 1);
+	//		shaderAlpha.setUniform1f("opacityImg", opacityImg / 100.0);
+	//		shaderAlpha.setUniform1i("modo", 1);
+	//		input.draw(0, 0);
+	//		shaderAlpha.end();*/
+ //           
+ //       }
+ //       
+	//	else {
+
+	//		shaderAlpha.begin();
+	//		shaderAlpha.setUniform1f("opacityImg", opacityImg / 100.0);
+	//		shaderAlpha.setUniform1i("modo", 2);
+	//		input.draw(0, 0);
+	//		shaderAlpha.end();
+
+	//	}
+ //       
+ //   }
+ //   
+ //   fboSvgInput.end();
+ //   
+ //   ofImage vectorInput;
+ //   ofPixels pix2;
+
+	//vectorInput.allocate(canvas.getWidth(), canvas.getHeight(), OF_IMAGE_COLOR_ALPHA);
+	//pix2.allocate(canvas.getWidth(), canvas.getHeight(), OF_IMAGE_COLOR_ALPHA);
+
+ //   fboSvgInput.readToPixels(pix2);
+ //   vectorInput.setFromPixels(pix2);
+	//vectorInput.save("inputmask.png");
 
 	// Vector file definition
 	ofCairoRenderer file;
@@ -682,20 +684,56 @@ void engine::drawVectors(string path) {
 
 	viewport.set(0, 0, canvas.getWidth(), canvas.getHeight()); // pdf dimensions
 	file.setup(path, ofCairoRenderer::FROM_FILE_EXTENSION);
-	ofViewport(viewport);
-
 	file.viewport(viewport);
-	file.setupGraphicDefaults();
 	file.setBlendMode(OF_BLENDMODE_ALPHA);
+	file.background(ofFloatColor(0, 0));
+	file.setFillMode(OF_FILLED);
+	// ofViewport(viewport);
+
+	// file.setupGraphicDefaults();
+	// file.setBlendMode(OF_BLENDMODE_DISABLED);
 
 	// Apply background
-	file.background(0);
-	file.clearAlpha();
+	// file.background(0);
 	file.draw(bk, 0, 0, 0, canvas.getWidth(), canvas.getHeight(), 0, 0, canvas.getWidth(), canvas.getHeight());
     
+	// file.setBlendMode(OF_BLENDMODE_ALPHA);
 	// Apply input image
-	file.draw(vectorInput, 0, 0, 0, canvas.getWidth(), canvas.getHeight(), 0, 0, canvas.getWidth(), canvas.getHeight() );
+	if ((showInput) && (input.isAllocated())) {
+
+		if (maskInput.isAllocated()) {
+
+			input.getTexture().setAlphaMask(maskInput.getTexture());
+			// file.setColor(255, 255, 255, opacityImg / 100.0);
+			file.draw(input, 0, 0, 0, canvas.getWidth(), canvas.getHeight(), 0, 0, canvas.getWidth(), canvas.getHeight());
+
+			/*shaderAlpha.begin();
+			shaderAlpha.setUniformTexture("imageMask", maskInput.getTextureReference(), 1);
+			shaderAlpha.setUniform1f("opacityImg", opacityImg / 100.0);
+			shaderAlpha.setUniform1i("modo", 1);
+			input.draw(0, 0);
+			shaderAlpha.end();*/
+
+		}
+
+		else {
+
+			file.setColor(255, 255, 255, opacityImg / 100.0);
+			file.draw(input, 0, 0, 0, canvas.getWidth(), canvas.getHeight(), 0, 0, canvas.getWidth(), canvas.getHeight());
+
+
+			//shaderAlpha.begin();
+			//shaderAlpha.setUniform1f("opacityImg", opacityImg / 100.0);
+			//shaderAlpha.setUniform1i("modo", 2);
+			//input.draw(0, 0);
+			//shaderAlpha.end();
+
+		}
+
+	}
+	// file.draw(vectorInput, 0, 0, 0, canvas.getWidth(), canvas.getHeight(), 0, 0, canvas.getWidth(), canvas.getHeight() );
     
+	// file.setBlendMode(OF_BLENDMODE_DISABLED);
 	// Apply grid
     if (showGrid) {
     

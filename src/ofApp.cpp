@@ -1283,7 +1283,7 @@ void ofApp::mousePressed(int x, int y, int button){
 
         float dist = pow(origin.x - last.x, 2) + pow(origin.y - last.y, 2);
 
-        if ((dist < 100) && (myengine.pathInput.getNumVertices() > 2)) {
+        if ((dist < myengine.canvas.getWidth() / 10.0) && (myengine.pathInput.getNumVertices() > 2)) {
 
             myengine.definingMaskImg = false;
             myengine.fboInput.begin();
@@ -1314,7 +1314,7 @@ void ofApp::mousePressed(int x, int y, int button){
 
         float dist = pow(origin.x - last.x, 2) + pow(origin.y - last.y, 2);
 
-        if ((dist < 100) && (myengine.pathGrid.getNumVertices() > 2)) {
+        if ((dist < myengine.canvas.getWidth() / 10.0) && (myengine.pathGrid.getNumVertices() > 2)) {
 
             myengine.definingMaskGrid = false;
             myengine.fboGrid.begin();
@@ -1345,7 +1345,7 @@ void ofApp::mousePressed(int x, int y, int button){
 
         float dist = pow(origin.x - last.x, 2) + pow(origin.y - last.y, 2);
 
-        if ((dist < 100) && (myengine.pathPoints.getNumVertices() > 2)) {
+        if ((dist < myengine.canvas.getWidth() / 10.0) && (myengine.pathPoints.getNumVertices() > 2)) {
 
             myengine.definingMaskPoints = false;
             myengine.fboPoints.begin();

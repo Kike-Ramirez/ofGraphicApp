@@ -1530,7 +1530,7 @@ void ofApp::loadSettings() {
 	archivo->setChecked(ofToBool(xmlParameters.getValue("settings:archivo", "false")));
 	graphicElements->setChecked(ofToBool(xmlParameters.getValue("settings:graphicElements", "false")));
 	numSVG = xmlParameters.getValue("settings:numSVG", 0);
-	svgSize->setValue(xmlParameters.getValue("settings:svgSize", 1));
+	svgSize->setValue(xmlParameters.getValue("settings:svgSize", 1.0));
 	loadBackground->setChecked(ofToBool(xmlParameters.getValue("settings:loadBackground", "false")));
 	colorBackground->setChecked(ofToBool(xmlParameters.getValue("settings:colorBackground", "true")));
 	defineBackground->setChecked(ofToBool(xmlParameters.getValue("settings:defineBackground", "false")));
@@ -1884,6 +1884,7 @@ void ofApp::updateValues() {
 	myengine.noiseP = noiseP->getValue();
 	myengine.pointSize = size->getValue();
 	myengine.numSVG = numSVG;
+	myengine.svgSize = svgSize->getValue();
 
 	if (punto->getChecked()) myengine.shapeDrawing = 1;
 	else if (cuadrado->getChecked()) myengine.shapeDrawing = 2;

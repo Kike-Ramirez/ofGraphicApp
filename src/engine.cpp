@@ -98,7 +98,7 @@ void engine::update()
 	if (needsUpdateMask) updateMask();
 
     canvas.begin();
-    ofClear(ofFloatColor(0));
+    ofClear(ofColor(0, 0));
 
     if (showBackground || showBackgroundFile || showBackgroundColor) background.draw(0,0);
 
@@ -107,22 +107,26 @@ void engine::update()
     
 
     if ((showInput) && (input.isAllocated())) {
-
+		
 		if (maskInput.isAllocated()) {
 
-			input.getTexture().setAlphaMask(maskInput.getTexture());
+			input.getTexture().setAlphaMask(maskInput.getTextureReference());
+
 			shaderAlpha.begin();
 			shaderAlpha.setUniform1f("opacityImg", opacityImg / 100.0);
-			shaderAlpha.setUniform1i("modo", 2);
 			input.draw(0, 0);
 			shaderAlpha.end();
 		}
             
 		else {
 
+			ofImage imgWhite;
+			imgWhite.allocate(canvas.getWidth(), canvas.getHeight(), OF_IMAGE_COLOR);
+			imgWhite.setColor(ofColor::white);
+
+			input.getTexture().setAlphaMask(imgWhite.getTextureReference());
 			shaderAlpha.begin();
 			shaderAlpha.setUniform1f("opacityImg", opacityImg / 100.0);
-			shaderAlpha.setUniform1i("modo", 2);
 			input.draw(0, 0);
 			shaderAlpha.end();
 
@@ -643,15 +647,19 @@ void engine::drawVectors(string path) {
     ofFbo fboSvgInput;
     fboSvgInput.allocate(canvas.getWidth(), canvas.getHeight(), GL_RGBA);
     fboSvgInput.begin();
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
+	glEnable(GL_BLEND);
+	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
  //   
     ofClear(ofFloatColor(0, 0, 0, 0));
 
 	bk.draw(0, 0);
- //   
+ 
     if ((showInput) && (input.isAllocated())) {
- //       
+        
         if (maskInput.isAllocated()) {
- //           
+            
 			input.getTexture().setAlphaMask(maskInput.getTexture());
 			input.draw(0, 0);
 
@@ -676,6 +684,9 @@ void engine::drawVectors(string path) {
  //       
     }
  //   
+	glDisable(GL_BLEND);
+	glPopAttrib();
+
     fboSvgInput.end();
  //   
     ofImage vectorInput;

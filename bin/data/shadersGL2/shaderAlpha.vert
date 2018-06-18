@@ -1,9 +1,10 @@
-#version 120
+// vertex shader
 
-varying vec2 texCoordVarying;
+#version 150
 
-void main()
-{
-    texCoordVarying = gl_MultiTexCoord0.xy;
-	gl_Position = ftransform();
+uniform mat4 modelViewProjectionMatrix;
+in vec4 position;
+
+void main(){
+    gl_Position = modelViewProjectionMatrix * position;
 }

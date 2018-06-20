@@ -120,11 +120,6 @@ void engine::update()
             
 		else {
 
-			ofImage imgWhite;
-			imgWhite.allocate(canvas.getWidth(), canvas.getHeight(), OF_IMAGE_COLOR);
-			imgWhite.setColor(ofColor::white);
-
-			input.getTexture().setAlphaMask(imgWhite.getTextureReference());
 			shaderAlpha.begin();
 			shaderAlpha.setUniform1f("opacityImg", opacityImg / 100.0);
 			input.draw(0, 0);
@@ -237,8 +232,6 @@ void engine::setResolution(int width_, int height_)
     grid.allocate(width, height);
     background.allocate(width, height, GL_RGBA);
 
-	//maskInput.setImageType(OF_IMAGE_COLOR_ALPHA);
-	//origMaskInput.setImageType(OF_IMAGE_COLOR_ALPHA);
     fboInput.allocate(width,height,GL_RGBA);
     fboGrid.allocate(width,height,GL_RGBA);
     fboPoints.allocate(width,height,GL_RGBA);
@@ -247,6 +240,8 @@ void engine::setResolution(int width_, int height_)
     if (input.isAllocated()) {
 
         input.clone(origInput);
+		input.setImageType(OF_IMAGE_COLOR_ALPHA);
+
         float ratioInput = float(input.getWidth())/input.getHeight();
         float ratioCanvas = float(width)/height;
 
@@ -266,6 +261,7 @@ void engine::setResolution(int width_, int height_)
     if (backgroundInput.isAllocated()) {
 
         backgroundInput.clone(origBackgroundInput);
+		backgroundInput.setImageType(OF_IMAGE_COLOR);
 
         float ratioBackground = float(backgroundInput.getWidth())/backgroundInput.getHeight();
         float ratioCanvas = float(width)/height;
@@ -287,6 +283,7 @@ void engine::setResolution(int width_, int height_)
     if (maskInput.isAllocated()) {
 
         maskInput.clone(origMaskInput);
+		maskInput.setImageType(OF_IMAGE_COLOR);
 
         float ratioMask = float(maskInput.getWidth())/maskInput.getHeight();
         float ratioCanvas = float(width)/height;
@@ -308,6 +305,7 @@ void engine::setResolution(int width_, int height_)
     if (maskGrid.isAllocated()) {
 
         maskGrid.clone(origMaskGrid);
+		maskGrid.setImageType(OF_IMAGE_COLOR);
 
         float ratioMask = float(maskGrid.getWidth())/maskGrid.getHeight();
         float ratioCanvas = float(width)/height;
@@ -329,6 +327,7 @@ void engine::setResolution(int width_, int height_)
     if (maskPoints.isAllocated()) {
 
         maskPoints.clone(origMaskPoints);
+		maskPoints.setImageType(OF_IMAGE_COLOR);
 
         float ratioMask = float(maskPoints.getWidth())/maskPoints.getHeight();
         float ratioCanvas = float(width)/height;
@@ -352,7 +351,7 @@ void engine::setResolution(int width_, int height_)
 void engine::setInput(string file_)
 {
     origInput.load(file_);
-    input.clone(origInput);
+	input.allocate(origInput.getWidth(), origInput.getHeight(), OF_IMAGE_COLOR_ALPHA);	
     setResolution(input.getWidth(), input.getHeight());
 
 }
@@ -360,7 +359,7 @@ void engine::setInput(string file_)
 void engine::setMask(string file_)
 {
     origMaskInput.load(file_);
-    maskInput.clone(origMaskInput);
+	maskInput.allocate(width, height, OF_IMAGE_COLOR);
     setResolution(width, height);
     input.getTexture().setAlphaMask(maskInput.getTexture());
 }
@@ -368,14 +367,14 @@ void engine::setMask(string file_)
 void engine::setMaskGrid(string file_)
 {
     origMaskGrid.load(file_);
-    maskGrid.clone(origMaskGrid);
+    maskGrid.allocate(width, height, OF_IMAGE_COLOR);
     setResolution(width, height);
 }
 
 void engine::setMaskPoints(string file_)
 {
     origMaskPoints.load(file_);
-    maskPoints.clone(origMaskPoints);
+    maskPoints.allocate(width, height, OF_IMAGE_COLOR);
     setResolution(width, height);
 }
 
@@ -417,7 +416,7 @@ void engine::deleteMaskPoints()
 void engine::setBackground(string file)
 {
     origBackgroundInput.load(file);
-    backgroundInput.clone(origBackgroundInput);
+    backgroundInput.allocate(width, height, OF_IMAGE_COLOR);
     setResolution(width, height);
 
 }

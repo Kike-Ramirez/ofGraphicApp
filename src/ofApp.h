@@ -29,6 +29,7 @@ public:
     void gotMessage(ofMessage msg);
 
     engine myengine;
+
     vector<ofxDatGuiComponent*> components;
     ofxDatGuiComponent* component;
     ofxDatGuiTextInput* ancho;

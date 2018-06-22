@@ -222,7 +222,7 @@ void ofApp::loadGui() {
 
 
     // Malla de lineas
-	ofxDatGuiFolder* folderLineas = gui->addFolder("MALLA DE PUNTOS", ofColor::green);
+	ofxDatGuiFolder* folderLineas = gui->addFolder("MALLA DE LINEAS", ofColor::green);
 	folderLineas->addToggle("showGrid", xmlParameters.getValue("settings:showGrid", true))->setLabel("-> Mostrar malla");
 	folderLineas->addSlider("opacityGrid", 0, 100, xmlParameters.getValue("settings:opacityGrid", 100))->setLabel("-> Opacidad");
 	folderLineas->addSlider("max", 0, 255, xmlParameters.getValue("settings:mask", 255))->setLabel("-> Maximo");
@@ -239,7 +239,7 @@ void ofApp::loadGui() {
 	gui->addBreak();
 
 	// Malla de puntos
-	ofxDatGuiFolder* folderPuntos = gui->addFolder("MALLA DE LINEAS", ofColor::green);
+	ofxDatGuiFolder* folderPuntos = gui->addFolder("MALLA DE PUNTOS", ofColor::green);
 	folderPuntos->addToggle("showPoints", xmlParameters.getValue("settings:showPoints", true))->setLabel("-> Mostrar puntos");
 	folderPuntos->addSlider("opacityPoints", 0, 100, xmlParameters.getValue("settings:opacityPoints", 100))->setLabel("-> Opacidad");
 	folderPuntos->addSlider("minP", 0, 255, xmlParameters.getValue("settings:maxP", 255))->setLabel("-> Maximo");
@@ -929,6 +929,7 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
 
     else if (e.target->is("stroke")) {
 
+		cout << "Stroke: " << e.value << endl;
         myengine.lineWidth = e.value;
         myengine.needsDrawPoints = true;
 

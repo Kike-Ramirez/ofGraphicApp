@@ -42,7 +42,7 @@ public:
     bool showBackgroundColor;
     bool showTextures;
     bool saveVector;
-    bool definingMaskImg, definingMaskGrid, definingMaskPoints;
+    bool definingMaskImg, definingMaskGrid, definingMaskPoints, definingSvgCenter;
     bool coloringMaskImg, coloringMaskGrid, coloringMaskPoints;
     int shapeDrawing;
 	ofxEditableSVG shapefile;

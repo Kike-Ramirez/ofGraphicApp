@@ -35,22 +35,15 @@ void ofApp::setup()
 void ofApp::update()
 {
 
-    for(int i=0; i<components.size(); i++) components[i]->update();
     myengine.update();
 
 }
 
 void ofApp::draw()
 {
-    ofBackgroundGradient(ofColor(0), ofColor(255), OF_GRADIENT_LINEAR);
-    fitCanvas();
-    for(int i=components.size()-1; i>=0; i--) components[i]->draw();
-
-	colorSelectorGrid.display();
-	colorSelectorPoint.display();
-	colorSelectorColorSVG.display();
-	colorSelectorOne.display();
-	colorSelectorTwo.display();
+    //ofBackgroundGradient(ofColor(0), ofColor(255), OF_GRADIENT_LINEAR);
+	ofBackground(backgrounds[tIndex]);
+	fitCanvas();
 
 
 
@@ -86,6 +79,20 @@ void ofApp::draw()
         
     }
 
+	if (myengine.showTextures && myengine.definingSvgCenter) {
+
+		if ((mouseX > xCanvas) && (mouseX < xCanvas + widthCanvas) && (mouseY > yCanvas) && (mouseY< yCanvas + heightCanvas)) {
+
+			ofSetColor(255, 0, 0);
+			ofLine(mouseX - 5, mouseY, mouseX + 5, mouseY);
+			ofLine(mouseX, mouseY - 5, mouseX, mouseY + 5);
+
+		}
+
+		ofDrawBitmapString("Mover Elementos Graficos", xCanvas + 10, yCanvas + 20);
+		ofSetColor(255);
+
+	}
 }
 
 void ofApp::loadGui() {
@@ -95,453 +102,242 @@ void ofApp::loadGui() {
     int p = 0;
     int x11 = 38 * dWidth;
 
+	// Cargar Temas del GUI
+	themes = { new ofxDatGuiTheme(true),
+		new ofxDatGuiThemeSmoke(),
+		new ofxDatGuiThemeWireframe(),
+		new ofxDatGuiThemeMidnight(),
+		new ofxDatGuiThemeAqua(),
+		new ofxDatGuiThemeCharcoal(),
+		new ofxDatGuiThemeAutumn(),
+		new ofxDatGuiThemeCandy() };
 
-//    component = new ofxDatGuiFRM();
-//    component->setPosition(x, y);
-//    component->setWidth(x11, 0.7);
-//    components.push_back(component);
+	// Cargar fondos
+	backgrounds = {
+		ofColor(150),
+		ofColor(0x343B41),
+		ofColor(0xFCFAFD),
+		ofColor(0x011726),
+		ofColor(0x445966),
+		ofColor(0x28292E),
+		ofColor(0x4C4743),
+		ofColor(0xFF4081)
+	};
 
-//    y += component->getHeight() + p + 3 * dHeight;
-    component = new ofxDatGuiLabel("AREA DE TRABAJO");
-    component->setPosition(x, y);
-    component->setWidth(x11, 0.7);
-    components.push_back(component);
+	// Cargar colores corporativos
+	corporativeColors = {
 
-    y += component->getHeight() + p;
-    ancho = new ofxDatGuiTextInput("Definir Ancho", xmlParameters.getValue("settings:width", "1022"));
-    ancho->setPosition(x, y);
-    ancho->setWidth(x11, 0.7);
-    ancho->onTextInputEvent(this, &ofApp::onTextInputEvent);
-    components.push_back(ancho);
+		ofColor(199, 91, 18),
+		ofColor(77, 83, 87),
+		ofColor(177, 228, 227),
+		ofColor(107, 164, 184),
+		ofColor(144, 40, 130),
+		ofColor(255, 177, 187),
+		ofColor(220, 134, 153),
+		ofColor(255, 141, 109),
+		ofColor(99, 198, 191),
+		ofColor(0, 45, 66),
+		ofColor(65, 12, 55),
+		ofColor(238, 33, 87),
+		ofColor(166, 9, 61),
+		ofColor(238, 39, 55),
+		ofColor(248, 224, 142),
+		ofColor(80, 166, 132),
+		ofColor(215, 210, 203),
+		ofColor(255, 205, 0),
+		ofColor(0, 104, 94),
+		ofColor(39, 37, 31)
 
-    y += ancho->getHeight() + p;
-    alto = new ofxDatGuiTextInput("Definir Alto", xmlParameters.getValue("settings:height", "762"));
-    alto->setPosition(x, y);
-    alto->setWidth(x11, 0.7);
-    alto->onTextInputEvent(this, &ofApp::onTextInputEvent);
-    components.push_back(alto);
+	};
 
-    y += alto->getHeight() + p + 4 * dHeight;
-    showInput = new ofxDatGuiToggle("showInput", xmlParameters.getValue("settings:showInput", true));
-	showInput->setPosition(x, y);
-	showInput->setWidth(x11, 0.3);
-	showInput->setLabel("MOSTRAR IMAGEN");
-	showInput->onToggleEvent(this, &ofApp::onToggleEvent);
-    components.push_back(showInput);
-    
-    y += showInput->getHeight() + p;
-    component = new ofxDatGuiButton("uploadImg");
-    component->setPosition(x, y);
-    component->setWidth(x11 / 2, 0.7);
-    component->setLabel("Archivo");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
+	corporativeColorNames = {
 
-    component = new ofxDatGuiButton("deleteImg");
-    component->setPosition(x + x11 / 2, y);
-    component->setWidth(x11 / 2, 0.7);
-    component->setLabel("Borrar");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
-    
-    y += component->getHeight() + p;
-    opacityImg = new ofxDatGuiSlider("opacityImg", 0, 100, xmlParameters.getValue("settings:opacityImg", 100));
-	opacityImg->setPosition(x, y);
-	opacityImg->setWidth(x11, 0.3);
-	opacityImg->setLabel("Opacidad");
-	opacityImg->onSliderEvent(this, &ofApp::onSliderEvent);
-    components.push_back(opacityImg);
+		"Pantone 159C",
+		"Pantone 445C",
+		"Pantone 317C",
+		"Pantone 549C",
+		"Pantone 249C",
+		"Pantone 176C",
+		"Pantone 493C",
+		"Pantone 1635C",
+		"Pantone 570C",
+		"Pantone 534C",
+		"Pantone 7449C",
+		"Pantone 1925C",
+		"Pantone 1945C",
+		"Pantone 1788C",
+		"Pantone 1205C",
+		"Pantone 7723C",
+		"Warm Gray 1C",
+		"Pantone 116C",
+		"Pantone 329C",
+		"Process Black EC"
 
-    y += opacityImg->getHeight() + p;
-    component = new ofxDatGuiButton("uploadMskImg");
-    component->setPosition(x, y);
-    component->setWidth(x11 * 0.25, 0.7);
-    component->setLabel("Mascara Imagen");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
+	};
 
-    component = new ofxDatGuiButton("defineMskImg");
-    component->setPosition(x + x11 * 0.25, y);
-    component->setWidth(x11 * 0.25, 0.7);
-    component->setLabel("Def. Forma");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
+	// launch the app //
+	mFullscreen = false;
+	tIndex = 0;
+	// instantiate and position the gui //
+	gui = new ofxDatGui(ofxDatGuiAnchor::TOP_LEFT);
 
-    component = new ofxDatGuiButton("colorMskImg");
-    component->setPosition(x + x11 * 0.5, y);
-    component->setWidth(x11 * 0.25, 0.7);
-    component->setLabel("Def. Color");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
+	// Area de Trabajo
+	ofxDatGuiFolder* folderArea = gui->addFolder("RESOLUCION DE TRABAJO", ofColor::red);
+	folderArea->addTextInput("width", xmlParameters.getValue("settings:width", "1024"))->setLabel("-> Definir Ancho");
+	folderArea->addTextInput("height", xmlParameters.getValue("settings:height", "762"))->setLabel("-> Definir Alto");
+	folderArea->addFRM()->setLabel("-> FrameRate");
 
-    component = new ofxDatGuiButton("deleteMskImg");
-    component->setPosition(x + x11 * 0.75, y);
-    component->setWidth(x11 * 0.25, 0.7);
-    component->setLabel("Borrar Mascara");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
-    
-    y += component->getHeight() + p;
-    levelMsk = new ofxDatGuiSlider("levelMsk", 0, 100, xmlParameters.getValue("settings:levelMsk", 100));
-	levelMsk->setPosition(x, y);
-	levelMsk->setWidth(x11, 0.3);
-	levelMsk->setLabel("Umbral Masc. Color");
-	levelMsk->onSliderEvent(this, &ofApp::onSliderEvent);
-    components.push_back(levelMsk);
-    
-    
-    y += levelMsk->getHeight() + p + 4 * dHeight;
-    showGrid = new ofxDatGuiToggle("showGrid", xmlParameters.getValue("settings:showGrid", true));
-	showGrid->setPosition(x, y);
-	showGrid->setWidth(x11, 0.3);
-	showGrid->setLabel("MOSTRAR MALLA");
-	showGrid->onToggleEvent(this, &ofApp::onToggleEvent);
-    components.push_back(showGrid);
-    
-    y += showGrid->getHeight() + p;
-    opacityGrid = new ofxDatGuiSlider("opacityGrid", 0, 100, xmlParameters.getValue("settings:opacityGrid", 100));
-	opacityGrid->setPosition(x, y);
-	opacityGrid->setWidth(x11, 0.3);
-	opacityGrid->setLabel("Opacidad");
-	opacityGrid->onSliderEvent(this, &ofApp::onSliderEvent);
-    components.push_back(opacityGrid);
-    
+	folderArea->expand();
 
-    y += opacityGrid->getHeight() + p;
-    min = new ofxDatGuiSlider("min", 0, 255, xmlParameters.getValue("settings:min", 0));
-    min->setPosition(x, y);
-	min->setWidth(x11, 0.3);
-	min->setLabel("Minimo");
-	min->onSliderEvent(this, &ofApp::onSliderEvent);
-    components.push_back(min);
+	gui->addBreak();
 
-    y += min->getHeight() + p;
-    max = new ofxDatGuiSlider("max", 0, 255, xmlParameters.getValue("settings:mask", 255));
-	max->setPosition(x, y);
-	max->setWidth(x11, 0.3);
-	max->setLabel("Maximo");
-	max->onSliderEvent(this, &ofApp::onSliderEvent);
-    components.push_back(max);
+	// Imagen de entrada
+	ofxDatGuiFolder* folderInput = gui->addFolder("IMAGEN DE ENTRADA", ofColor::blue);
+	folderInput->addToggle("showInput", xmlParameters.getValue("settings:showInput", true))->setLabel("-> Mostrar Imagen");
+	folderInput->addButton("uploadImg")->setLabel("-> Archivo");
+	folderInput->addButton("deleteImg")->setLabel("-> Borrar");
+	folderInput->addSlider("opacityImg", 0, 100, xmlParameters.getValue("settings:opacityImg", 100))->setLabel("-> Opacidad");
+	folderInput->addButton("uploadMskImg")->setLabel("-> Mascara Imagen");
+	folderInput->addButton("defineMskImg")->setLabel("-> Definir Forma");
+	folderInput->addButton("colorMskImg")->setLabel("-> Definir Color");
+	folderInput->addButton("deleteMskImg")->setLabel("-> Borrar Mascara");
+	folderInput->addSlider("levelMsk", 0, 100, xmlParameters.getValue("settings:levelMsk", 100))->setLabel("-> Umbral Masc. Color");
+	//folderInput->addToggle("Mostrar Imagen", xmlParameters.getValue("settings:showInput", true));
+	folderInput->collapse();
 
-    y += max->getHeight() + p;
-    density = new ofxDatGuiSlider("density", 4, 40, xmlParameters.getValue("settings:density", 10));
-	density->setPosition(x, y);
-	density->setWidth(x11, 0.3);
-	density->setLabel("Espaciado");
-	density->onSliderEvent(this, &ofApp::onSliderEvent);
-    components.push_back(density);
+	gui->addBreak();
 
-    y += density->getHeight() + p;
-    noise = new ofxDatGuiSlider("noise", 0, 100, xmlParameters.getValue("settings:noise", 0));
-	noise->setPosition(x, y);
-	noise->setWidth(x11, 0.3);
-	noise->setLabel("Desplazamiento");
-	noise->onSliderEvent(this, &ofApp::onSliderEvent);
-    components.push_back(noise);
+	// Fondo de pantalla
+	ofxDatGuiFolder* folderPantalla = gui->addFolder("FONDO", ofColor::blue);
 
-    y += noise->getHeight() + p;
-    stroke = new ofxDatGuiSlider("stroke", 0, 10, xmlParameters.getValue("settings:stroke", 1));
-	stroke->setPosition(x, y);
-	stroke->setWidth(x11, 0.3);
-	stroke->setLabel("Grosor Linea");
-	stroke->onSliderEvent(this, &ofApp::onSliderEvent);
-    components.push_back(stroke);
+	folderPantalla->addToggle("loadBackground", xmlParameters.getValue("settings:loadBackground", false))->setLabel("-> Archivo");
+	folderPantalla->addToggle("colorBackground", xmlParameters.getValue("settings:colorBackground", true))->setLabel("-> Color");
+	folderPantalla->addToggle("defineBackground", xmlParameters.getValue("settings:defineBackground", false))->setLabel("-> Degradado");
+	folderPantalla->addSlider("angleBackground", 0, 180, xmlParameters.getValue("settings:angleBackground", 0))->setLabel("-> Angulo de degradado");
+	folderPantalla->addColorPicker("colorOne", ofColor::fromHex(xmlParameters.getValue("settings:colorOne", 0x000000)))->setLabel("-> Color A");
+	folderPantalla->addColorPicker("colorTwo", ofColor::fromHex(xmlParameters.getValue("settings:colorTwo", 0xFFFFFF)))->setLabel("-> Color B");
+	folderPantalla->collapse();
 
-    y += component->getHeight() + p;
-    component = new ofxDatGuiButton("uploadMskGrid");
-    component->setPosition(x, y);
-    component->setWidth(x11 * 0.4, 0.7);
-    component->setLabel("Mascara Rejilla");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
-    
-    component = new ofxDatGuiButton("defineMskGrid");
-    component->setPosition(x + x11 * 0.4, y);
-    component->setWidth(x11 * 0.3, 0.7);
-    component->setLabel("Definir Forma");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
-    
-    component = new ofxDatGuiButton("deleteMskGrid");
-    component->setPosition(x + x11 * 0.7, y);
-    component->setWidth(x11 * 0.3, 0.7);
-    component->setLabel("Borrar Mascara");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
-
-	y += component->getHeight() + p;
-	colorSelectorGrid.setup(ofVec3f(x, y), ofVec3f(x11, 20));
-    
-    y += 20 + p;
-    colorGrid = new ofxDatGuiColorPicker("colorGrid", ofColor::fromHex(xmlParameters.getValue("settings:colorGrid", 0xFFFFFF)));
-	colorGrid->setPosition(x, y);
-	colorGrid->setWidth(x11, 0.3);
-	colorGrid->setLabel("Color");
-	colorGrid->onColorPickerEvent(this, &ofApp::onColorPickerEvent);
-    components.push_back(colorGrid);
-    
-
-    
-    
-    y += colorGrid->getHeight() + p + 4 * dHeight;
-	showPoints = new ofxDatGuiToggle("showPoints", xmlParameters.getValue("settings:showPoints", true));
-	showPoints->setPosition(x, y);
-	showPoints->setWidth(x11, 0.3);
-	showPoints->setLabel("MOSTRAR PUNTOS DE MALLA");
-	showPoints->onToggleEvent(this, &ofApp::onToggleEvent);
-    components.push_back(showPoints);
-    
-    y += showPoints->getHeight() + p;
-    opacityPoints = new ofxDatGuiSlider("opacityPoints", 0, 100, xmlParameters.getValue("settings:opacityPoints", 100));
-	opacityPoints->setPosition(x, y);
-	opacityPoints->setWidth(x11, 0.3);
-	opacityPoints->setLabel("Opacidad");
-	opacityPoints->onSliderEvent(this, &ofApp::onSliderEvent);
-    components.push_back(opacityPoints);
-
-    y += opacityPoints->getHeight() + p;
-    minP = new ofxDatGuiSlider("minP", 0, 255, xmlParameters.getValue("settings:minP", 0));
-	minP->setPosition(x, y);
-	minP->setWidth(x11, 0.3);
-	minP->setLabel("Minimo");
-	minP->onSliderEvent(this, &ofApp::onSliderEvent);
-    components.push_back(minP);
-    
-    y += minP->getHeight() + p;
-    maxP = new ofxDatGuiSlider("maxP", 0, 255, xmlParameters.getValue("settings:maxP", 255));
-	maxP->setPosition(x, y);
-	maxP->setWidth(x11, 0.3);
-	maxP->setLabel("Maximo");
-	maxP->onSliderEvent(this, &ofApp::onSliderEvent);
-    components.push_back(maxP);
-    
-    y += maxP->getHeight() + p;
-    densityP = new ofxDatGuiSlider("densityP", 4, 40, xmlParameters.getValue("settings:densityP", 10));
-	densityP->setPosition(x, y);
-	densityP->setWidth(x11, 0.3);
-	densityP->setLabel("Espaciado");
-	densityP->onSliderEvent(this, &ofApp::onSliderEvent);
-    components.push_back(densityP);
-    
-    y += densityP->getHeight() + p;
-    noiseP = new ofxDatGuiSlider("noiseP", 0, 100, xmlParameters.getValue("settings:noiseP", 0));
-	noiseP->setPosition(x, y);
-	noiseP->setWidth(x11, 0.3);
-	noiseP->setLabel("Desplazamiento");
-	noiseP->onSliderEvent(this, &ofApp::onSliderEvent);
-    components.push_back(noiseP);
-    
-    y += noiseP->getHeight() + p;
-    size = new ofxDatGuiSlider("size", 0, 100, xmlParameters.getValue("settings:size", 5));
-	size->setPosition(x, y);
-	size->setWidth(x11, 0.3);
-	size->setLabel("Diametro");
-	size->onSliderEvent(this, &ofApp::onSliderEvent);
-    components.push_back(size);
-    
-    y += size->getHeight() + p;
-    punto = new ofxDatGuiToggle("punto", xmlParameters.getValue("settings:punto", true));
-	punto->setPosition(x, y);
-	punto->setWidth(x11/4, 0.3);
-	punto->setLabel("Circulo");
-	punto->onToggleEvent(this, &ofApp::onToggleEvent);
-    components.push_back(punto);
-
-    cuadrado = new ofxDatGuiToggle("cuadrado", xmlParameters.getValue("settings:cuadrado", false));
-	cuadrado->setPosition(x + x11/4, y);
-	cuadrado->setWidth(x11/4, 0.3);
-	cuadrado->setLabel("Cuadrado");
-	cuadrado->onToggleEvent(this, &ofApp::onToggleEvent);
-    components.push_back(cuadrado);
-
-    triangulo = new ofxDatGuiToggle("triangulo", xmlParameters.getValue("settings:triangulo", false));
-	triangulo->setPosition(x + 2 * x11/4, y);
-	triangulo->setWidth(x11/4, 0.3);
-	triangulo->setLabel("Triangulo");
-	triangulo->onToggleEvent(this, &ofApp::onToggleEvent);
-    components.push_back(triangulo);
-
-    archivo = new ofxDatGuiToggle("archivo", xmlParameters.getValue("settings:archivo", false));
-	archivo->setPosition(x + 3 * x11/4, y);
-	archivo->setWidth(x11/4, 0.3);
-	archivo->setLabel("Archivo");
-	archivo->onToggleEvent(this, &ofApp::onToggleEvent);
-    components.push_back(archivo);
-
-    y += archivo->getHeight() + p;
-    component = new ofxDatGuiButton("uploadMskPoints");
-    component->setPosition(x, y);
-    component->setWidth(x11 * 0.4, 0.7);
-    component->setLabel("Mascara Puntos");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
-
-    component = new ofxDatGuiButton("defineMskPoints");
-    component->setPosition(x + x11 * 0.4, y);
-    component->setWidth(x11 * 0.3, 0.7);
-    component->setLabel("Definir Forma");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
-
-    component = new ofxDatGuiButton("deleteMskPoints");
-    component->setPosition(x + x11 * 0.7, y);
-    component->setWidth(x11 * 0.3, 0.7);
-    component->setLabel("Borrar Masc.");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
-
-	y += component->getHeight() + p;
-	colorSelectorPoint.setup(ofVec3f(x, y), ofVec3f(x11, 20));
-
-	y += 20 + p;
-    color = new ofxDatGuiColorPicker("color", ofColor::fromHex(xmlParameters.getValue("settings:color", 0x000000)));
-	color->setPosition(x, y);
-	color->setWidth(x11, 0.3);
-	color->setLabel("Color");
-	color->onColorPickerEvent(this, &ofApp::onColorPickerEvent);
-    components.push_back(color);
-
-    y += color->getHeight() + p + dHeight + 8*dHeight;
-    graphicElements = new ofxDatGuiToggle("graphicElements", xmlParameters.getValue("settings:graphicElements", false));
-	graphicElements->setPosition(x, y);
-	graphicElements->setWidth(x11 , 0.3);
-	graphicElements->setLabel("MOSTRAR ELEMENTOS GRAFICOS");
-	graphicElements->onToggleEvent(this, &ofApp::onToggleEvent);
-    components.push_back(graphicElements);
-
-    y += graphicElements->getHeight() + p;
-    component = new ofxDatGuiButton("graphicRandom");
-    component->setPosition(x, y);
-    component->setWidth(x11, 1);
-    component->setLabel("Generar graficos");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
-
-	y += component->getHeight() + p;
-	svgSize = new ofxDatGuiSlider("svgSize", 0.1, 5, xmlParameters.getValue("settings:svgSize", 1));
-	svgSize->setPosition(x, y);
-	svgSize->setWidth(x11, 0.3);
-	svgSize->setLabel("Escala");
-	svgSize->onSliderEvent(this, &ofApp::onSliderEvent);
-	components.push_back(svgSize);
-
-	y += svgSize->getHeight() + p;
-
-	colorSelectorColorSVG.setup(ofVec3f(x, y), ofVec3f(x11, 20));
-
-	y += 20 + p;
-
-	colorSVG = new ofxDatGuiColorPicker("colorSVG", ofColor::fromHex(xmlParameters.getValue("settings:color", 0x000000)));
-	colorSVG->setPosition(x, y);
-	colorSVG->setWidth(x11, 0.3);
-	colorSVG->setLabel("Color");
-	colorSVG->onColorPickerEvent(this, &ofApp::onColorPickerEvent);
-	components.push_back(colorSVG);
-    
-    y += colorSVG->getHeight() + p + 8 * dHeight;
-    loadBackground = new ofxDatGuiToggle("loadBackground", xmlParameters.getValue("settings:loadBackground", false));
-    loadBackground->setPosition(x, y);
-    loadBackground->setWidth(x11 * 0.4, 0.3);
-    loadBackground->setLabel("ARCHIVO FONDO");
-    loadBackground->onToggleEvent(this, &ofApp::onToggleEvent);
-    components.push_back(loadBackground);
-
-    colorBackground = new ofxDatGuiToggle("colorBackground", xmlParameters.getValue("settings:colorBackground", true));
-    colorBackground->setPosition(x + 0.4 * x11, y);
-    colorBackground->setWidth(0.3 * x11, 0.3);
-    colorBackground->setLabel("COLOR");
-    colorBackground->onToggleEvent(this, &ofApp::onToggleEvent);
-    components.push_back(colorBackground);
-    
-    defineBackground = new ofxDatGuiToggle("defineBackground", xmlParameters.getValue("settings:defineBackground", false));
-    defineBackground->setPosition(x + 0.7 * x11, y);
-    defineBackground->setWidth(0.3 * x11, 0.3);
-    defineBackground->setLabel("DEGRADADO");
-    defineBackground->onToggleEvent(this, &ofApp::onToggleEvent);
-    components.push_back(defineBackground);
-    
-    y += defineBackground->getHeight() + p;
-    angleBackground = new ofxDatGuiSlider("angleBackground", 0, 180, xmlParameters.getValue("settings:angleBackground", 0));
-	angleBackground->setPosition(x, y);
-	angleBackground->setWidth(x11, 0.3);
-	angleBackground->setLabel("Angulo Degradado");
-	angleBackground->onSliderEvent(this, &ofApp::onSliderEvent);
-    components.push_back(angleBackground);
-
-	y += angleBackground->getHeight() + p;
-
-	colorSelectorOne.setup(ofVec3f(x, y), ofVec3f(x11/2, 20));
-
-	colorSelectorTwo.setup(ofVec3f(x + x11 / 2, y), ofVec3f(x11/2, 20));
-
-	y += 20 + p;
-
-    colorOne = new ofxDatGuiColorPicker("colorOne", ofColor::fromHex(xmlParameters.getValue("settings:colorOne", 0x000000)));
-	colorOne->setPosition(x, y);
-	colorOne->setWidth(x11 / 2, 0.6);
-	colorOne->setLabel("Color A");
-	colorOne->onColorPickerEvent(this, &ofApp::onColorPickerEvent);
-    components.push_back(colorOne);
-
-    colorTwo = new ofxDatGuiColorPicker("colorTwo", ofColor::fromHex(xmlParameters.getValue("settings:colorTwo", 0xFFFFFF)));
-	colorTwo->setPosition(x + x11/2, y);
-	colorTwo->setWidth(x11/2, 0.6);
-	colorTwo->setLabel("Color B");
-	colorTwo->onColorPickerEvent(this, &ofApp::onColorPickerEvent);
-    components.push_back(colorTwo);
-
-    y += component->getHeight() + p + dHeight + 8*dHeight;
-    component = new ofxDatGuiButton("saveImg");
-    component->setPosition(x, y);
-    component->setWidth(x11 * 0.5, 1);
-    component->setLabel("GUARDAR ARCHIVO BITMAP");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
-
-    component = new ofxDatGuiButton("saveVector");
-    component->setPosition(x + 0.5 * x11, y);
-    component->setWidth(x11 * 0.5, 1);
-    component->setLabel("GUARDAR ARCHIVO VECTOR");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
-
-	y += component->getHeight() + p + dHeight;
-	component = new ofxDatGuiButton("reset");
-	component->setPosition(x, y);
-	component->setWidth(x11 * 0.333, 1);
-	component->setLabel("RESET");
-	component->onButtonEvent(this, &ofApp::onButtonEvent);
-	components.push_back(component);
-
-	component = new ofxDatGuiButton("loadProject");
-	component->setPosition(x + 0.333 * x11, y);
-	component->setWidth(x11 * 0.333, 1);
-	component->setLabel("CARGAR PROYECTO");
-	component->onButtonEvent(this, &ofApp::onButtonEvent);
-	components.push_back(component);
-
-	component = new ofxDatGuiButton("saveProject");
-	component->setPosition(x + 0.666 * x11, y);
-	component->setWidth(x11 * 0.334, 1);
-	component->setLabel("GUARDAR PROYECTO");
-	component->onButtonEvent(this, &ofApp::onButtonEvent);
-	components.push_back(component);
-
-    y += component->getHeight() + p + 4 * dHeight;
-    component = new ofxDatGuiButton("exit");
-    component->setPosition(x, y);
-    component->setWidth(x11, 1);
-    component->setLabel("SALIR");
-    component->onButtonEvent(this, &ofApp::onButtonEvent);
-    components.push_back(component);
+	gui->addBreak();
 
 
+    // Malla de lineas
+	ofxDatGuiFolder* folderLineas = gui->addFolder("MALLA DE PUNTOS", ofColor::green);
+	folderLineas->addToggle("showGrid", xmlParameters.getValue("settings:showGrid", true))->setLabel("-> Mostrar malla");
+	folderLineas->addSlider("opacityGrid", 0, 100, xmlParameters.getValue("settings:opacityGrid", 100))->setLabel("-> Opacidad");
+	folderLineas->addSlider("max", 0, 255, xmlParameters.getValue("settings:mask", 255))->setLabel("-> Maximo");
+	folderLineas->addSlider("min", 0, 255, xmlParameters.getValue("settings:min", 0))->setLabel("-> Minimo");
+	folderLineas->addSlider("density", 4, 40, xmlParameters.getValue("settings:density", 10))->setLabel("-> Espaciado");
+	folderLineas->addSlider("noise", 0, 100, xmlParameters.getValue("settings:noise", 0))->setLabel("-> Desplazamiento");
+	folderLineas->addSlider("stroke", 0, 10, xmlParameters.getValue("settings:stroke", 1))->setLabel("-> Grosor Linea");
+	folderLineas->addButton("uploadMskGrid")->setLabel("-> Archivo Mascara");
+	folderLineas->addButton("defineMskGrid")->setLabel("-> Definir Forma");
+	folderLineas->addButton("deleteMskGrid")->setLabel("-> Borrar Mascara");
+	folderLineas->addColorPicker("colorGrid", ofColor::fromHex(xmlParameters.getValue("settings:colorGrid", 0xFFFFFF)))->setLabel("-> Color");
+	folderLineas->collapse();
+
+	gui->addBreak();
+
+	// Malla de puntos
+	ofxDatGuiFolder* folderPuntos = gui->addFolder("MALLA DE LINEAS", ofColor::green);
+	folderPuntos->addToggle("showPoints", xmlParameters.getValue("settings:showPoints", true))->setLabel("-> Mostrar puntos");
+	folderPuntos->addSlider("opacityPoints", 0, 100, xmlParameters.getValue("settings:opacityPoints", 100))->setLabel("-> Opacidad");
+	folderPuntos->addSlider("minP", 0, 255, xmlParameters.getValue("settings:maxP", 255))->setLabel("-> Maximo");
+	folderPuntos->addSlider("maxP", 0, 255, xmlParameters.getValue("settings:minP", 0))->setLabel("-> Minimo");
+	folderPuntos->addSlider("densityP", 4, 40, xmlParameters.getValue("settings:densityP", 10))->setLabel("-> Espaciado");
+	folderPuntos->addSlider("noiseP", 0, 100, xmlParameters.getValue("settings:noiseP", 0))->setLabel("-> Desplazamiento");
+	folderPuntos->addSlider("size", 0, 100, xmlParameters.getValue("settings:size", 5))->setLabel("-> Diametro");
+	folderPuntos->addToggle("circulo", xmlParameters.getValue("settings:punto", true))->setLabel("-> Circulo");
+	folderPuntos->addToggle("cuadrado", xmlParameters.getValue("settings:cuadrado", false))->setLabel("-> Cuadrado");
+	folderPuntos->addToggle("triangulo", xmlParameters.getValue("settings:triangulo", false))->setLabel("-> Triangulo");
+	folderPuntos->addToggle("archivo", xmlParameters.getValue("settings:archivo", false))->setLabel("-> Archivo");
+	folderPuntos->addButton("uploadMskPoints")->setLabel("-> Archivo Mascara");
+	folderPuntos->addButton("defineMskPoints")->setLabel("-> Definir Mascara");
+	folderPuntos->addButton("deleteMskPoints")->setLabel("-> Borrar Mascara");
+	folderPuntos->addColorPicker("color", ofColor::fromHex(xmlParameters.getValue("settings:color", 0x000000)))->setLabel("-> Color");
+	folderPuntos->collapse();
+
+	gui->addBreak();
+
+	// Elementos Graficos
+	ofxDatGuiFolder* folderGraficos = gui->addFolder("ELEMENTOS GRAFICOS", ofColor::yellow);
+	folderGraficos->addToggle("graphicElements", xmlParameters.getValue("settings:graphicElements", false))->setLabel("-> Mostrar elementos graficos");
+	folderGraficos->addButton("graphicRandom")->setLabel("-> Cambiar graficos");
+	folderGraficos->addButton("svgCenter")->setLabel("-> Posicion");;
+	folderGraficos->addSlider("svgSize", 0.1, 5, xmlParameters.getValue("settings:svgSize", 1))->setLabel("-> Escala");
+	folderGraficos->addColorPicker("colorSVG", ofColor::fromHex(xmlParameters.getValue("settings:color", 0x000000)))->setLabel("-> Color");
+	folderGraficos->collapse();
+
+	gui->addBreak();
+
+	// Colores corporativos
+	vector<string> opts = { "Lineas", "Puntos", "Elem. Graficos", "Fondo A", "Fondo B" };
+	gui->addLabel("COLORES CORPORATIVOS")->setStripeColor(ofColor::yellow);
+	gui->addDropdown("-> Elemento", opts)->setStripeColor(ofColor::yellow);
+	gui->addDropdown("-> Color", corporativeColorNames)->setStripeColor(ofColor::yellow);
+
+	for (int i = 0; i < corporativeColors.size(); i++) {
+		
+		gui->getDropdown("-> Color")->getChildAt(i)->setBackgroundColor(corporativeColors[i]);
+	}
+
+	gui->addBreak();
+
+	// Guardar y Exportar
+	ofxDatGuiFolder* folderGuardar = gui->addFolder("GUARDAR - EXPORTAR", ofColor::red);
+	folderGuardar->addButton("saveImg")->setLabel("-> Exportar Render");
+	folderGuardar->addButton("saveVector")->setLabel("-> Exportar Vector");
+	folderGuardar->addButton("loadProject")->setLabel("-> Abrir Proyecto");
+	folderGuardar->addButton("saveProject")->setLabel("-> Guardar Proyecto");
+	folderGuardar->addButton("reset")->setLabel("-> Borrar Proyecto");
+	folderGuardar->collapse();
+
+	gui->addBreak();
+
+	// General
+	ofxDatGuiFolder* folderGeneral = gui->addFolder("GENERAL", ofColor::red);
+	folderGeneral->addToggle("toggle fullscreen", false)->setLabel("-> Pantalla Completa");
+	folderGeneral->addButton("theme")->setLabel("-> Cambiar Tema");
+	folderGeneral->addButton("exit")->setLabel("-> Salir");
+	folderGeneral->expand();
+
+	// Añadir Header y Footer
+	gui->addHeader(":: REPOSICIONAR ::");
+	gui->addFooter();
+	gui->getFooter()->setLabelWhenExpanded("CERRAR MENU");
+	gui->getFooter()->setLabelWhenCollapsed("ABRIR MENU");
+
+	// Registrar Callbacks
+	gui->onButtonEvent(this, &ofApp::onButtonEvent);
+	gui->onToggleEvent(this, &ofApp::onToggleEvent);
+	gui->onSliderEvent(this, &ofApp::onSliderEvent);
+	gui->onTextInputEvent(this, &ofApp::onTextInputEvent);
+	gui->onColorPickerEvent(this, &ofApp::onColorPickerEvent);
+	gui->onDropdownEvent(this, &ofApp::onDropdownEvent);
+
+
+
+}
+
+void ofApp::toggleFullscreen()
+{
+	mFullscreen = !mFullscreen;
+	gui->getToggle("toggle fullscreen")->setChecked(mFullscreen);
+	ofSetFullscreen(mFullscreen);
+}
+
+void ofApp::changeTheme() 
+{
+	tIndex = tIndex < themes.size() - 1 ? tIndex + 1 : 0;
+	gui->setTheme(themes[tIndex]);
 }
 
 void ofApp::fitCanvas()
 {
 
-    float x11 = 40 * dWidth;
+	float x11 = gui->getWidth() + dWidth;
+
+	//	40 * dWidth;
 
     float ratioCanvas = myengine.canvas.getWidth() / myengine.canvas.getHeight();
     float ratioDisplay = (ofGetWidth() - x11) / (ofGetHeight() - 2 * dHeight);
@@ -620,8 +416,8 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
           myengine.needsUpdateGrid = true;
           myengine.needsUpdatePoints = true;
           myengine.needsDrawPoints = true;
-          ancho->setText(std::to_string(myengine.input.getWidth()));
-          alto->setText(std::to_string(myengine.input.getHeight()));
+          gui->getTextInput("width")->setText(std::to_string(myengine.input.getWidth()));
+		  gui->getTextInput("height")->setText(std::to_string(myengine.input.getHeight()));
           myengine.updateBackground();
 
         }
@@ -830,7 +626,59 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 
     }
 
+	else if (e.target->is("theme")) {
+		
+		changeTheme();
+
+	}
+	
+	else if (e.target->is("svgCenter")) {
+
+		myengine.definingSvgCenter = true;
+
+	}
 }
+
+void ofApp::onDropdownEvent(ofxDatGuiDropdownEvent e)
+{
+	if (e.target->is("-> Color")) {
+
+		if (gui->getDropdown("-> Elemento")->getSelected()->getIndex() == 0) 
+		{
+			gui->getColorPicker("colorGrid")->setColor(corporativeColors[e.target->getSelected()->getIndex()]);
+			myengine.colorTriangle = gui->getColorPicker("colorGrid")->getColor();
+
+		}
+
+		else if (gui->getDropdown("-> Elemento")->getSelected()->getIndex() == 1)
+		{
+			gui->getColorPicker("color")->setColor(corporativeColors[e.target->getSelected()->getIndex()]);
+			myengine.colorPoint = gui->getColorPicker("color")->getColor();
+			myengine.needsDrawPoints = true;
+		}
+
+		else if (gui->getDropdown("-> Elemento")->getSelected()->getIndex() == 2)
+		{
+			gui->getColorPicker("colorSVG")->setColor(corporativeColors[e.target->getSelected()->getIndex()]);
+			myengine.colorSVG = gui->getColorPicker("colorSVG")->getColor();
+
+		}
+
+		else if (gui->getDropdown("-> Elemento")->getSelected()->getIndex() == 3)
+		{
+			gui->getColorPicker("colorOne")->setColor(corporativeColors[e.target->getSelected()->getIndex()]);
+			myengine.colorOne = gui->getColorPicker("colorOne")->getColor();
+			myengine.updateBackground();
+		}
+
+		else if (gui->getDropdown("-> Elemento")->getSelected()->getIndex() == 4)
+		{
+			gui->getColorPicker("colorTwo")->setColor(corporativeColors[e.target->getSelected()->getIndex()]);
+			myengine.colorTwo = gui->getColorPicker("colorTwo")->getColor();
+			myengine.updateBackground();
+		}
+	}
+};
 
 void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
 {
@@ -861,14 +709,14 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
 
         myengine.showBackground = e.target->getChecked();
 
-        if (loadBackground->getChecked()) {
-            loadBackground->toggle();
-            myengine.showBackgroundFile = loadBackground->getChecked();
+        if (gui->getToggle("loadBackground")->getChecked()) {
+			gui->getToggle("loadBackground")->toggle();
+            myengine.showBackgroundFile = gui->getToggle("loadBackground")->getChecked();
         }
 
-        if (colorBackground->getChecked()) {
-            colorBackground->toggle();
-            myengine.showBackgroundColor = colorBackground->getChecked();
+        if (gui->getToggle("colorBackground")->getChecked()) {
+			gui->getToggle("colorBackground")->toggle();
+            myengine.showBackgroundColor = gui->getToggle("colorBackground")->getChecked();
         }
         
         myengine.updateBackground();
@@ -880,14 +728,14 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
         
         myengine.showBackgroundColor = e.target->getChecked();
         
-        if (loadBackground->getChecked()) {
-            loadBackground->toggle();
-            myengine.showBackgroundFile = loadBackground->getChecked();
+        if (gui->getToggle("loadBackground")->getChecked()) {
+			gui->getToggle("loadBackground")->toggle();
+            myengine.showBackgroundFile = gui->getToggle("loadBackground")->getChecked();
         }
         
-        if (defineBackground->getChecked()) {
-            defineBackground->toggle();
-            myengine.showBackground = defineBackground->getChecked();
+        if (gui->getToggle("defineBackground")->getChecked()) {
+			gui->getToggle("defineBackground")->toggle();
+            myengine.showBackground = gui->getToggle("defineBackground")->getChecked();
         }
         
         myengine.updateBackground();
@@ -912,14 +760,14 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
             }
         }
 
-        if (defineBackground->getChecked()) {
-            defineBackground->toggle();
-            myengine.showBackground = defineBackground->getChecked();
+        if (gui->getToggle("defineBackground")->getChecked()) {
+			gui->getToggle("defineBackground")->toggle();
+            myengine.showBackground = gui->getToggle("defineBackground")->getChecked();
         }
         
-        if (colorBackground->getChecked()) {
-            colorBackground->toggle();
-            myengine.showBackgroundColor = colorBackground->getChecked();
+        if (gui->getToggle("colorBackground")->getChecked()) {
+			gui->getToggle("colorBackground")->toggle();
+            myengine.showBackgroundColor = gui->getToggle("colorBackground")->getChecked();
         }
         myengine.updateBackground();
 
@@ -929,9 +777,9 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
     else if (e.target->is("punto")) {
 
         myengine.shapeDrawing = 1;
-        if (cuadrado->getChecked()) cuadrado->toggle();
-        if (triangulo->getChecked()) triangulo->toggle();
-        if (archivo->getChecked()) archivo->toggle();
+        if (gui->getToggle("cuadrado")->getChecked()) gui->getToggle("cuadrado")->toggle();
+        if (gui->getToggle("triangulo")->getChecked())gui->getToggle("triangulo")->toggle();
+        if (gui->getToggle("archivo")->getChecked()) gui->getToggle("archivo")->toggle();
         myengine.needsDrawPoints = true;
 
 
@@ -940,20 +788,20 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
     else if (e.target->is("cuadrado")) {
 
         myengine.shapeDrawing = 2;
-        if (punto->getChecked()) punto->toggle();
-        if (triangulo->getChecked()) triangulo->toggle();
-        if (archivo->getChecked()) archivo->toggle();
-        myengine.needsDrawPoints = true;
+        if (gui->getToggle("circulo")->getChecked()) gui->getToggle("circulo")->toggle();
+		if (gui->getToggle("triangulo")->getChecked())gui->getToggle("triangulo")->toggle();
+		if (gui->getToggle("archivo")->getChecked()) gui->getToggle("archivo")->toggle();
+		myengine.needsDrawPoints = true;
 
     }
 
     else if (e.target->is("triangulo")) {
 
         myengine.shapeDrawing = 3;
-        if (punto->getChecked()) punto->toggle();
-        if (cuadrado->getChecked()) cuadrado->toggle();
-        if (archivo->getChecked()) archivo->toggle();
-        myengine.needsDrawPoints = true;
+		if (gui->getToggle("circulo")->getChecked()) gui->getToggle("circulo")->toggle();
+		if (gui->getToggle("cuadrado")->getChecked()) gui->getToggle("cuadrado")->toggle();
+		if (gui->getToggle("archivo")->getChecked()) gui->getToggle("archivo")->toggle();
+		myengine.needsDrawPoints = true;
 
     }
 
@@ -968,10 +816,10 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
 
         myengine.shapeDrawing = 4;
 
-        if (punto->getChecked()) punto->toggle();
-        if (cuadrado->getChecked()) cuadrado->toggle();
-        if (triangulo->getChecked()) triangulo->toggle();
-        myengine.needsDrawPoints = true;
+		if (gui->getToggle("circulo")->getChecked()) gui->getToggle("circulo")->toggle();
+		if (gui->getToggle("cuadrado")->getChecked()) gui->getToggle("cuadrado")->toggle();
+		if (gui->getToggle("triangulo")->getChecked())gui->getToggle("triangulo")->toggle();
+		myengine.needsDrawPoints = true;
 
     }
 
@@ -981,6 +829,11 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
         myengine.showTextures = e.target->getChecked();
 
     }
+
+	else if (e.target->is("toggle fullscreen")) {
+
+		toggleFullscreen();
+	}
 }
 
 void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
@@ -1117,9 +970,6 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
 }
 
 
-void ofApp::onDropdownEvent(ofxDatGuiDropdownEvent e)
-{
-}
 
 
 void ofApp::onColorPickerEvent(ofxDatGuiColorPickerEvent e)
@@ -1210,6 +1060,12 @@ void ofApp::keyPressed(int key){
 		resetSettings();
 
 	}
+
+	else if ((key == 'p') || (key == 'P')) {
+
+		// if (myengine.definingSvgCenter) myengine.definingSvgCenter = false;
+
+	}
 }
 
 //--------------------------------------------------------------
@@ -1225,51 +1081,59 @@ void ofApp::mouseMoved(int x, int y ){
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
 
+	if (myengine.showTextures && myengine.definingSvgCenter) {
+	
+		float xPoint = ofMap(mouseX - xCanvas, 0, widthCanvas, 0, myengine.canvas.getWidth());
+		float yPoint = ofMap(mouseY - yCanvas, 0, heightCanvas, 0, myengine.canvas.getHeight());
+		myengine.centerSVG = ofVec2f(xPoint, yPoint);
+
+	}
+
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
 
-	colorSelectorGrid.mousePressed(x, y, button);
-	if (colorSelectorGrid.selectedColor != ofColor(0)) {
-	
-		colorGrid->setColor(colorSelectorGrid.selectedColor);
-		myengine.colorTriangle.set(colorSelectorGrid.selectedColor);
+	//colorSelectorGrid.mousePressed(x, y, button);
+	//if (colorSelectorGrid.selectedColor != ofColor(0)) {
+	//
+	//	colorGrid->setColor(colorSelectorGrid.selectedColor);
+	//	myengine.colorTriangle.set(colorSelectorGrid.selectedColor);
 
-	}
+	//}
 
 
-	colorSelectorPoint.mousePressed(x, y, button);
-	if (colorSelectorPoint.selectedColor != ofColor(0)) {
+	//colorSelectorPoint.mousePressed(x, y, button);
+	//if (colorSelectorPoint.selectedColor != ofColor(0)) {
 
-		color->setColor(colorSelectorPoint.selectedColor);
-		myengine.colorPoint.set(colorSelectorPoint.selectedColor);
-		myengine.needsDrawPoints = true;
+	//	color->setColor(colorSelectorPoint.selectedColor);
+	//	myengine.colorPoint.set(colorSelectorPoint.selectedColor);
+	//	myengine.needsDrawPoints = true;
 
-	}
+	//}
 
-	colorSelectorColorSVG.mousePressed(x, y, button);
-	if (colorSelectorColorSVG.selectedColor != ofColor(0)) {
-	
-		colorSVG->setColor(colorSelectorColorSVG.selectedColor);
-		myengine.colorSVG = colorSelectorColorSVG.selectedColor;
-	}
+	//colorSelectorColorSVG.mousePressed(x, y, button);
+	//if (colorSelectorColorSVG.selectedColor != ofColor(0)) {
+	//
+	//	colorSVG->setColor(colorSelectorColorSVG.selectedColor);
+	//	myengine.colorSVG = colorSelectorColorSVG.selectedColor;
+	//}
 
-	colorSelectorOne.mousePressed(x, y, button);
-	if (colorSelectorOne.selectedColor != ofColor(0)) {
+	//colorSelectorOne.mousePressed(x, y, button);
+	//if (colorSelectorOne.selectedColor != ofColor(0)) {
 
-		colorOne->setColor(colorSelectorOne.selectedColor);
-		myengine.colorOne.set(colorSelectorOne.selectedColor);
-		myengine.updateBackground();
-	}
+	//	colorOne->setColor(colorSelectorOne.selectedColor);
+	//	myengine.colorOne.set(colorSelectorOne.selectedColor);
+	//	myengine.updateBackground();
+	//}
 
-	colorSelectorTwo.mousePressed(x, y, button);
-	if (colorSelectorTwo.selectedColor != ofColor(0)) {
+	//colorSelectorTwo.mousePressed(x, y, button);
+	//if (colorSelectorTwo.selectedColor != ofColor(0)) {
 
-		colorTwo->setColor(colorSelectorTwo.selectedColor);
-		myengine.colorTwo.set(colorSelectorTwo.selectedColor);
-		myengine.updateBackground();
-	}
+	//	colorTwo->setColor(colorSelectorTwo.selectedColor);
+	//	myengine.colorTwo.set(colorSelectorTwo.selectedColor);
+	//	myengine.updateBackground();
+	//}
 
     if ((myengine.definingMaskImg) && (mouseX > xCanvas) && (mouseX < xCanvas + widthCanvas) && (mouseY > yCanvas) && (mouseY< yCanvas + heightCanvas)) {
 
@@ -1384,6 +1248,8 @@ void ofApp::mousePressed(int x, int y, int button){
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
 
+	myengine.definingSvgCenter = false;
+
 }
 
 //--------------------------------------------------------------
@@ -1414,40 +1280,40 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 
 void ofApp::resetSettings() {
 
-	ancho->setText(ofToString(1024));
-	alto->setText(ofToString(768));
-	showInput->setChecked(true);
-	opacityImg->setValue(100);
-	levelMsk->setValue(25);
-	showGrid->setChecked(false);
-	opacityGrid->setValue(100);
-	min->setValue(0);
-	max->setValue(255);
-	density->setValue(20);
-	noise->setValue(5);
-	stroke->setValue(1);
-	colorGrid->setColor(0xC75B12);
-	showPoints->setChecked(false);
-	opacityPoints->setValue(100);
-	minP->setValue(0);
-	maxP->setValue(255);
-	densityP->setValue(20);
-	noiseP->setValue(5);
-	size->setValue(20);
-	punto->setChecked(true);
-	cuadrado->setChecked(false);
-	triangulo->setChecked(false);
-	archivo->setChecked(false);
-	color->setColor(0x4D5357);
-	graphicElements->setChecked(false);
+	gui->getTextInput("width")->setText(ofToString(1024));
+	gui->getTextInput("height")->setText(ofToString(768));
+	gui->getToggle("showInput")->setChecked(true);
+	gui->getSlider("opacityImg")->setValue(100);
+	gui->getSlider("levelMsk")->setValue(25);
+	gui->getToggle("showGrid")->setChecked(false);
+	gui->getSlider("opacityGrid")->setValue(100);
+	gui->getSlider("min")->setValue(0);
+	gui->getSlider("max")->setValue(255);
+	gui->getSlider("density")->setValue(20);
+	gui->getSlider("noise")->setValue(5);
+	gui->getSlider("stroke")->setValue(1);
+	gui->getColorPicker("colorGrid")->setColor(0xC75B12);
+	gui->getToggle("showPoints")->setChecked(false);
+	gui->getSlider("opacityPoints")->setValue(100);
+	gui->getSlider("minP")->setValue(0);
+	gui->getSlider("maxP")->setValue(255);
+	gui->getSlider("densityP")->setValue(20);
+	gui->getSlider("noiseP")->setValue(5);
+	gui->getSlider("size")->setValue(20);
+	gui->getToggle("circulo")->setChecked(true);
+	gui->getToggle("cuadrado")->setChecked(false);
+	gui->getToggle("triangulo")->setChecked(false);
+	gui->getToggle("archivo")->setChecked(false);
+	gui->getColorPicker("color")->setColor(0x4D5357);
+	gui->getToggle("graphicElements")->setChecked(false);
 	numSVG = 0;
-	colorSVG->setColor(0xFFFFFF);
-	loadBackground->setChecked(false);
-	colorBackground->setChecked(true);
-	defineBackground->setChecked(false);
-	angleBackground->setValue(0);
-	colorOne->setColor(0x203244);
-	colorTwo->setColor(0xDDDBD6);
+	gui->getColorPicker("colorSVG")->setColor(0xFFFFFF);
+	gui->getToggle("loadBackground")->setChecked(false);
+	gui->getToggle("colorBackground")->setChecked(true);
+	gui->getToggle("defineBackground")->setChecked(false);
+	gui->getSlider("angleBackground")->setValue(0);
+	gui->getColorPicker("colorOne")->setColor(0x203244);
+	gui->getColorPicker("colorTwo")->setColor(0xDDDBD6);
 
 	pathImg = "";
 	pathMskImg = "";
@@ -1505,57 +1371,57 @@ void ofApp::loadSettings() {
 	xmlParameters.loadFile(pathProject);
 
 
-	ancho->setText(ofToString(xmlParameters.getValue("settings:width", 1024)));
-	alto->setText(ofToString(xmlParameters.getValue("settings:height", 768)));
-	showInput->setChecked(ofToBool(xmlParameters.getValue("settings:showInput", "true")));
-	opacityImg->setValue(xmlParameters.getValue("settings:opacityImg", 100));
-	levelMsk->setValue(xmlParameters.getValue("settings:levelMsk", 25));
-	showGrid->setChecked(ofToBool(xmlParameters.getValue("settings:showGrid", "true")));
-	opacityGrid->setValue(xmlParameters.getValue("settings:opacityGrid", 100));
-	min->setValue(xmlParameters.getValue("settings:min", 0));
-	max->setValue(xmlParameters.getValue("settings:max", 255));
-	density->setValue(xmlParameters.getValue("settings:density", 40));
-	noise->setValue(xmlParameters.getValue("settings:noise", 0));
-	stroke->setValue(xmlParameters.getValue("settings:stroke", 1));
-	showPoints->setChecked(ofToBool(xmlParameters.getValue("settings:showPoints", "true")));
-	opacityPoints->setValue(xmlParameters.getValue("settings:opacityPoints", 100));
-	minP->setValue(xmlParameters.getValue("settings:minP", 0));
-	maxP->setValue(xmlParameters.getValue("settings:maxP", 255));
-	densityP->setValue(xmlParameters.getValue("settings:densityP", 40));
-	noiseP->setValue(xmlParameters.getValue("settings:noiseP", 0));
-	size->setValue(xmlParameters.getValue("settings:size", 5));
-	punto->setChecked(ofToBool(xmlParameters.getValue("settings:punto", "true")));
-	cuadrado->setChecked(ofToBool(xmlParameters.getValue("settings:cuadrado", "false")));
-	triangulo->setChecked(ofToBool(xmlParameters.getValue("settings:triangulo", "false")));
-	archivo->setChecked(ofToBool(xmlParameters.getValue("settings:archivo", "false")));
-	graphicElements->setChecked(ofToBool(xmlParameters.getValue("settings:graphicElements", "false")));
+	gui->getTextInput("width")->setText(ofToString(xmlParameters.getValue("settings:width", 1024)));
+	gui->getTextInput("height")->setText(ofToString(xmlParameters.getValue("settings:height", 768)));
+	gui->getToggle("showInput")->setChecked(ofToBool(xmlParameters.getValue("settings:showInput", "true")));
+	gui->getSlider("opacityImg")->setValue(xmlParameters.getValue("settings:opacityImg", 100));
+	gui->getSlider("levelMsk")->setValue(xmlParameters.getValue("settings:levelMsk", 25));
+	gui->getToggle("showGrid")->setChecked(ofToBool(xmlParameters.getValue("settings:showGrid", "true")));
+	gui->getSlider("opacityGrid")->setValue(xmlParameters.getValue("settings:opacityGrid", 100));
+	gui->getSlider("min")->setValue(xmlParameters.getValue("settings:min", 0));
+	gui->getSlider("max")->setValue(xmlParameters.getValue("settings:max", 255));
+	gui->getSlider("density")->setValue(xmlParameters.getValue("settings:density", 40));
+	gui->getSlider("noise")->setValue(xmlParameters.getValue("settings:noise", 0));
+	gui->getSlider("stroke")->setValue(xmlParameters.getValue("settings:stroke", 1));
+	gui->getToggle("showPoints")->setChecked(ofToBool(xmlParameters.getValue("settings:showPoints", "true")));
+	gui->getSlider("opacityPoints")->setValue(xmlParameters.getValue("settings:opacityPoints", 100));
+	gui->getSlider("minP")->setValue(xmlParameters.getValue("settings:minP", 0));
+	gui->getSlider("maxP")->setValue(xmlParameters.getValue("settings:maxP", 255));
+	gui->getSlider("densityP")->setValue(xmlParameters.getValue("settings:densityP", 40));
+	gui->getSlider("noiseP")->setValue(xmlParameters.getValue("settings:noiseP", 0));
+	gui->getSlider("size")->setValue(xmlParameters.getValue("settings:size", 5));
+	gui->getToggle("circulo")->setChecked(ofToBool(xmlParameters.getValue("settings:punto", "true")));
+	gui->getToggle("cuadrado")->setChecked(ofToBool(xmlParameters.getValue("settings:cuadrado", "false")));
+	gui->getToggle("triangulo")->setChecked(ofToBool(xmlParameters.getValue("settings:triangulo", "false")));
+	gui->getToggle("archivo")->setChecked(ofToBool(xmlParameters.getValue("settings:archivo", "false")));
+	gui->getToggle("graphicElements")->setChecked(ofToBool(xmlParameters.getValue("settings:graphicElements", "false")));
 	numSVG = xmlParameters.getValue("settings:numSVG", 0);
-	svgSize->setValue(xmlParameters.getValue("settings:svgSize", 1.0));
-	loadBackground->setChecked(ofToBool(xmlParameters.getValue("settings:loadBackground", "false")));
-	colorBackground->setChecked(ofToBool(xmlParameters.getValue("settings:colorBackground", "true")));
-	defineBackground->setChecked(ofToBool(xmlParameters.getValue("settings:defineBackground", "false")));
-	angleBackground->setValue(xmlParameters.getValue("settings:angleBackground", 0));
+	gui->getSlider("svgSize")->setValue(xmlParameters.getValue("settings:svgSize", 1.0));
+	gui->getToggle("loadBackground")->setChecked(ofToBool(xmlParameters.getValue("settings:loadBackground", "false")));
+	gui->getToggle("colorBackground")->setChecked(ofToBool(xmlParameters.getValue("settings:colorBackground", "true")));
+	gui->getToggle("defineBackground")->setChecked(ofToBool(xmlParameters.getValue("settings:defineBackground", "false")));
+	gui->getSlider("angleBackground")->setValue(xmlParameters.getValue("settings:angleBackground", 0));
 
 	string strColorGrid = xmlParameters.getValue("settings:colorGrid", "0xFFFFFF");
 
-	colorGrid->setColor(ofHexToInt("0x" + strColorGrid));
-	colorGrid->setText(strColorGrid);
+	gui->getColorPicker("colorGrid")->setColor(ofHexToInt("0x" + strColorGrid));
+	gui->getColorPicker("colorGrid")->setText(strColorGrid);
 
 	string strColor = xmlParameters.getValue("settings:color", "0x000000");
-	color->setColor(ofHexToInt(strColor));
-	color->setText(strColor);
+	gui->getColorPicker("color")->setColor(ofHexToInt(strColor));
+	gui->getColorPicker("color")->setText(strColor);
 
 	string strColorOne = xmlParameters.getValue("settings:colorOne", "0x000000");
-	colorOne->setColor(ofHexToInt(strColorOne));
-	colorOne->setText(strColorOne);
+	gui->getColorPicker("colorOne")->setColor(ofHexToInt(strColorOne));
+	gui->getColorPicker("colorOne")->setText(strColorOne);
 
 	string strColorTwo = xmlParameters.getValue("settings:colorTwo", "0xFFFFFF");
-	colorTwo->setColor(ofHexToInt(strColorTwo));
-	colorTwo->setText(strColorTwo);
+	gui->getColorPicker("colorTwo")->setColor(ofHexToInt(strColorTwo));
+	gui->getColorPicker("colorTwo")->setText(strColorTwo);
 
 	string strColorSVG = xmlParameters.getValue("settings:colorSVG", "0xFFFFFF");
-	colorSVG->setColor(ofHexToInt(strColorSVG));
-	colorSVG->setText(strColorSVG);
+	gui->getColorPicker("colorSVG")->setColor(ofHexToInt(strColorSVG));
+	gui->getColorPicker("colorSVG")->setText(strColorSVG);
 
 	string strColorMaskPoint = xmlParameters.getValue("settings:colorMaskPoint", "NULL");
 
@@ -1733,10 +1599,10 @@ void ofApp::loadSettings() {
 
 void ofApp::saveSettings() {
 
-	xmlParameters.setValue("settings:width", ofToInt(ancho->getText()));
-	xmlParameters.setValue("settings:height", ofToInt(alto->getText()));
-	xmlParameters.setValue("settings:showInput", showInput->getChecked());
-	xmlParameters.setValue("settings:opacityImg", opacityImg->getValue());
+	xmlParameters.setValue("settings:width", ofToInt(gui->getTextInput("width")->getText()));
+	xmlParameters.setValue("settings:height", ofToInt(gui->getTextInput("height")->getText()));
+	xmlParameters.setValue("settings:showInput", gui->getToggle("showInput")->getChecked());
+	xmlParameters.setValue("settings:opacityImg", gui->getSlider("opacityImg")->getValue());
 
 	if (myengine.colorMaskPoint != NULL) {
 
@@ -1746,37 +1612,37 @@ void ofApp::saveSettings() {
 
 	else xmlParameters.setValue("settings:colorMaskPoint", "NULL");
 	
-	xmlParameters.setValue("settings:levelMsk", levelMsk->getValue());
-	xmlParameters.setValue("settings:showGrid", showGrid->getChecked());
-	xmlParameters.setValue("settings:opacityGrid", opacityGrid->getValue());
-	xmlParameters.setValue("settings:min", min->getValue());
-	xmlParameters.setValue("settings:max", max->getValue());
-	xmlParameters.setValue("settings:density", density->getValue());
-	xmlParameters.setValue("settings:noise", noise->getValue());
-	xmlParameters.setValue("settings:stroke", stroke->getValue());
-	xmlParameters.setValue("settings:colorGrid", colorGrid->getText());
-	xmlParameters.setValue("settings:showPoints", showPoints->getChecked());
-	xmlParameters.setValue("settings:opacityPoints", opacityPoints->getValue());
-	xmlParameters.setValue("settings:minP", minP->getValue());
-	xmlParameters.setValue("settings:maxP", maxP->getValue());
-	xmlParameters.setValue("settings:densityP", densityP->getValue());
-	xmlParameters.setValue("settings:noiseP", noiseP->getValue());
-	xmlParameters.setValue("settings:size", size->getValue());
-	xmlParameters.setValue("settings:punto", punto->getChecked());
-	xmlParameters.setValue("settings:cuadrado", cuadrado->getChecked());
-	xmlParameters.setValue("settings:triangulo", triangulo->getChecked());
-	xmlParameters.setValue("settings:archivo", archivo->getChecked());
-	xmlParameters.setValue("settings:color",  color->getText());
-	xmlParameters.setValue("settings:graphicElements", graphicElements->getChecked());
+	xmlParameters.setValue("settings:levelMsk", gui->getSlider("levelMsk")->getValue());
+	xmlParameters.setValue("settings:showGrid", gui->getToggle("showGrid")->getChecked());
+	xmlParameters.setValue("settings:opacityGrid", gui->getSlider("opacityGrid")->getValue());
+	xmlParameters.setValue("settings:min", gui->getSlider("min")->getValue());
+	xmlParameters.setValue("settings:max", gui->getSlider("max")->getValue());
+	xmlParameters.setValue("settings:density", gui->getSlider("density")->getValue());
+	xmlParameters.setValue("settings:noise", gui->getSlider("noise")->getValue());
+	xmlParameters.setValue("settings:stroke", gui->getSlider("stroke")->getValue());
+	xmlParameters.setValue("settings:colorGrid", gui->getTextInput("colorGrid")->getText());
+	xmlParameters.setValue("settings:showPoints", gui->getToggle("showPoints")->getChecked());
+	xmlParameters.setValue("settings:opacityPoints", gui->getSlider("opacityPoints")->getValue());
+	xmlParameters.setValue("settings:minP", gui->getSlider("minP")->getValue());
+	xmlParameters.setValue("settings:maxP", gui->getSlider("maxP")->getValue());
+	xmlParameters.setValue("settings:densityP", gui->getSlider("densityP")->getValue());
+	xmlParameters.setValue("settings:noiseP", gui->getSlider("noiseP")->getValue());
+	xmlParameters.setValue("settings:size", gui->getSlider("size")->getValue());
+	xmlParameters.setValue("settings:punto", gui->getToggle("circulo")->getChecked());
+	xmlParameters.setValue("settings:cuadrado", gui->getToggle("cuadrado")->getChecked());
+	xmlParameters.setValue("settings:triangulo", gui->getToggle("triangulo")->getChecked());
+	xmlParameters.setValue("settings:archivo", gui->getToggle("archivo")->getChecked());
+	xmlParameters.setValue("settings:color",  gui->getColorPicker("color")->getText());
+	xmlParameters.setValue("settings:graphicElements", gui->getToggle("graphicElements")->getChecked());
 	xmlParameters.setValue("settings:numSVG", numSVG);
-	xmlParameters.setValue("settings:colorSVG", colorSVG->getText());
-	xmlParameters.setValue("settings:svgSize", svgSize->getValue());
-	xmlParameters.setValue("settings:loadBackground", loadBackground->getChecked());
-	xmlParameters.setValue("settings:colorBackground", colorBackground->getChecked());
-	xmlParameters.setValue("settings:defineBackground", defineBackground->getChecked());
-	xmlParameters.setValue("settings:angleBackground", angleBackground->getValue());
-	xmlParameters.setValue("settings:colorOne", colorOne->getText() );
-	xmlParameters.setValue("settings:colorTwo", colorTwo->getText() );
+	xmlParameters.setValue("settings:colorSVG", gui->getColorPicker("colorSVG")->getText());
+	xmlParameters.setValue("settings:svgSize", gui->getSlider("svgSize")->getValue());
+	xmlParameters.setValue("settings:loadBackground", gui->getToggle("loadBackground")->getChecked());
+	xmlParameters.setValue("settings:colorBackground", gui->getToggle("colorBackground")->getChecked());
+	xmlParameters.setValue("settings:defineBackground", gui->getToggle("defineBackground")->getChecked());
+	xmlParameters.setValue("settings:angleBackground", gui->getSlider("angleBackground")->getValue());
+	xmlParameters.setValue("settings:colorOne", gui->getColorPicker("colorOne")->getText() );
+	xmlParameters.setValue("settings:colorTwo", gui->getColorPicker("colorTwo")->getText() );
 	xmlParameters.setValue("settings:pathImg", pathImg);
 	xmlParameters.setValue("settings:pathMskImg", pathMskImg);
 	xmlParameters.setValue("settings:pathMskGrid", pathMskGrid);
@@ -1863,45 +1729,45 @@ void ofApp::saveSettings() {
 
 void ofApp::updateValues() {
 
-	myengine.width = ofToInt(ancho->getText());
-	myengine.height = ofToInt(alto->getText());
-	myengine.showInput = showInput->getChecked();
-	myengine.opacityImg = opacityImg->getValue();
-	myengine.levelMsk = levelMsk->getValue();
-	myengine.showGrid = showGrid->getChecked();
-	myengine.opacityGrid = opacityGrid->getValue();
-	myengine.min = min->getValue();
-	myengine.max = max->getValue();
-	myengine.density = density->getValue();
-	myengine.noise = noise->getValue();
-	myengine.lineWidth = stroke->getValue();
-	myengine.colorTriangle = colorGrid->getColor();
-	myengine.showPoints = showPoints->getChecked();
-	myengine.opacityPoints = opacityPoints->getValue();
-	myengine.minP = minP->getValue();
-	myengine.maxP = maxP->getValue();
-	myengine.densityP = densityP->getValue();
-	myengine.noiseP = noiseP->getValue();
-	myengine.pointSize = size->getValue();
+	myengine.width = ofToInt(gui->getTextInput("width")->getText());
+	myengine.height = ofToInt(gui->getTextInput("height")->getText());
+	myengine.showInput = gui->getToggle("showInput")->getChecked();
+	myengine.opacityImg = gui->getSlider("opacityImg")->getValue();
+	myengine.levelMsk = gui->getSlider("levelMsk")->getValue();
+	myengine.showGrid = gui->getToggle("showGrid")->getChecked();
+	myengine.opacityGrid = gui->getSlider("opacityGrid")->getValue();
+	myengine.min = gui->getSlider("min")->getValue();
+	myengine.max = gui->getSlider("max")->getValue();
+	myengine.density = gui->getSlider("density")->getValue();
+	myengine.noise = gui->getSlider("noise")->getValue();
+	myengine.lineWidth = gui->getSlider("stroke")->getValue();
+	myengine.colorTriangle = gui->getColorPicker("colorGrid")->getColor();
+	myengine.showPoints = gui->getToggle("showPoints")->getChecked();
+	myengine.opacityPoints = gui->getSlider("opacityPoints")->getValue();
+	myengine.minP = gui->getSlider("minP")->getValue();
+	myengine.maxP = gui->getSlider("maxP")->getValue();
+	myengine.densityP = gui->getSlider("densityP")->getValue();
+	myengine.noiseP = gui->getSlider("noiseP")->getValue();
+	myengine.pointSize = gui->getSlider("size")->getValue();
 	myengine.numSVG = numSVG;
-	myengine.svgSize = svgSize->getValue();
+	myengine.svgSize = gui->getSlider("svgSize")->getValue();
 
-	if (punto->getChecked()) myengine.shapeDrawing = 1;
-	else if (cuadrado->getChecked()) myengine.shapeDrawing = 2;
-	else if (triangulo->getChecked()) myengine.shapeDrawing = 3;
-	else if (archivo->getChecked()) myengine.shapeDrawing = 4;
+	if (gui->getToggle("circulo")->getChecked()) myengine.shapeDrawing = 1;
+	else if (gui->getToggle("cuadrado")->getChecked()) myengine.shapeDrawing = 2;
+	else if (gui->getToggle("triangulo")->getChecked()) myengine.shapeDrawing = 3;
+	else if (gui->getToggle("archivo")->getChecked()) myengine.shapeDrawing = 4;
 
 
-	myengine.colorPoint = color->getColor();
-	myengine.colorTriangle = colorGrid->getColor();
-	myengine.colorSVG = colorSVG->getColor();
-	myengine.showTextures = graphicElements->getChecked();
-	myengine.showBackground = defineBackground->getChecked();
-	myengine.showBackgroundColor = colorBackground->getChecked();
-	myengine.showBackgroundFile = loadBackground->getChecked();
-	myengine.angleBackground = angleBackground->getValue();
-	myengine.colorOne = colorOne->getColor();
-	myengine.colorTwo = colorTwo->getColor();
+	myengine.colorPoint = gui->getColorPicker("color")->getColor();
+	myengine.colorTriangle = gui->getColorPicker("colorGrid")->getColor();
+	myengine.colorSVG = gui->getColorPicker("colorSVG")->getColor();
+	myengine.showTextures = gui->getToggle("graphicElements")->getChecked();
+	myengine.showBackground = gui->getToggle("defineBackground")->getChecked();
+	myengine.showBackgroundColor = gui->getToggle("colorBackground")->getChecked();
+	myengine.showBackgroundFile = gui->getToggle("loadBackground")->getChecked();
+	myengine.angleBackground = gui->getSlider("angleBackground")->getValue();
+	myengine.colorOne = gui->getColorPicker("colorOne")->getColor();
+	myengine.colorTwo = gui->getColorPicker("colorTwo")->getColor();
 
 
 

@@ -30,49 +30,24 @@ public:
 
     engine myengine;
 
-    vector<ofxDatGuiComponent*> components;
-    ofxDatGuiComponent* component;
-    ofxDatGuiTextInput* ancho;
-    ofxDatGuiTextInput* alto;
-	ofxDatGuiToggle* showInput;
+	ofxDatGui* gui;
+	void toggleFullscreen();
+	vector<ofxDatGuiTheme*> themes;
+	vector<ofColor> backgrounds;
+	vector<ofColor> corporativeColors;
+	vector<string> corporativeColorNames;
+	int tIndex;
 
 
-	ofxDatGuiSlider* opacityImg;
-	ofxDatGuiSlider* levelMsk;
-	ofxDatGuiToggle* showGrid;
-	ofxDatGuiSlider* opacityGrid;
-	ofxDatGuiSlider* min;
-	ofxDatGuiSlider* max;
-	ofxDatGuiSlider* density;
-	ofxDatGuiSlider* noise;
-	ofxDatGuiSlider* stroke;
-	ColorSelector colorSelectorGrid;
-	ofxDatGuiColorPicker* colorGrid;
-	ofxDatGuiToggle* showPoints;
-	ofxDatGuiSlider* opacityPoints;
-	ofxDatGuiSlider* minP;
-	ofxDatGuiSlider* maxP;
-	ofxDatGuiSlider* densityP;
-	ofxDatGuiSlider* noiseP;
-	ofxDatGuiSlider* size;
-	ofxDatGuiToggle* punto;
-	ofxDatGuiToggle* cuadrado;
-	ofxDatGuiToggle* triangulo;
-	ofxDatGuiToggle* archivo;
-	ColorSelector colorSelectorPoint;
-	ofxDatGuiColorPicker* color;
-	ofxDatGuiToggle* graphicElements;
-	ofxDatGuiToggle* loadBackground;
-	ofxDatGuiToggle* colorBackground;
-	ofxDatGuiToggle* defineBackground;
-	ofxDatGuiSlider* angleBackground;
-	ColorSelector colorSelectorOne;
-	ofxDatGuiColorPicker* colorOne;
-	ColorSelector colorSelectorTwo;
-	ofxDatGuiColorPicker* colorTwo;
-	ColorSelector colorSelectorColorSVG;
-	ofxDatGuiColorPicker* colorSVG;
-	ofxDatGuiSlider* svgSize;
+
+
+	void onButtonEvent(ofxDatGuiButtonEvent e);
+	void onToggleEvent(ofxDatGuiToggleEvent e);
+	void onSliderEvent(ofxDatGuiSliderEvent e);
+	void onTextInputEvent(ofxDatGuiTextInputEvent e);
+	void onColorPickerEvent(ofxDatGuiColorPickerEvent e);
+	void onDropdownEvent(ofxDatGuiDropdownEvent e);
+
 
 	ofShader shaderBlurX, shaderBlurY;
     ofFbo fboBlurOnePass, fboBlurTwoPass;
@@ -89,17 +64,13 @@ public:
 
     int dWidth, dHeight;
     float xCanvas, yCanvas, widthCanvas, heightCanvas;
+	bool mFullscreen;
 
-    void onButtonEvent(ofxDatGuiButtonEvent e);
-    void onToggleEvent(ofxDatGuiToggleEvent e);
-    void onSliderEvent(ofxDatGuiSliderEvent e);
-    void onDropdownEvent(ofxDatGuiDropdownEvent e);
-    void onColorPickerEvent(ofxDatGuiColorPickerEvent e);
-    void onTextInputEvent(ofxDatGuiTextInputEvent e);
 	void resetSettings();
 	void loadSettings();
 	void saveSettings();
 	void updateValues();
+	void changeTheme();
 	
 
 };

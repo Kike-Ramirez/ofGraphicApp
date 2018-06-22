@@ -55,6 +55,8 @@ void engine::setup()
     updateBackground();
     shaderAlpha.load("shadersGL2/shaderAlpha");
 
+	definingSvgCenter = false;
+
     svgTextures.clear();
     
     //some path,  be absolute or relative to bin/data
@@ -207,6 +209,8 @@ void engine::update()
 
 		ofPushMatrix();
 		svgTextures[numSVG].setColorEngine(colorSVG);
+		// svgTextures[numSVG].setPos(centerSVG.x, centerSVG.y);
+		ofTranslate(centerSVG.x, centerSVG.y);
 		ofScale(svgSize, svgSize);
 		svgTextures[numSVG].draw();
 		ofPopMatrix();
@@ -787,6 +791,7 @@ void engine::drawVectors(string path) {
 		file.setColor(colorSVG);
 
 		file.pushMatrix();
+		file.translate(centerSVG.x, centerSVG.y);
 		file.scale(svgSize, svgSize);
 
 		int n = svgTextures[numSVG].getNumPath();

@@ -929,7 +929,6 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
 
     else if (e.target->is("stroke")) {
 
-		cout << "Stroke: " << e.value << endl;
         myengine.lineWidth = e.value;
         myengine.needsDrawPoints = true;
 
@@ -1159,7 +1158,7 @@ void ofApp::mousePressed(int x, int y, int button){
             ofPixels pixels;
             myengine.fboInput.readToPixels(pixels);
             myengine.maskInput.setFromPixels(pixels);
-            myengine.maskInput = myengine.blur(myengine.maskInput, myengine.input.getWidth()/10);
+            myengine.maskInput = myengine.blur(myengine.maskInput, myengine.maskInput.getWidth()/10);
 
             //myengine.input.getTexture().setAlphaMask(myengine.maskInput.getTexture());
 
@@ -1519,6 +1518,7 @@ void ofApp::loadSettings() {
 		ofPixels pixels;
 		myengine.fboGrid.readToPixels(pixels);
 		myengine.maskGrid.setFromPixels(pixels);
+		myengine.maskGrid = myengine.blur(myengine.maskGrid, myengine.maskGrid.getWidth() / 10);
 
 	}
 
@@ -1548,6 +1548,8 @@ void ofApp::loadSettings() {
 		ofPixels pixels;
 		myengine.fboPoints.readToPixels(pixels);
 		myengine.maskPoints.setFromPixels(pixels);
+		myengine.maskPoints = myengine.blur(myengine.maskPoints, myengine.maskPoints.getWidth() / 10);
+
 
 	}
 

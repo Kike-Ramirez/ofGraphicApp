@@ -366,7 +366,7 @@ void engine::setMask(string file_)
     origMaskInput.load(file_);
 	maskInput.allocate(width, height, OF_IMAGE_COLOR);
     setResolution(width, height);
-    input.getTexture().setAlphaMask(maskInput.getTexture());
+    // input.getTexture().setAlphaMask(maskInput.getTexture());
 }
 
 void engine::setMaskGrid(string file_)
@@ -527,7 +527,7 @@ void engine::updateMask() {
 		maskInput.setFromPixels(pixels);
 		maskInput = blur(maskInput, 5);
 
-		input.getTexture().setAlphaMask(maskInput.getTexture());
+		// input.getTexture().setAlphaMask(maskInput.getTexture());
 
 
 	}

@@ -414,7 +414,8 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
           pathImg = result.getPath();
           myengine.setInput(pathImg);
           myengine.needsUpdateGrid = true;
-          myengine.needsUpdatePoints = true;
+		  myengine.needsUpdateDrawGrid = true;
+          myengine.needsUpdateDrawPoints = true;
           myengine.needsDrawPoints = true;
           gui->getTextInput("width")->setText(std::to_string(myengine.input.getWidth()));
 		  gui->getTextInput("height")->setText(std::to_string(myengine.input.getHeight()));
@@ -427,7 +428,8 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 
         myengine.deleteImg();
         myengine.needsUpdateGrid = true;
-        myengine.needsUpdatePoints = true;
+		myengine.needsUpdateDrawGrid = true;
+		myengine.needsUpdateDrawPoints = true;
         myengine.needsDrawPoints = true;
     }
 
@@ -439,7 +441,8 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
           pathMskImg = result.getPath();
           myengine.setMask(pathMskImg);
           myengine.needsUpdateGrid = true;
-		  myengine.needsUpdatePoints = true;
+		  myengine.needsUpdateDrawGrid = true;
+		  myengine.needsUpdateDrawPoints = true;
           myengine.needsDrawPoints = true;
 
         }
@@ -462,7 +465,8 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         myengine.deleteMask();
         myengine.input.getTexture().disableAlphaMask();
         myengine.needsUpdateGrid = true;
-        myengine.needsUpdatePoints = true;
+		myengine.needsUpdateDrawGrid = true;
+		myengine.needsUpdateDrawPoints = true;
         myengine.needsDrawPoints = true;
 
         while (myengine.pathInput.getNumVertices() > 0) {
@@ -481,8 +485,9 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
           pathMskGrid = result.getPath();
           myengine.setMaskGrid(pathMskGrid);
           myengine.needsUpdateGrid = true;
-            myengine.needsUpdatePoints = true;
-          myengine.needsDrawPoints = true;
+		  myengine.needsUpdateDrawGrid = true;
+		  myengine.needsUpdateDrawPoints = true;          
+		  myengine.needsDrawPoints = true;
 
         }
     }
@@ -516,8 +521,9 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
           pathMskPoints = result.getPath();
           myengine.setMaskPoints(pathMskPoints);
           // myengine.needsUpdateGrid = true;
-          myengine.needsUpdatePoints = true;
-          myengine.needsDrawPoints = true;
+		  myengine.needsUpdateDrawGrid = true;
+		  myengine.needsUpdateDrawPoints = true;          
+		  myengine.needsDrawPoints = true;
 
         }
     }
@@ -532,8 +538,9 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 
         myengine.deleteMaskPoints();
         myengine.needsUpdateGrid = true;
-        myengine.needsUpdatePoints = true;
-        myengine.needsDrawPoints = true;
+		myengine.needsUpdateDrawGrid = true;
+		myengine.needsUpdateDrawPoints = true;
+		myengine.needsDrawPoints = true;
 
         while (myengine.pathPoints.getNumVertices() > 0) {
 
@@ -873,7 +880,7 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
     if (e.target->is("DensityP")) {
         
         myengine.densityP = e.value;
-        myengine.needsUpdatePoints = true;
+        myengine.needsUpdateDrawPoints = true;
         myengine.needsDrawPoints = true;
         
     }
@@ -881,7 +888,7 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
     else if (e.target->is("NoiseP")) {
         
         myengine.noiseP = e.value;
-        myengine.needsUpdatePoints = true;
+        myengine.needsUpdateDrawPoints = true;
         myengine.needsDrawPoints = true;
         
     }
@@ -889,7 +896,7 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
     else if (e.target->is("levelMsk")) {
         
         myengine.levelMsk = e.value;
-        myengine.needsUpdatePoints = true;
+        myengine.needsUpdateDrawPoints = true;
         myengine.needsDrawPoints = true;
 		myengine.needsUpdateMask = true;
                 
@@ -898,7 +905,7 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
     else if (e.target->is("minP")) {
         
         myengine.minP = e.value;
-        myengine.needsUpdatePoints = true;
+        myengine.needsUpdateDrawPoints = true;
         myengine.needsDrawPoints = true;
         
     }
@@ -906,7 +913,7 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
     else if (e.target->is("maxP")) {
         
         myengine.maxP = e.value;
-        myengine.needsUpdatePoints = true;
+        myengine.needsUpdateDrawPoints = true;
         myengine.needsDrawPoints = true;
         
     }
@@ -915,7 +922,7 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
 
         myengine.prob = e.value;
         myengine.needsUpdateGrid = true;
-        myengine.needsUpdatePoints = true;
+        myengine.needsUpdateDrawPoints = true;
         myengine.needsDrawPoints = true;
 
     }
@@ -930,6 +937,7 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
     else if (e.target->is("stroke")) {
 
         myengine.lineWidth = e.value;
+		myengine.needsUpdateDrawGrid = true;
         myengine.needsDrawPoints = true;
 
     }
@@ -951,13 +959,14 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
     else if (e.target->is("opacityGrid")) {
         
         myengine.opacityGrid = e.value;
+		myengine.needsUpdateDrawGrid = true;
         myengine.needsDrawPoints = true;
     }
     
     else if (e.target->is("opacityPoints")) {
         
         myengine.opacityPoints = e.value;
-        myengine.needsUpdatePoints = true;
+        myengine.needsUpdateDrawPoints = true;
         myengine.needsDrawPoints = true;
         
     }
@@ -1356,7 +1365,8 @@ void ofApp::resetSettings() {
 	updateValues();
 
 	myengine.needsUpdateGrid = true;
-	myengine.needsUpdatePoints = true;
+	myengine.needsUpdateDrawGrid = true;
+	myengine.needsUpdateDrawPoints = true;
 	myengine.needsDrawPoints = true;
 	myengine.setResolution(1024, 768);
 	myengine.updateBackground();
@@ -1553,7 +1563,7 @@ void ofApp::loadSettings() {
 
 	}
 
-	myengine.triangulation.reset(myengine.input, myengine.colorTriangle);
+	myengine.triangulation.reset(myengine.colorTriangle);
 	xmlParameters.pushTag("triangulationGrid");
 	numberOfSavedPoints = xmlParameters.getNumTags("position");
 	for (int i = 0; i < numberOfSavedPoints; i++) {
@@ -1591,7 +1601,8 @@ void ofApp::loadSettings() {
 
 	myengine.updateBackground();
 	myengine.needsUpdateGrid = false;
-	myengine.needsUpdatePoints = false;
+	myengine.needsUpdateDrawPoints = false;
+	myengine.needsUpdateDrawGrid = false;
 	myengine.needsDrawPoints = true;
 	myengine.needsUpdateMask = false;
 

@@ -2,5 +2,6 @@ ofxCv
 ofxDatGui
 ofxDelaunay
 ofxEditableSVG
+ofxGpuThicklines
 ofxOpenCv
 ofxXmlSettings

@@ -5,7 +5,7 @@
 #include "ofxDelaunay.h"
 #include "ofxEditableSVG.h"
 #include "ofxCV.h"
-
+#include "ofxGpuThicklines.h"
 
 class engine
 {
@@ -23,7 +23,7 @@ public:
     ofMesh pathInput, pathGrid, pathPoints;
     ofFbo fboInput, fboGrid, fboPoints;
     ofFbo canvas;
-    ofFbo grid;
+    ofFbo grid, points;
     ofFbo background;
     vector<ofPoint> triangles;
     int width, height;
@@ -31,7 +31,8 @@ public:
     float min, max, density, noise, prob, lineWidth, rotation, pointSize, opacityImg, opacityGrid, opacityPoints;
     float minP, maxP, densityP, noiseP, levelMsk, angleBackground;
     bool needsUpdateGrid;
-    bool needsUpdatePoints;
+	bool needsUpdateDrawGrid;
+    bool needsUpdateDrawPoints;
     bool needsDrawPoints;
 	bool needsUpdateMask;
     bool showInput;
@@ -47,7 +48,8 @@ public:
     int shapeDrawing;
 	ofxEditableSVG shapefile;
     ofxDelaunay triangulation;
-    ofShader shaderAlpha;
+	ofxGpuThicklines gpuTriangulation;
+    ofShader shaderAlpha, shaderThick;
     vector<ofxEditableSVG> svgTextures;
     int numSVG;
 	float svgSize;
@@ -69,6 +71,7 @@ public:
     void updateGrid();
     void updatePoints();
 	void updateMask();
+	void drawGrid();
     void drawPoints();
     void drawVectors(string path);
     void updateBackground();

@@ -40,7 +40,8 @@ void engine::setup()
 
     setResolution(width, height);
     needsUpdateGrid = true;
-    needsUpdatePoints = true;
+	needsUpdateDrawGrid= true;
+	needsUpdateDrawPoints = true;
     needsDrawPoints = true;
 	needsUpdateMask = false;
     showInput = true;
@@ -54,6 +55,7 @@ void engine::setup()
     shapeDrawing = 1;
     updateBackground();
     shaderAlpha.load("shadersGL2/shaderAlpha");
+	shaderThick.load("shaders/vert.glsl", "shaders/frag.glsl", "shaders/geom.glsl");
 
 	definingSvgCenter = false;
 
@@ -95,7 +97,8 @@ void engine::update()
 {
 
     if (needsUpdateGrid) updateGrid();
-    if (needsUpdatePoints) updatePoints();
+    if (needsUpdateDrawPoints) updatePoints();
+	if (needsUpdateDrawGrid) drawGrid();
     if (needsDrawPoints) drawPoints();
 	if (needsUpdateMask) updateMask();
 
@@ -234,7 +237,8 @@ void engine::setResolution(int width_, int height_)
     height = height_;
 
     canvas.allocate(width, height, GL_RGBA);
-    grid.allocate(width, height);
+    grid.allocate(width, height, GL_RGBA);
+	points.allocate(width, height, GL_RGBA);
     background.allocate(width, height, GL_RGBA);
 
     fboInput.allocate(width,height,GL_RGBA);
@@ -429,7 +433,7 @@ void engine::setBackground(string file)
 void engine::updateGrid()
 {
 
-    triangulation.reset(input, colorTriangle);
+    triangulation.reset(colorTriangle);
 
     for (int i = 0; i < input.getWidth(); i+=density) {
 
@@ -449,15 +453,13 @@ void engine::updateGrid()
 
             if ((lightnessPoint > min) && (lightnessPoint < max))
             {
-                    if (ofRandom(255) < lightnessPoint)
-                    {
-                        if  ( gridMask > 100) triangulation.addPoint(punto);
-                    }
+				if  ( gridMask > 1) triangulation.addPoint(punto);
             }
         }
     }
 
     triangulation.triangulate();
+	triangulation.setColor(colorTriangle, opacityGrid, input, maskGrid);
 
     needsUpdateGrid = false;
 
@@ -488,13 +490,13 @@ void engine::updatePoints()
             {
                 // if (ofRandom(255) < lightnessPoint)
                 {
-                    if  ( pointMask > 100) triangles.push_back(punto);
+                    if  ( pointMask > 1) triangles.push_back(punto);
                 }
             }
         }
     }
         
-    needsUpdatePoints = false;
+    needsUpdateDrawPoints = false;
     
 }
 
@@ -535,24 +537,29 @@ void engine::updateMask() {
 	needsUpdateMask = false;
 }
 
+void engine::drawGrid() {
+	grid.begin();
+	ofClear(ofColor(0, 0));
+	ofFill();
+	// ofSetLineWidth(lineWidth);
+
+	if (showGrid) {
+
+		triangulation.drawThickness(lineWidth);
+
+	}
+
+	// Dibujamos puntos
+	ofFill();
+	grid.end();
+	needsUpdateDrawGrid = false;
+
+}
 void engine::drawPoints() {
 
-    grid.begin();
+    points.begin();
     ofClear(ofColor(0, 0));
 
-    triangulation.setColor(colorTriangle, opacityGrid);
-
-    ofNoFill();
-    ofSetLineWidth(lineWidth);
-
-    if (showGrid) {
-        
-        triangulation.draw();
-    }
-
-    // Dibujamos puntos
-    ofFill();
-    
     pathSvgPoints.clear();
 
     if (showPoints) {
@@ -627,9 +634,9 @@ void engine::drawPoints() {
 
     ofNoFill();
 
-    grid.end();
+    points.end();
 
-    needsUpdatePoints = false;
+    needsUpdateDrawPoints = false;
 
 }
 

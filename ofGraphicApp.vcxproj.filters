@@ -88,6 +88,9 @@
 		<ClCompile Include="..\..\..\addons\ofxEditableSVG\libs\svgTiny\src\svgtiny_list.cpp">
 			<Filter>addons\ofxEditableSVG\libs\svgTiny\src</Filter>
 		</ClCompile>
+		<ClCompile Include="..\..\..\addons\ofxGpuThicklines\src\ofxGpuThicklines.cpp">
+			<Filter>addons\ofxGpuThicklines\src</Filter>
+		</ClCompile>
 		<ClCompile Include="..\..\..\addons\ofxOpenCv\src\ofxCvColorImage.cpp">
 			<Filter>addons\ofxOpenCv\src</Filter>
 		</ClCompile>
@@ -212,6 +215,12 @@
 		</Filter>
 		<Filter Include="addons\ofxEditableSVG\libs\svgTiny\src">
 			<UniqueIdentifier>{11A2A503-CF57-A9FD-CB66-CA27}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxGpuThicklines">
+			<UniqueIdentifier>{05991208-D5F6-C43E-D05C-AD81}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxGpuThicklines\src">
+			<UniqueIdentifier>{3B48A18B-E541-F822-358F-0730}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv">
 			<UniqueIdentifier>{FFA81411-43B9-BD99-75AF-1DC3}</UniqueIdentifier>
@@ -448,6 +457,9 @@
 		</ClInclude>
 		<ClInclude Include="..\..\..\addons\ofxEditableSVG\libs\svgTiny\src\svgtiny_internal.h">
 			<Filter>addons\ofxEditableSVG\libs\svgTiny\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxGpuThicklines\src\ofxGpuThicklines.h">
+			<Filter>addons\ofxGpuThicklines\src</Filter>
 		</ClInclude>
 		<ClInclude Include="..\..\..\addons\ofxOpenCv\src\ofxCvBlob.h">
 			<Filter>addons\ofxOpenCv\src</Filter>

@@ -10,20 +10,19 @@ void ofApp::setup()
     //ofSetFullscreen(true);
     ofSetWindowPosition(100, 100);
     ofSetWindowShape(1024, 768);
-    ofSetWindowTitle("ofGraphicApp v1.50");
+    ofSetWindowTitle("ofGraphicApp v2.00");
     ofSetFrameRate(60);
     ofSetEscapeQuitsApp(false);
 
     dWidth = int(ofGetWidth() / 100.0);
     dHeight = int(ofGetHeight() / 100.0);
 
-	xmlParameters.loadFile("settings.xml");
-
+    //pathProject = "settings.xml";
+    //loadSettings();
 
     loadGui();
 	myengine.setup();
 
-	loadSettings();
 
     ofEnableSmoothing();
 
@@ -416,10 +415,10 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         if(result.bSuccess) {
           pathImg = result.getPath();
           myengine.setInput(pathImg);
-          myengine.needsUpdateGrid = true;
-		  myengine.needsUpdateDrawGrid = true;
-          myengine.needsUpdateDrawPoints = true;
-          myengine.needsDrawPoints = true;
+          myengine.needsCalculateGrid = true;
+		  myengine.needsUpdateGrid = true;
+          myengine.needsCalculatePoints = true;
+          myengine.needsUpdatePoints = true;
           gui->getTextInput("width")->setText(std::to_string(myengine.input.getWidth()));
 		  gui->getTextInput("height")->setText(std::to_string(myengine.input.getHeight()));
           myengine.updateBackground();
@@ -430,10 +429,10 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
     if (e.target->is("deleteImg")) {
 
         myengine.deleteImg();
-        myengine.needsUpdateGrid = true;
-		myengine.needsUpdateDrawGrid = true;
-		myengine.needsUpdateDrawPoints = true;
-        myengine.needsDrawPoints = true;
+        myengine.needsCalculateGrid = true;
+		myengine.needsUpdateGrid = true;
+		myengine.needsCalculatePoints = true;
+        myengine.needsUpdatePoints = true;
     }
 
     else if (e.target->is("uploadMskImg")) {
@@ -443,10 +442,10 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         if(result.bSuccess) {
           pathMskImg = result.getPath();
           myengine.setMask(pathMskImg);
-          myengine.needsUpdateGrid = true;
-		  myengine.needsUpdateDrawGrid = true;
-		  myengine.needsUpdateDrawPoints = true;
-          myengine.needsDrawPoints = true;
+          myengine.needsCalculateGrid = true;
+		  myengine.needsUpdateGrid = true;
+		  myengine.needsCalculatePoints = true;
+          myengine.needsUpdatePoints = true;
 
         }
     }
@@ -467,10 +466,10 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 
         myengine.deleteMask();
         myengine.input.getTexture().disableAlphaMask();
-        myengine.needsUpdateGrid = true;
-		myengine.needsUpdateDrawGrid = true;
-		myengine.needsUpdateDrawPoints = true;
-        myengine.needsDrawPoints = true;
+        myengine.needsCalculateGrid = true;
+		myengine.needsUpdateGrid = true;
+		myengine.needsCalculatePoints = true;
+        myengine.needsUpdatePoints = true;
 
         while (myengine.pathInput.getNumVertices() > 0) {
 
@@ -487,10 +486,10 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         if(result.bSuccess) {
           pathMskGrid = result.getPath();
           myengine.setMaskGrid(pathMskGrid);
-          myengine.needsUpdateGrid = true;
-		  myengine.needsUpdateDrawGrid = true;
-		  myengine.needsUpdateDrawPoints = true;          
-		  myengine.needsDrawPoints = true;
+          myengine.needsCalculateGrid = true;
+		  myengine.needsUpdateGrid = true;
+		  myengine.needsCalculatePoints = true;          
+		  myengine.needsUpdatePoints = true;
 
         }
     }
@@ -504,9 +503,9 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
     else if (e.target->is("deleteMskGrid")) {
 
         myengine.deleteMaskGrid();
-        myengine.needsUpdateGrid = true;
+        myengine.needsCalculateGrid = true;
         //myengine.needsUpdatePoints = true;
-        //myengine.needsDrawPoints = true;
+        //myengine.needsUpdatePoints = true;
 
         while (myengine.pathGrid.getNumVertices() > 0) {
 
@@ -523,10 +522,10 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
         if(result.bSuccess) {
           pathMskPoints = result.getPath();
           myengine.setMaskPoints(pathMskPoints);
-          // myengine.needsUpdateGrid = true;
-		  myengine.needsUpdateDrawGrid = true;
-		  myengine.needsUpdateDrawPoints = true;          
-		  myengine.needsDrawPoints = true;
+          // myengine.needsCalculateGrid = true;
+		  myengine.needsUpdateGrid = true;
+		  myengine.needsCalculatePoints = true;          
+		  myengine.needsUpdatePoints = true;
 
         }
     }
@@ -540,10 +539,10 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
     else if (e.target->is("deleteMskPoints")) {
 
         myengine.deleteMaskPoints();
-        myengine.needsUpdateGrid = true;
-		myengine.needsUpdateDrawGrid = true;
-		myengine.needsUpdateDrawPoints = true;
-		myengine.needsDrawPoints = true;
+        myengine.needsCalculateGrid = true;
+		myengine.needsUpdateGrid = true;
+		myengine.needsCalculatePoints = true;
+		myengine.needsUpdatePoints = true;
 
         while (myengine.pathPoints.getNumVertices() > 0) {
 
@@ -657,6 +656,7 @@ void ofApp::onDropdownEvent(ofxDatGuiDropdownEvent e)
 		{
 			gui->getColorPicker("colorGrid")->setColor(corporativeColors[e.target->getSelected()->getIndex()]);
 			myengine.colorTriangle = gui->getColorPicker("colorGrid")->getColor();
+            myengine.needsUpdateGrid = true;
 
 		}
 
@@ -664,7 +664,7 @@ void ofApp::onDropdownEvent(ofxDatGuiDropdownEvent e)
 		{
 			gui->getColorPicker("color")->setColor(corporativeColors[e.target->getSelected()->getIndex()]);
 			myengine.colorPoint = gui->getColorPicker("color")->getColor();
-			myengine.needsDrawPoints = true;
+			myengine.needsUpdatePoints = true;
 		}
 
 		else if (gui->getDropdown("-> Elemento")->getSelected()->getIndex() == 2)
@@ -703,7 +703,7 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
     else if (e.target->is("showGrid")) {
         
         myengine.showGrid = e.target->getChecked();
-        myengine.needsUpdateDrawGrid = true;
+        myengine.needsUpdateGrid = true;
         
         
     }
@@ -711,7 +711,7 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
     else if (e.target->is("showPoints")) {
         
         myengine.showPoints = e.target->getChecked();
-        myengine.needsDrawPoints = true;
+        myengine.needsUpdatePoints = true;
         
     }
     
@@ -790,7 +790,7 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
         if (gui->getToggle("cuadrado")->getChecked()) gui->getToggle("cuadrado")->toggle();
         if (gui->getToggle("triangulo")->getChecked())gui->getToggle("triangulo")->toggle();
         if (gui->getToggle("archivo")->getChecked()) gui->getToggle("archivo")->toggle();
-        myengine.needsDrawPoints = true;
+        myengine.needsUpdatePoints = true;
 
 
     }
@@ -801,7 +801,7 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
         if (gui->getToggle("circulo")->getChecked()) gui->getToggle("circulo")->toggle();
 		if (gui->getToggle("triangulo")->getChecked())gui->getToggle("triangulo")->toggle();
 		if (gui->getToggle("archivo")->getChecked()) gui->getToggle("archivo")->toggle();
-		myengine.needsDrawPoints = true;
+		myengine.needsUpdatePoints = true;
 
     }
 
@@ -811,7 +811,7 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
 		if (gui->getToggle("circulo")->getChecked()) gui->getToggle("circulo")->toggle();
 		if (gui->getToggle("cuadrado")->getChecked()) gui->getToggle("cuadrado")->toggle();
 		if (gui->getToggle("archivo")->getChecked()) gui->getToggle("archivo")->toggle();
-		myengine.needsDrawPoints = true;
+		myengine.needsUpdatePoints = true;
 
     }
 
@@ -829,7 +829,7 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
 		if (gui->getToggle("circulo")->getChecked()) gui->getToggle("circulo")->toggle();
 		if (gui->getToggle("cuadrado")->getChecked()) gui->getToggle("cuadrado")->toggle();
 		if (gui->getToggle("triangulo")->getChecked())gui->getToggle("triangulo")->toggle();
-		myengine.needsDrawPoints = true;
+		myengine.needsUpdatePoints = true;
 
     }
 
@@ -851,60 +851,57 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
     if (e.target->is("Density")) {
 
         myengine.density = e.value;
-        myengine.needsUpdateGrid = true;
-		myengine.needsUpdateDrawGrid = true;
-        myengine.needsDrawPoints = true;
+        myengine.needsCalculateGrid = true;
+		myengine.needsUpdateGrid = true;
 
     }
 
     else if (e.target->is("Noise")) {
 
         myengine.noise = e.value;
-        myengine.needsUpdateGrid = true;
-		myengine.needsUpdateDrawGrid = true;
-        myengine.needsDrawPoints = true;
+        myengine.needsCalculateGrid = true;
+		myengine.needsUpdateGrid = true;
 
     }
 
     else if (e.target->is("min")) {
 
         myengine.min = e.value;
-        myengine.needsUpdateGrid = true;
-		myengine.needsUpdateDrawGrid = true;
-        myengine.needsDrawPoints = true;
+        myengine.needsCalculateGrid = true;
+		myengine.needsUpdateGrid = true;
 
     }
 
     else if (e.target->is("max")) {
 
         myengine.max = e.value;
-        myengine.needsUpdateGrid = true;
-		myengine.needsUpdateDrawGrid = true;
-        myengine.needsDrawPoints = true;
+        myengine.needsCalculateGrid = true;
+		myengine.needsUpdateGrid = true;
 
     }
 
     if (e.target->is("DensityP")) {
         
         myengine.densityP = e.value;
-        myengine.needsUpdateDrawPoints = true;
-        myengine.needsDrawPoints = true;
+        myengine.needsCalculatePoints = true;
+        myengine.needsUpdatePoints = true;
         
     }
     
     else if (e.target->is("NoiseP")) {
         
         myengine.noiseP = e.value;
-        myengine.needsUpdateDrawPoints = true;
-        myengine.needsDrawPoints = true;
+        myengine.needsCalculatePoints = true;
+        myengine.needsUpdatePoints = true;
         
     }
 
     else if (e.target->is("levelMsk")) {
         
         myengine.levelMsk = e.value;
-        myengine.needsUpdateDrawPoints = true;
-        myengine.needsDrawPoints = true;
+        myengine.needsCalculateGrid = true;
+        myengine.needsCalculatePoints = true;
+        myengine.needsUpdatePoints = true;
 		myengine.needsUpdateMask = true;
                 
     }
@@ -912,40 +909,40 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
     else if (e.target->is("minP")) {
         
         myengine.minP = e.value;
-        myengine.needsUpdateDrawPoints = true;
-        myengine.needsDrawPoints = true;
+        myengine.needsCalculatePoints = true;
+        myengine.needsUpdatePoints = true;
         
     }
     
     else if (e.target->is("maxP")) {
         
         myengine.maxP = e.value;
-        myengine.needsUpdateDrawPoints = true;
-        myengine.needsDrawPoints = true;
+        myengine.needsCalculatePoints = true;
+        myengine.needsUpdatePoints = true;
         
     }
     
     else if (e.target->is("prob")) {
 
         myengine.prob = e.value;
+        myengine.needsCalculateGrid = true;
+        myengine.needsCalculatePoints = true;
         myengine.needsUpdateGrid = true;
-        myengine.needsUpdateDrawPoints = true;
-        myengine.needsDrawPoints = true;
+        myengine.needsUpdatePoints = true;
 
     }
 
     else if (e.target->is("size")) {
 
         myengine.pointSize = e.value;
-        myengine.needsDrawPoints = true;
+        myengine.needsUpdatePoints = true;
 
     }
 
     else if (e.target->is("stroke")) {
 
         myengine.lineWidth = e.value;
-		myengine.needsUpdateDrawGrid = true;
-        myengine.needsDrawPoints = true;
+		myengine.needsUpdateGrid = true;
 
     }
 
@@ -966,15 +963,15 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
     else if (e.target->is("opacityGrid")) {
         
         myengine.opacityGrid = e.value;
-		myengine.needsUpdateDrawGrid = true;
-        myengine.needsDrawPoints = true;
+        myengine.needsCalculateGrid = true;
+		myengine.needsUpdateGrid = true;
     }
     
     else if (e.target->is("opacityPoints")) {
         
         myengine.opacityPoints = e.value;
-        myengine.needsUpdateDrawPoints = true;
-        myengine.needsDrawPoints = true;
+        myengine.needsCalculatePoints = true;
+        myengine.needsUpdatePoints = true;
         
     }
 
@@ -993,7 +990,7 @@ void ofApp::onColorPickerEvent(ofxDatGuiColorPickerEvent e)
 
     if (e.target->is("color")) {
         myengine.colorPoint = e.color;
-        myengine.needsDrawPoints = true;
+        myengine.needsUpdatePoints = true;
 
     }
     else if (e.target->is("colorOne")) {
@@ -1006,12 +1003,11 @@ void ofApp::onColorPickerEvent(ofxDatGuiColorPickerEvent e)
     }
     else if (e.target->is("colorGrid")) {
         myengine.colorTriangle = ofColor(e.color);
-        // myengine.updateBackground();
+        myengine.needsUpdateGrid = true;
     }
 
 	else if (e.target->is("colorSVG")) {
 		myengine.colorSVG = ofColor(e.color);
-		// myengine.updateBackground();
 	}
 }
 
@@ -1022,8 +1018,8 @@ void ofApp::onTextInputEvent(ofxDatGuiTextInputEvent e)
 
         myengine.setResolution(std::stoi(e.text), myengine.height);
         myengine.updateBackground();
-        myengine.needsUpdateGrid = true;
-        myengine.needsDrawPoints = true;
+        myengine.needsCalculateGrid = true;
+        myengine.needsUpdatePoints = true;
 
 
 
@@ -1033,8 +1029,8 @@ void ofApp::onTextInputEvent(ofxDatGuiTextInputEvent e)
 
         myengine.setResolution(myengine.width, std::stoi(e.text));
         myengine.updateBackground();
-        myengine.needsUpdateGrid = true;
-        myengine.needsDrawPoints = true;
+        myengine.needsCalculateGrid = true;
+        myengine.needsUpdatePoints = true;
 
 
     }
@@ -1124,7 +1120,7 @@ void ofApp::mousePressed(int x, int y, int button){
 
 	//	color->setColor(colorSelectorPoint.selectedColor);
 	//	myengine.colorPoint.set(colorSelectorPoint.selectedColor);
-	//	myengine.needsDrawPoints = true;
+	//	myengine.needsUpdatePoints = true;
 
 	//}
 
@@ -1206,8 +1202,8 @@ void ofApp::mousePressed(int x, int y, int button){
             myengine.fboGrid.readToPixels(pixels);
             myengine.maskGrid.setFromPixels(pixels);
 
-            myengine.needsUpdateGrid = true;
-            myengine.needsDrawPoints = true;
+            myengine.needsCalculateGrid = true;
+            myengine.needsUpdatePoints = true;
 
         }
 
@@ -1239,8 +1235,8 @@ void ofApp::mousePressed(int x, int y, int button){
 			myengine.maskPoints = myengine.blur(myengine.maskPoints, myengine.maskPoints.getWidth() / 10);
 
 
-            myengine.needsUpdateGrid = true;
-            myengine.needsDrawPoints = true;
+            myengine.needsCalculateGrid = true;
+            myengine.needsUpdatePoints = true;
         }
 
     }
@@ -1376,10 +1372,10 @@ void ofApp::resetSettings() {
 
 	updateValues();
 
+	myengine.needsCalculateGrid = true;
 	myengine.needsUpdateGrid = true;
-	myengine.needsUpdateDrawGrid = true;
-	myengine.needsUpdateDrawPoints = true;
-	myengine.needsDrawPoints = true;
+	myengine.needsCalculatePoints = true;
+	myengine.needsUpdatePoints = true;
 	myengine.setResolution(1024, 768);
 	myengine.updateBackground();
 	myengine.update();
@@ -1594,6 +1590,7 @@ void ofApp::loadSettings() {
 	xmlParameters.popTag(); //pop position
 
 	myengine.triangulation.triangulate();
+    myengine.triangulation.addColor(myengine.colorTriangle, myengine.opacityGrid, myengine.input, myengine.maskGrid);
 
 	myengine.triangles.clear();
 	xmlParameters.pushTag("pointsGrid");
@@ -1615,10 +1612,10 @@ void ofApp::loadSettings() {
 	myengine.setResolution(myengine.width, myengine.height);
 
 	myengine.updateBackground();
-	myengine.needsUpdateGrid = false;
-	myengine.needsUpdateDrawPoints = true;
-	myengine.needsUpdateDrawGrid = true;
-	myengine.needsDrawPoints = true;
+	myengine.needsCalculateGrid = false;
+	myengine.needsCalculatePoints = false;
+	myengine.needsUpdateGrid = true;
+	myengine.needsUpdatePoints = true;
 	myengine.needsUpdateMask = false;
 
 	myengine.update();

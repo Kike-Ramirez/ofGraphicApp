@@ -39,10 +39,10 @@ void engine::setup()
 	colorMaskPoint = NULL;
 
     setResolution(width, height);
-    needsUpdateGrid = true;
-	needsUpdateDrawGrid= true;
-	needsUpdateDrawPoints = true;
-    needsDrawPoints = true;
+    needsCalculateGrid = true;
+	needsUpdateGrid= true;
+	needsCalculatePoints = true;
+    needsUpdatePoints = true;
 	needsUpdateMask = false;
     showInput = true;
     showGrid = true;
@@ -98,10 +98,10 @@ void engine::updateBackground()
 void engine::update()
 {
 
-    if (needsUpdateGrid) updateGrid();
-    if (needsUpdateDrawPoints) updatePoints();
-	if (needsUpdateDrawGrid) drawGrid();
-    if (needsDrawPoints) drawPoints();
+    if (needsCalculateGrid) calculateGrid();
+    if (needsCalculatePoints) calculatePoints();
+	if (needsUpdateGrid) updateGrid();
+    if (needsUpdatePoints) updatePoints();
 	if (needsUpdateMask) updateMask();
 
     canvas.begin();
@@ -215,7 +215,6 @@ void engine::update()
 
 		ofPushMatrix();
 		svgTextures[numSVG].setColorEngine(colorSVG);
-		// svgTextures[numSVG].setPos(centerSVG.x, centerSVG.y);
 		ofTranslate(centerSVG.x, centerSVG.y);
 		ofScale(svgSize, svgSize);
 		svgTextures[numSVG].draw();
@@ -433,7 +432,7 @@ void engine::setBackground(string file)
 
 }
 
-void engine::updateGrid()
+void engine::calculateGrid()
 {
 
     triangulation.reset(colorTriangle);
@@ -462,13 +461,13 @@ void engine::updateGrid()
     }
 
     triangulation.triangulate();
-	triangulation.setColor(colorTriangle, opacityGrid, input, maskGrid);
+	triangulation.addColor(colorTriangle, opacityGrid, input, maskGrid);
 
-    needsUpdateGrid = false;
+    needsCalculateGrid = false;
 
 }
 
-void engine::updatePoints()
+void engine::calculatePoints()
 {
 
     triangles.clear();
@@ -499,7 +498,7 @@ void engine::updatePoints()
         }
     }
         
-    needsUpdateDrawPoints = false;
+    needsCalculatePoints = false;
     
 }
 
@@ -540,14 +539,15 @@ void engine::updateMask() {
 	needsUpdateMask = false;
 }
 
-void engine::drawGrid() {
+void engine::updateGrid() {
 	grid.begin();
 	ofClear(ofColor(0, 0));
 	ofFill();
 	// ofSetLineWidth(lineWidth);
 
 	if (showGrid) {
-
+        
+        triangulation.setColor(colorTriangle, opacityGrid, input, maskGrid);
 		triangulation.drawThickness(lineWidth);
 
 	}
@@ -555,10 +555,10 @@ void engine::drawGrid() {
 	// Dibujamos puntos
 	ofFill();
 	grid.end();
-	needsUpdateDrawGrid = false;
+	needsUpdateGrid = false;
 
 }
-void engine::drawPoints() {
+void engine::updatePoints() {
 
     points.begin();
     ofClear(ofColor(0, 0));
@@ -639,7 +639,7 @@ void engine::drawPoints() {
 
     points.end();
 
-    needsUpdateDrawPoints = false;
+    needsUpdatePoints = false;
 
 }
 

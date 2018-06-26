@@ -703,7 +703,7 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
     else if (e.target->is("showGrid")) {
         
         myengine.showGrid = e.target->getChecked();
-        myengine.needsDrawPoints = true;
+        myengine.needsUpdateDrawGrid = true;
         
         
     }
@@ -852,6 +852,7 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
 
         myengine.density = e.value;
         myengine.needsUpdateGrid = true;
+		myengine.needsUpdateDrawGrid = true;
         myengine.needsDrawPoints = true;
 
     }
@@ -860,6 +861,7 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
 
         myengine.noise = e.value;
         myengine.needsUpdateGrid = true;
+		myengine.needsUpdateDrawGrid = true;
         myengine.needsDrawPoints = true;
 
     }
@@ -868,6 +870,7 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
 
         myengine.min = e.value;
         myengine.needsUpdateGrid = true;
+		myengine.needsUpdateDrawGrid = true;
         myengine.needsDrawPoints = true;
 
     }
@@ -876,6 +879,7 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
 
         myengine.max = e.value;
         myengine.needsUpdateGrid = true;
+		myengine.needsUpdateDrawGrid = true;
         myengine.needsDrawPoints = true;
 
     }

@@ -55,9 +55,9 @@ void engine::setup()
     shapeDrawing = 1;
     updateBackground();
     shaderAlpha.load("shadersGL2/shaderAlpha");
-	// pathInput.setMode(OF_PRIMITIVE_LINE_LOOP);
-	// pathGrid.setMode(OF_PRIMITIVE_LINE_LOOP);
-	// pathPoints.setMode(OF_PRIMITIVE_LINE_LOOP);
+	pathInput.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
+	pathGrid.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
+	pathPoints.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
 
 	definingSvgCenter = false;
 

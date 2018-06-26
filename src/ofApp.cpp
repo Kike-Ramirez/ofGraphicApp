@@ -100,7 +100,7 @@ void ofApp::loadGui() {
     int x = dWidth;
     int y = dHeight;
     int p = 0;
-    int x11 = 38 * dWidth;
+    int x11 = 30 * dWidth;
 
 	// Cargar Temas del GUI
 	themes = { new ofxDatGuiTheme(true),
@@ -172,7 +172,7 @@ void ofApp::loadGui() {
 		"Pantone 116C",
 		"Pantone 329C",
 		"Process Black EC"
-
+		
 	};
 
 	// launch the app //
@@ -180,6 +180,7 @@ void ofApp::loadGui() {
 	tIndex = 0;
 	// instantiate and position the gui //
 	gui = new ofxDatGui(ofxDatGuiAnchor::TOP_LEFT);
+	gui->setWidth(x11 - dWidth);
 
 	// Area de Trabajo
 	ofxDatGuiFolder* folderArea = gui->addFolder("RESOLUCION DE TRABAJO", ofColor::red);
@@ -330,12 +331,14 @@ void ofApp::changeTheme()
 {
 	tIndex = tIndex < themes.size() - 1 ? tIndex + 1 : 0;
 	gui->setTheme(themes[tIndex]);
+	float x11 = 30 * dWidth;
+	gui->setWidth(x11 - dWidth);
 }
 
 void ofApp::fitCanvas()
 {
 
-	float x11 = gui->getWidth() + dWidth;
+	float x11 = 30 * dWidth;
 
 	//	40 * dWidth;
 
@@ -1274,6 +1277,10 @@ void ofApp::mouseExited(int x, int y){
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h){
 
+	dWidth = w / 100.0;
+	float x11 = 30 * dWidth;
+	gui->setWidth(x11 - dWidth);
+
 }
 
 //--------------------------------------------------------------
@@ -1317,6 +1324,7 @@ void ofApp::resetSettings() {
 	gui->getToggle("graphicElements")->setChecked(false);
 	numSVG = 0;
 	gui->getColorPicker("colorSVG")->setColor(0xFFFFFF);
+	myengine.centerSVG = ofPoint(0, 0);
 	gui->getToggle("loadBackground")->setChecked(false);
 	gui->getToggle("colorBackground")->setChecked(true);
 	gui->getToggle("defineBackground")->setChecked(false);
@@ -1406,6 +1414,9 @@ void ofApp::loadSettings() {
 	gui->getToggle("archivo")->setChecked(ofToBool(xmlParameters.getValue("settings:archivo", "false")));
 	gui->getToggle("graphicElements")->setChecked(ofToBool(xmlParameters.getValue("settings:graphicElements", "false")));
 	numSVG = xmlParameters.getValue("settings:numSVG", 0);
+	float centerX = xmlParameters.getValue("settings:centerSVGx", 0.0);
+	float centerY = xmlParameters.getValue("settings:centerSVGy", 0.0);
+	myengine.centerSVG = ofPoint(centerX, centerY);
 	gui->getSlider("svgSize")->setValue(xmlParameters.getValue("settings:svgSize", 1.0));
 	gui->getToggle("loadBackground")->setChecked(ofToBool(xmlParameters.getValue("settings:loadBackground", "false")));
 	gui->getToggle("colorBackground")->setChecked(ofToBool(xmlParameters.getValue("settings:colorBackground", "true")));
@@ -1497,7 +1508,7 @@ void ofApp::loadSettings() {
 		ofPixels pixels;
 		myengine.fboInput.readToPixels(pixels);
 		myengine.maskInput.setFromPixels(pixels);
-		myengine.maskInput = myengine.blur(myengine.maskInput, myengine.input.getWidth() / 10);
+		myengine.maskInput = myengine.blur(myengine.maskInput, myengine.input.getWidth() / 10.0);
 
 	}
 
@@ -1528,7 +1539,7 @@ void ofApp::loadSettings() {
 		ofPixels pixels;
 		myengine.fboGrid.readToPixels(pixels);
 		myengine.maskGrid.setFromPixels(pixels);
-		myengine.maskGrid = myengine.blur(myengine.maskGrid, myengine.maskGrid.getWidth() / 10);
+		myengine.maskGrid = myengine.blur(myengine.maskGrid, myengine.maskGrid.getWidth() / 10.0);
 
 	}
 
@@ -1558,7 +1569,7 @@ void ofApp::loadSettings() {
 		ofPixels pixels;
 		myengine.fboPoints.readToPixels(pixels);
 		myengine.maskPoints.setFromPixels(pixels);
-		myengine.maskPoints = myengine.blur(myengine.maskPoints, myengine.maskPoints.getWidth() / 10);
+		myengine.maskPoints = myengine.blur(myengine.maskPoints, myengine.maskPoints.getWidth() / 10.0);
 
 
 	}
@@ -1601,8 +1612,8 @@ void ofApp::loadSettings() {
 
 	myengine.updateBackground();
 	myengine.needsUpdateGrid = false;
-	myengine.needsUpdateDrawPoints = false;
-	myengine.needsUpdateDrawGrid = false;
+	myengine.needsUpdateDrawPoints = true;
+	myengine.needsUpdateDrawGrid = true;
 	myengine.needsDrawPoints = true;
 	myengine.needsUpdateMask = false;
 
@@ -1651,6 +1662,8 @@ void ofApp::saveSettings() {
 	xmlParameters.setValue("settings:numSVG", numSVG);
 	xmlParameters.setValue("settings:colorSVG", gui->getColorPicker("colorSVG")->getText());
 	xmlParameters.setValue("settings:svgSize", gui->getSlider("svgSize")->getValue());
+	xmlParameters.setValue("settings:centerSVGx", myengine.centerSVG.x);
+	xmlParameters.setValue("settings:centerSVGy", myengine.centerSVG.y);
 	xmlParameters.setValue("settings:loadBackground", gui->getToggle("loadBackground")->getChecked());
 	xmlParameters.setValue("settings:colorBackground", gui->getToggle("colorBackground")->getChecked());
 	xmlParameters.setValue("settings:defineBackground", gui->getToggle("defineBackground")->getChecked());

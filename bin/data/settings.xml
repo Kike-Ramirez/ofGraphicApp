@@ -38,7 +38,17 @@
     <pathBackground></pathBackground>
     <numSVG>0</numSVG>
     <colorSVG>FFFFFF</colorSVG>
+    <colorMaskPoint>NULL</colorMaskPoint>
+    <svgSize>1.000000000</svgSize>
+    <centerSVGx>0.000000000</centerSVGx>
+    <centerSVGy>0.000000000</centerSVGy>
+    <pathShape></pathShape>
 </settings>
+<pathInput />
+<pathGrid />
+<pathPoints />
 <pathInput></pathInput>
 <pathGrid></pathGrid>
 <pathPoints></pathPoints>
+<triangulationGrid></triangulationGrid>
+<pointsGrid></pointsGrid>

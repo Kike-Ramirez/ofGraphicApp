@@ -55,7 +55,9 @@ void engine::setup()
     shapeDrawing = 1;
     updateBackground();
     shaderAlpha.load("shadersGL2/shaderAlpha");
-	shaderThick.load("shaders/vert.glsl", "shaders/frag.glsl", "shaders/geom.glsl");
+	// pathInput.setMode(OF_PRIMITIVE_LINE_LOOP);
+	// pathGrid.setMode(OF_PRIMITIVE_LINE_LOOP);
+	// pathPoints.setMode(OF_PRIMITIVE_LINE_LOOP);
 
 	definingSvgCenter = false;
 
@@ -137,6 +139,7 @@ void engine::update()
     }
     
     grid.draw(0,0);
+	points.draw(0, 0);
 
     if (definingMaskImg) {
 

@@ -5,7 +5,6 @@
 #include "ofxDelaunay.h"
 #include "ofxEditableSVG.h"
 #include "ofxCV.h"
-#include "ofxGpuThicklines.h"
 
 class engine
 {
@@ -48,8 +47,7 @@ public:
     int shapeDrawing;
 	ofxEditableSVG shapefile;
     ofxDelaunay triangulation;
-	ofxGpuThicklines gpuTriangulation;
-    ofShader shaderAlpha, shaderThick;
+    ofShader shaderAlpha;
     vector<ofxEditableSVG> svgTextures;
     int numSVG;
 	float svgSize;

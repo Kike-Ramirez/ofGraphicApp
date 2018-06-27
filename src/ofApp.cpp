@@ -13,6 +13,7 @@ void ofApp::setup()
     ofSetWindowTitle("ofGraphicApp v2.00");
     ofSetFrameRate(60);
     ofSetEscapeQuitsApp(false);
+    ofSetDataPathRoot("../Resources/data/");
 
     dWidth = int(ofGetWidth() / 100.0);
     dHeight = int(ofGetHeight() / 100.0);
@@ -21,6 +22,7 @@ void ofApp::setup()
     //loadSettings();
 
     loadGui();
+    // cout << "Path ASSETS: " << ofToDataPath("Verdana.ttf")  << endl;
 	myengine.setup();
 
 
@@ -784,7 +786,7 @@ void ofApp::onToggleEvent(ofxDatGuiToggleEvent e)
 
     }
 
-    else if (e.target->is("punto")) {
+    else if (e.target->is("circulo")) {
 
         myengine.shapeDrawing = 1;
         if (gui->getToggle("cuadrado")->getChecked()) gui->getToggle("cuadrado")->toggle();
@@ -902,6 +904,7 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
         myengine.needsCalculateGrid = true;
         myengine.needsCalculatePoints = true;
         myengine.needsUpdatePoints = true;
+        myengine.needsUpdateGrid = true;
 		myengine.needsUpdateMask = true;
                 
     }
@@ -920,16 +923,6 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
         myengine.needsCalculatePoints = true;
         myengine.needsUpdatePoints = true;
         
-    }
-    
-    else if (e.target->is("prob")) {
-
-        myengine.prob = e.value;
-        myengine.needsCalculateGrid = true;
-        myengine.needsCalculatePoints = true;
-        myengine.needsUpdateGrid = true;
-        myengine.needsUpdatePoints = true;
-
     }
 
     else if (e.target->is("size")) {
@@ -963,14 +956,14 @@ void ofApp::onSliderEvent(ofxDatGuiSliderEvent e)
     else if (e.target->is("opacityGrid")) {
         
         myengine.opacityGrid = e.value;
-        myengine.needsCalculateGrid = true;
+        //myengine.needsCalculateGrid = true;
 		myengine.needsUpdateGrid = true;
     }
     
     else if (e.target->is("opacityPoints")) {
         
         myengine.opacityPoints = e.value;
-        myengine.needsCalculatePoints = true;
+        //myengine.needsCalculatePoints = true;
         myengine.needsUpdatePoints = true;
         
     }

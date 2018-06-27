@@ -7,7 +7,6 @@ engine::engine()
     height = 768;
     density = 10;
     noise = 0;
-    prob = 0.5;
     lineWidth = 1;
     pointSize = 3;
     min = 0;
@@ -486,14 +485,12 @@ void engine::calculatePoints()
             float pointMask;
             
             if (maskPoints.isAllocated()) pointMask = maskPoints.getColor(punto.x, punto.y).getLightness();
-            else pointMask = 255;
+            else pointMask = 255.0;
             
-            if ((lightnessPoint > minP) && (lightnessPoint < maxP))
+            if ((lightnessPoint < maxP) && (lightnessPoint > minP))
             {
-                // if (ofRandom(255) < lightnessPoint)
-                {
-                    if  ( pointMask > 1) triangles.push_back(punto);
-                }
+                if  ( pointMask > 1) triangles.push_back(punto);
+    
             }
         }
     }
